@@ -8,9 +8,8 @@ import * as _ from 'lodash';
 export class DashboardService {
 
   url: string;
-  dashboards$: Subject<any> = new Subject<any>();
-  dashboards: Observable<any>;
   private _dashboards: any[];
+  private dashboards$: Subject<any> = new Subject<any>();
   constructor(private http: HttpClientService) {
     this.url = '../../../api/dashboards';
     this._dashboards = [];
@@ -20,11 +19,11 @@ export class DashboardService {
     this.http.get(this.url +  '.json?paging=false&fields=id,name,dashboardItems[*,users[id,displayName]]')
       .subscribe((dashboardResponse: any) => {
         this._dashboards = dashboardResponse.dashboards;
+
       })
   }
 
   find(id): Observable<any> {
-    console.log(this._dashboards);
     return Observable.create(observer => {
       const dashboard = _.find(this._dashboards, ['id', id]);
 

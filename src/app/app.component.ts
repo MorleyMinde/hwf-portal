@@ -14,7 +14,7 @@ export class AppComponent {
     private dashboardService: DashboardService,
     private currentUserService: CurrentUserService
   ) {
-    dashboardService.loadAll();
     currentUserService.load();
+    dashboardService.loadAll();
   }
 }
