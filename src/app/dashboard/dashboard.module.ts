@@ -18,6 +18,7 @@ import {TableService} from "./providers/table.service";
 import {Color} from "./providers/color";
 import {ColorInterpolationService} from "./providers/color-interpolation.service";
 import {VisualizationStore} from "./providers/visualization-store";
+import {Constants} from "./providers/constants";
 
 @NgModule({
   imports: [
@@ -34,8 +35,8 @@ import {VisualizationStore} from "./providers/visualization-store";
     MapService,
     ChartService,
     TableService,
-    Color,
-    ColorInterpolationService
+    ColorInterpolationService,
+    Constants
   ],
   declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent]
 })

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Visualization} from "../model/visualization";
 import {MapObject} from "../model/map-object";
-import {TileLayers} from "../constants/tile-layers";
+import {TileLayers} from "./constants/tile-layers";
 import * as _ from 'lodash';
 import {Color} from "./color";
 import {ColorInterpolationService} from "./color-interpolation.service";
@@ -177,12 +177,12 @@ export class MapVisualizationService {
     options.style = (feature) => {
       return this._prepareFeatureStyle(feature, visualizationLayerSettings, mapLegend);
     }
-    const layer = this._getGEOJSONLayer(visualizationLayerSettings, visualizationAnalytics, options);
+    const layer = this._getGEOJSONLayer(L,visualizationLayerSettings, visualizationAnalytics, options);
     // this._prepareDataCatchedValues(visualizationLayerSettings, visualizationAnalytics);
     return layer;
   }
 
-  private _getGEOJSONLayer(visualizationLayerSettings, visualizationAnalytics, options) {
+  private _getGEOJSONLayer(L,visualizationLayerSettings, visualizationAnalytics, options) {
 
     options.onEachFeature = (feature) => {
       if (feature.properties.dataElement) {
