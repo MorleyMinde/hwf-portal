@@ -77,7 +77,7 @@ export class VisualizationLegendComponent implements OnInit {
     return layerLegend;
   }
 
-  changeTileLayer(tileLegend){
+  changeTileLayer(tileLegend) {
     this.changeMapTileLayer.emit(tileLegend);
   }
 

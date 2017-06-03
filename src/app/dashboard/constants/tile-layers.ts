@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 export const TILE_LAYERS = {
   osmLight: {
-    name: 'openStreetMap',
+    name: 'osmLight',
     label: 'OSM Light',
     url: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     maxZoom: 18,

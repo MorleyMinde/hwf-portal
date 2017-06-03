@@ -26,6 +26,7 @@ export class MapComponent implements OnInit {
   mapLegend: any;
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
+  subtitle: string = "";
 
   constructor(private mapVisualizationService: MapVisualizationService) {
   }
@@ -36,6 +37,7 @@ export class MapComponent implements OnInit {
       if (this.mapData.details.loaded) {
         if (!this.mapData.details.hasError) {
           setTimeout(() => {
+            this.subtitle = this.mapData.subtitle;
             this.drawMap(this.mapData);
           }, 10);
           this.hasError = false;
@@ -55,6 +57,8 @@ export class MapComponent implements OnInit {
     this.map = L.map(mapObject.id, mapObject.options);
     this.centeringLayer = mapObject.centeringLayer;
     this.mapLegend = mapObject.mapLegend;
+
+
     L.control.zoom({position: "topright"}).addTo(this.map);
     this.updateOnLayerLoad(mapObject);
   }
@@ -95,8 +99,12 @@ export class MapComponent implements OnInit {
   }
 
   changeMapTileLayer(event) {
-    this.mapData.details.mapConfiguration.basemap = event.name;
-    this.drawMap(this.mapData);
+    if (this.mapData.details.mapConfiguration.basemap != event.name) {
+      this.mapData.details.mapConfiguration.basemap = event.name;
+      this.drawMap(this.mapData);
+    }
+
+
   }
 
 }

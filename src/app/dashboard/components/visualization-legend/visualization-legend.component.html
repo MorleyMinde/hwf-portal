@@ -35,6 +35,24 @@
         </div>
       </div>
     </div>
+    <div class="row" style="border-bottom: 1px solid #cccccc">
+      <div class="col-lg-12 col-md-12 col-xs-12 legend-header">
+        <div class="col-lg-1 col-md-1 col-xs-1 legend-draggable-icon" style="padding-right: 20px;padding-left: 5px;
+">
+          <a><i class="fa fa-connectdevelop" style="color:#000000;"></i></a>
+        </div>
+        <div class="col-lg-9 col-md-9 col-xs-9 class-container" style="cursor: pointer">
+          <div class="header parent-inner-header">
+            <span>Boundaries </span>
+          </div>
+          <div class="body">
+          </div>
+        </div>
+        <div class="col-lg-1 col-md-1 col-xs-1 eye-container">
+          <a style="color:#ffffff;"><i class="fa fa-eye"></i></a>
+        </div>
+      </div>
+    </div>
     <div class="row" dnd-sortable-container [sortableData]="visualizationLegends">
       <div class="col-lg-12 col-md-12 col-xs-12 legend-header"
            *ngFor="let legend of visualizationLegends;let i = index;"
