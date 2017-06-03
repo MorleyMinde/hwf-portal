@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, OnChanges} from '@angular/core';
 import {Observable} from "rxjs";
 import {Visualization} from "../../model/visualization";
 
@@ -24,7 +24,7 @@ export const DASHBOARD_SHAPES = [
   templateUrl: './dashboard-item-card.component.html',
   styleUrls: ['./dashboard-item-card.component.css']
 })
-export class DashboardItemCardComponent implements OnInit {
+export class DashboardItemCardComponent implements OnInit, OnChanges {
 
   @Input() visualizationObject: Visualization;
   visualizationObject$: Observable<any>;
@@ -56,7 +56,16 @@ export class DashboardItemCardComponent implements OnInit {
      * @type {any}
      */
     this.currentVisualization = this.visualizationObject.details ? this.visualizationObject.details.currentVisualization : null;
+
+    this.visualizationObject$ = Observable.of(this.visualizationObject)
+
   }
+
+  ngOnChanges() {
+
+  }
+
+
 
   getDashboardShapeClasses(currentShape, shapes: any[] = []): any[] {
     let shapeClasses: any[] = ['col-md-4', 'col-sm-6', 'col-xs-12', 'dashboard-card'];

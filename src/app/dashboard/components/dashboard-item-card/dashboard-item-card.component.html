@@ -54,6 +54,7 @@
       <!--end of error block-->
       <!--chart block-->
       <app-chart
+        [chartData]="visualizationObject$"
         *ngIf="currentVisualization == 'CHART' || currentVisualization == 'EVENT_CHART'"
       >
       </app-chart>

@@ -13,17 +13,19 @@ export class DashboardService {
   constructor(private http: HttpClientService) {
     this.url = '../../../api/dashboards';
     this._dashboards = [];
+    this.dashboards$.next([])
   }
 
   loadAll() {
     this.http.get(this.url +  '.json?paging=false&fields=id,name,dashboardItems[*,users[id,displayName]]')
       .subscribe((dashboardResponse: any) => {
         this._dashboards = dashboardResponse.dashboards;
-
+        this.dashboards$.next(this._dashboards)
       })
   }
 
   find(id): Observable<any> {
+
     return Observable.create(observer => {
       const dashboard = _.find(this._dashboards, ['id', id]);
 

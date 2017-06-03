@@ -34,7 +34,6 @@ import {VisualizationStore} from "./providers/visualization-store";
     MapService,
     ChartService,
     TableService,
-    Color,
     ColorInterpolationService
   ],
   declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent]

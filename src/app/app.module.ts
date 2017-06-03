@@ -10,6 +10,7 @@ import {FilterPipe} from "./menu/filter.pipe";
 import {DashboardService} from "./providers/dashboard.service";
 import {HttpClientService} from "./providers/http-client.service";
 import {CurrentUserService} from "./providers/current-user.service";
+import {Constants} from "./providers/constants";
 
 @NgModule({
   declarations: [
@@ -26,7 +27,8 @@ import {CurrentUserService} from "./providers/current-user.service";
   providers: [
     HttpClientService,
     DashboardService,
-    CurrentUserService
+    CurrentUserService,
+    Constants
   ],
   bootstrap: [AppComponent]
 })
