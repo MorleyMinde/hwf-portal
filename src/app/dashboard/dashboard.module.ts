@@ -21,6 +21,7 @@ import {VisualizationStore} from "./providers/visualization-store";
 import {Constants} from "./providers/constants";
 import {MapVisualizationService} from "./providers/map-visualization.service";
 import {TileLayers} from "./constants/tile-layers";
+import { ChartBlockComponent } from './components/chart-block/chart-block.component';
 
 @NgModule({
   imports: [
@@ -42,6 +43,6 @@ import {TileLayers} from "./constants/tile-layers";
     Constants,
     TileLayers
   ],
-  declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent]
+  declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent]
 })
 export class DashboardModule { }

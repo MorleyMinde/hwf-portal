@@ -14,21 +14,26 @@ import {VisualizationObjectService} from "./providers/visualization-object.servi
 export class DashboardComponent implements OnInit {
 
   showMailButton: boolean = false;
-  visualizationObjects: Observable<any[]>;
-  visualizationObjects$: Subject<any> = new Subject<any>()
+  visualizationObjects: any[] = [];
+  globalFilters: Observable<any>;
+  globalFilters$: Subject<any> = new Subject<any>();
+  visualizationObjects$: Observable<any[]>;
+  visualizationObjectsSubject$: Subject<any> = new Subject<any>();
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
     private visualizationObjectService: VisualizationObjectService
   ) {
-    this.visualizationObjects$.next([]);
-    this.visualizationObjects = this.visualizationObjects$.asObservable();
+    this.visualizationObjectsSubject$.next([]);
+    this.globalFilters$.next(null);
+    this.visualizationObjects$ = this.visualizationObjectsSubject$.asObservable();
+    this.globalFilters = this.globalFilters$.asObservable();
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       let visualizationObjects = [];
-      this.visualizationObjects$.next([]);
+      this.visualizationObjectsSubject$.next([]);
       this.dashboardService.find(params['pageId']).subscribe(dashboard => {
         const dashboardItems = dashboard.dashboardItems;
         if(dashboardItems) {
@@ -40,27 +45,18 @@ export class DashboardComponent implements OnInit {
                * Load initial visualization
                */
               visualizationObjects.push(visualizationObject);
-              this.visualizationObjects$.next(visualizationObjects);
-
-              /**
-               * Load sanitized visualization object
-               */
-
-              this.loadSanitizedObject(visualizationObject).subscribe(sanitizedVisualizationObject => {
-                const existingVisualizationObjectIndex = _.findIndex(visualizationObjects, ['id', sanitizedVisualizationObject.id]);
-
-                visualizationObjects[existingVisualizationObjectIndex] = sanitizedVisualizationObject;
-                this.visualizationObjects$.next(visualizationObjects);
-              });
+              this.visualizationObjectsSubject$.next(visualizationObjects);
             }
-          })
+          });
+
+          this.visualizationObjects = visualizationObjects;
         }
       })
     });
   }
 
-  updateFilters(filterValue) {
-    console.log(filterValue)
+  updateFilters(filterData) {
+    this.globalFilters$.next(filterData);
   }
 
   getInitialVisualization(cardData, dashboardId, currentUser?): Visualization {
@@ -132,18 +128,6 @@ export class DashboardComponent implements OnInit {
       layer.push({settings: cardData, analytics: {}});
     }
     return layer
-  }
-
-  loadSanitizedObject(visualizationObject: Visualization): Observable<Visualization> {
-    return Observable.create(observer => {
-      this.visualizationObjectService.getSanitizedVisualizationObject(visualizationObject).subscribe(sanitizedVisualizationObject => {
-        observer.next(sanitizedVisualizationObject);
-        observer.complete();
-      }, visualizationObjectWithError => {
-        observer.next(visualizationObjectWithError);
-        observer.complete();
-      });
-    })
   }
 
 }

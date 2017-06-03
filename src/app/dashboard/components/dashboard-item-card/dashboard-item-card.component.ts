@@ -1,6 +1,11 @@
-import {Component, OnInit, Input, OnChanges} from '@angular/core';
+import {Component, OnInit, Input, OnChanges, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Observable} from "rxjs";
 import {Visualization} from "../../model/visualization";
+import * as _ from 'lodash';
+import {VisualizationObjectService} from "../../providers/visualization-object.service";
+import {ChartComponent} from "../chart/chart.component";
+import {TableComponent} from "../table/table.component";
+import {MapComponent} from "../map/map.component";
 
 export const VISUALIZATION_WITH_NO_OPTIONS = ['USERS', 'REPORTS', 'RESOURCES', 'APP'];
 
@@ -27,6 +32,8 @@ export const DASHBOARD_SHAPES = [
 export class DashboardItemCardComponent implements OnInit, OnChanges {
 
   @Input() visualizationObject: Visualization;
+  @Input() globalFilters: Observable<any>;
+  @Output() onFilterDeactivate: EventEmitter<any> = new EventEmitter<any>();
   visualizationObject$: Observable<any>;
   domEvent: any;
   dashboardShapes: any[] = DASHBOARD_SHAPES;
@@ -48,7 +55,10 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     blockWidth: '100%',
     showMailButton: true
   };
-  constructor() { }
+  @ViewChild(ChartComponent) chartComponent: ChartComponent;
+  @ViewChild(TableComponent) tableComponent: TableComponent;
+  @ViewChild(MapComponent) mapComponent: MapComponent;
+  constructor(private visualizationObjectService: VisualizationObjectService) { }
 
   ngOnInit() {
     /**
@@ -57,7 +67,14 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
      */
     this.currentVisualization = this.visualizationObject.details ? this.visualizationObject.details.currentVisualization : null;
 
-    this.visualizationObject$ = Observable.of(this.visualizationObject)
+    this.visualizationObject$ = Observable.of(this.visualizationObject);
+
+    this.globalFilters.subscribe(filters => {
+      if(filters != null) {
+        this.updateFilters(filters);
+        this.onFilterDeactivate.emit(null);
+      }
+    })
 
   }
 
@@ -135,6 +152,30 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
     this.showFullScreen = !this.showFullScreen;
     // this.updateSettings();
+  }
+
+  updateVisualization(selectedVisualization) {
+    const visualizationObject: Visualization = _.clone(this.visualizationObject);
+    visualizationObject.details.currentVisualization = selectedVisualization;
+
+    if (selectedVisualization == 'MAP' && visualizationObject.type != 'MAP') {
+      visualizationObject.details.analyticsStrategy = 'split';
+
+    } else if (selectedVisualization != 'MAP' && visualizationObject.type == 'MAP') {
+      visualizationObject.details.analyticsStrategy = 'merge';
+    }
+
+    this.currentVisualization = selectedVisualization;
+  }
+
+  updateFilters(filterValues): void {
+    if(this.currentVisualization == 'TABLE') {
+      this.tableComponent.loadTable(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+    } else if(this.currentVisualization == 'MAP') {
+      this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+    } else if(this.currentVisualization == 'CHART') {
+      this.chartComponent.loadChart(this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues)))
+    }
   }
 
 }

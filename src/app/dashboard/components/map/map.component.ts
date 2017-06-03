@@ -4,6 +4,7 @@ import * as _ from 'lodash';
 import 'leaflet';
 import 'leaflet.markercluster';
 import {MapVisualizationService} from "../../providers/map-visualization.service";
+import {VisualizationObjectService} from "../../providers/visualization-object.service";
 declare var L;
 
 
@@ -14,7 +15,8 @@ declare var L;
 })
 export class MapComponent implements OnInit {
 
-  @Input() mapData;
+  @Input() initialMapData: Visualization;
+  mapData: Visualization;
   loading: boolean = true;
   hasError: boolean = false;
   errorMessage: string;
@@ -26,25 +28,38 @@ export class MapComponent implements OnInit {
   mapLegend: any;
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
-  constructor(private mapVisualizationService: MapVisualizationService) { }
+  constructor(
+    private mapVisualizationService: MapVisualizationService,
+    private visualizationObjectService: VisualizationObjectService
+  ) { }
 
   ngOnInit() {
-    this.loading = true;
-    if (this.mapData) {
-      if (this.mapData.details.loaded) {
-        if (!this.mapData.details.hasError) {
-          setTimeout(() => {
-            this.drawMap(this.mapData);
-          }, 10);
-          this.hasError = false;
-        } else {
-          this.hasError = true;
-          this.loading = false;
-          this.errorMessage = this.mapData.details.errorMessage;
-        }
-      }
-    }
+    this.loadMap(this.initialMapData)
+  }
 
+  loadMap(initialMapData) {
+    this.loading = true;
+    if(initialMapData) {
+      this.mapData = initialMapData;
+      this.visualizationObjectService.getSanitizedVisualizationObject(initialMapData)
+        .subscribe(sanitizedMapData => {
+          if (sanitizedMapData) {
+            this.mapData = sanitizedMapData;
+            if (this.mapData.details.loaded) {
+              if (!this.mapData.details.hasError) {
+                setTimeout(() => {
+                  this.drawMap(this.mapData);
+                }, 10);
+                this.hasError = false;
+              } else {
+                this.hasError = true;
+                this.loading = false;
+                this.errorMessage = this.mapData.details.errorMessage;
+              }
+            }
+          }
+        })
+    }
   }
 
   drawMap(mapData: Visualization) {

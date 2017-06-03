@@ -386,4 +386,17 @@ export class VisualizationObjectService {
     return visualizationObject;
   }
 
+  getFilterUpdatedVisualizationObject(visualizationObject: Visualization, filters: any): Observable<Visualization> {
+    return Observable.create(observer => {
+      this.getSanitizedVisualizationObject(this.updateVisualizationObjectsWithFilters(visualizationObject, filters))
+        .subscribe(sanitizedVisualizationObject => {
+          observer.next(sanitizedVisualizationObject);
+          observer.complete();
+        }, visualizationObjectWithError => {
+          observer.next(visualizationObjectWithError);
+          observer.complete();
+        });
+    })
+  }
+
 }

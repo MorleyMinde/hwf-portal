@@ -1,7 +1,7 @@
 import {Component, OnInit, OnChanges, Input} from '@angular/core';
 import {Visualization} from "../../model/visualization";
 import {ChartService} from "../../providers/chart.service";
-import {Observable} from "rxjs";
+import {VisualizationObjectService} from "../../providers/visualization-object.service";
 
 export const CHART_TYPES = [
   {
@@ -56,9 +56,10 @@ export const CHART_TYPES = [
   templateUrl: './chart.component.html',
   styleUrls: ['./chart.component.css']
 })
-export class ChartComponent implements OnInit, OnChanges {
+export class ChartComponent implements OnInit {
 
-  @Input() chartData: Observable<any>;
+  @Input() initialChartData: Visualization;
+  chartData: Visualization;
   @Input() customFilters: any;
   @Input() parentEvent: any;
   loading: boolean = true;
@@ -72,30 +73,66 @@ export class ChartComponent implements OnInit, OnChanges {
   chartTypes: any[] = CHART_TYPES;
 
   chartObjects: any;
-  constructor(private chartService: ChartService) { }
+  constructor(
+    private chartService: ChartService,
+    private visualizationObjectService: VisualizationObjectService
+  ) { }
 
   ngOnInit() {
-    this.chartData.subscribe(chartData => {
-      this.loading = true;
-      if(chartData) {
-        if(chartData.details.loaded) {
-          this.loading = false;
-          if(!chartData.details.hasError) {
+    this.loadChart(this.initialChartData);
+  }
 
-            this.chartObjects = this.chartService.getChartObjects(chartData);
-            console.log(this.chartObjects)
-            this.hasError = false;
-          } else {
-            this.hasError = true;
-            this.errorMessage = chartData.details.errorMessage;
+  loadChart(initialChartData) {
+    this.loading = true;
+    if(initialChartData) {
+      this.chartData = this.initialChartData;
+      this.visualizationObjectService.getSanitizedVisualizationObject(initialChartData)
+        .subscribe(sanitizedChartData => {
+          if(sanitizedChartData) {
+            this.chartData = sanitizedChartData;
+            if(this.chartData) {
+              if(this.chartData.details.loaded) {
+                this.loading = false;
+                if(!this.chartData.details.hasError) {
+
+                  this.chartObjects = this.chartService.getChartObjects(this.chartData);
+                  this.hasError = false;
+                } else {
+                  this.hasError = true;
+                  this.errorMessage = this.chartData.details.errorMessage;
+                }
+              }
+            }
           }
-        }
-      }
-    })
+        })
+    }
   }
 
-  ngOnChanges() {
+  updateChartType(type, chartObject){
+    this.loading = true;
+    /**
+     * Update chart object
+     * @type {any[]}
+     */
+    this.chartObjects = this.chartService.getChartObjects(this.chartData, type);
+    this.loading = false;
 
   }
+
+  showChartOptions() {
+    if(this.chartConfiguration.showOptions) {
+      this.chartConfiguration.optionsVisibility = 'visible';
+      this.chartConfiguration.blockWidth = "100% - 40px";
+    }
+
+  }
+
+  hideChartOptions() {
+    if(this.chartConfiguration.showOptions) {
+      this.chartConfiguration.optionsVisibility = 'hidden';
+      this.chartConfiguration.blockWidth = "100%";
+    }
+  }
+
 
 }

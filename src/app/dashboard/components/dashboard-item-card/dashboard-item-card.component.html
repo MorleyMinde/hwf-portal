@@ -54,18 +54,18 @@
       <!--end of error block-->
       <!--chart block-->
       <app-chart
-        [chartData]="visualizationObject$"
+        [initialChartData]="visualizationObject$  | async"
         *ngIf="currentVisualization == 'CHART' || currentVisualization == 'EVENT_CHART'"
       >
       </app-chart>
       <!--end of chart  block-->
 
       <!--table block-->
-      <app-table *ngIf="currentVisualization == 'TABLE' || currentVisualization == 'EVENT_REPORT' || currentVisualization == 'REPORT_TABLE'"></app-table>
+      <app-table [initialTableData]="visualizationObject$ | async" *ngIf="currentVisualization == 'TABLE' || currentVisualization == 'EVENT_REPORT' || currentVisualization == 'REPORT_TABLE'"></app-table>
       <!--end of table  block-->
 
       <!--map block-->
-      <app-map [mapData]="visualizationObject$ | async" *ngIf="currentVisualization == 'MAP'"></app-map>
+      <app-map [initialMapData]="visualizationObject$ | async" *ngIf="currentVisualization == 'MAP'"></app-map>
       <!--end of map block-->
 
       <!--&lt;!&ndash;user block&ndash;&gt;-->
