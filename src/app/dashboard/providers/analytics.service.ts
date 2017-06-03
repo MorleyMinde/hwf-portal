@@ -51,23 +51,6 @@ export class AnalyticsService {
 
   }
 
-  getSanitizedAnalytics(visualizationObject: Visualization): Observable<Visualization> {
-    return Observable.create(observer => {
-      this.getAnalytic(visualizationObject).subscribe(visualization => {
-        if(visualization.details.analyticsStrategy == 'split') {
-          visualization = this.getSplitedAnalytics(visualization);
-
-        } else if(visualization.details.analyticsStrategy == 'merge') {
-          visualization = this.getMergedAnalytics(visualization)
-        }
-
-        console.log(visualization)
-        observer.next(visualization);
-        observer.complete();
-      }, error => observer.error(error))
-    });
-  }
-
   getSplitedAnalytics(visualization): Visualization {
     let newSettings: any[] = [];
     let newAnalytics: any[] = [];
@@ -311,36 +294,40 @@ export class AnalyticsService {
     let periodIndex: number = 0;
     let orgUnitIndex: number = 0;
 
-    headers.forEach((header, headerIndex) => {
-      if (header.name == "dx") {
-        dataIndex = headerIndex;
-      }
+    if(headers) {
+      headers.forEach((header, headerIndex) => {
+        if (header.name == "dx") {
+          dataIndex = headerIndex;
+        }
 
-      if (header.name == "pe") {
-        periodIndex = headerIndex;
-      }
+        if (header.name == "pe") {
+          periodIndex = headerIndex;
+        }
 
-      if (header.name == "value") {
-        valueIndex = headerIndex;
-      }
+        if (header.name == "value") {
+          valueIndex = headerIndex;
+        }
 
-      if (header.name == "ou") {
-        orgUnitIndex = headerIndex;
-      }
+        if (header.name == "ou") {
+          orgUnitIndex = headerIndex;
+        }
 
-    })
-    data.forEach((dataName, dataIndex) => {
-      periods.forEach((periodName, periodIndex) => {
-        let singleAnalytics: any = {headers: headers, metaData: {names: {}, pe: [], ou: {}, dx: []}, rows: []};
-        singleAnalytics.metaData.names[dataName] = names[dataName];
-        singleAnalytics.metaData.names[periodName] = names[periodName];
-        singleAnalytics.metaData.pe.push(periodName);
-        singleAnalytics.metaData.dx.push(dataName);
-        singleAnalytics.metaData.ou = ou;
+      })
+    }
+    if(data) {
+      data.forEach((dataName, dataIndex) => {
+        periods.forEach((periodName, periodIndex) => {
+          let singleAnalytics: any = {headers: headers, metaData: {names: {}, pe: [], ou: {}, dx: []}, rows: []};
+          singleAnalytics.metaData.names[dataName] = names[dataName];
+          singleAnalytics.metaData.names[periodName] = names[periodName];
+          singleAnalytics.metaData.pe.push(periodName);
+          singleAnalytics.metaData.dx.push(dataName);
+          singleAnalytics.metaData.ou = ou;
 
-        analyticsArray.push(singleAnalytics);
+          analyticsArray.push(singleAnalytics);
+        });
       });
-    });
+    }
 
 
     analyticsArray.forEach(analytics => {
@@ -555,7 +542,8 @@ export class AnalyticsService {
             if(customDimension) {
               items  += customDimension.value;
             } else {
-              items += dimensionValue.items.map(item => {return item.hasOwnProperty('dimensionItem') ? item.dimensionItem: ''}).join(';');
+              const dimensionItems: any[] = _.clone(dimensionValue.items);
+              items += dimensionItems.map(item => {return item.hasOwnProperty('dimensionItem') ? item.dimensionItem: ''}).join(';');
             }
           }
         }

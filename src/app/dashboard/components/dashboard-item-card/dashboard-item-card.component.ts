@@ -151,7 +151,9 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     }
 
     this.showFullScreen = !this.showFullScreen;
-    // this.updateSettings();
+
+    this.resizeChildren()
+
   }
 
   updateVisualization(selectedVisualization) {
@@ -168,13 +170,33 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     this.currentVisualization = selectedVisualization;
   }
 
+  resizeChildren() {
+    if(this.currentVisualization == 'MAP') {
+      if(this.mapComponent) {
+        this.mapComponent.resizeMap();
+      }
+
+    } else if(this.currentVisualization == 'CHART') {
+      if(this.chartComponent) {
+        this.chartComponent.resizeChart()
+      }
+    }
+  }
+
   updateFilters(filterValues): void {
     if(this.currentVisualization == 'TABLE') {
-      this.tableComponent.loadTable(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+      if(this.tableComponent) {
+        this.tableComponent.loadTable(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+      }
     } else if(this.currentVisualization == 'MAP') {
-      this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+      if(this.mapComponent) {
+        this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+      }
+
     } else if(this.currentVisualization == 'CHART') {
-      this.chartComponent.loadChart(this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues)))
+      if(this.chartComponent) {
+        this.chartComponent.loadChart(this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues)))
+      }
     }
   }
 

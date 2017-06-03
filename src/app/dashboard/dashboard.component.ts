@@ -35,16 +35,16 @@ export class DashboardComponent implements OnInit {
       let visualizationObjects = [];
       this.visualizationObjectsSubject$.next([]);
       this.dashboardService.find(params['pageId']).subscribe(dashboard => {
-        const dashboardItems = dashboard.dashboardItems;
-        if(dashboardItems) {
-          dashboardItems.forEach(dashboardItem => {
+        console.log(dashboard)
+
+        if(dashboard.dashboardItems) {
+          dashboard.dashboardItems.forEach(dashboardItem => {
             if(!dashboardItem.hasOwnProperty('visualizationObject')) {
-              const visualizationObject: Visualization = this.getInitialVisualization(dashboardItem, params['pageId']);
 
               /**
                * Load initial visualization
                */
-              visualizationObjects.push(visualizationObject);
+              visualizationObjects.push(this.getInitialVisualization(dashboardItem, params['pageId']));
               this.visualizationObjectsSubject$.next(visualizationObjects);
             }
           });

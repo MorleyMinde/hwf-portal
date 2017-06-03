@@ -22,7 +22,6 @@ export class LegendSetService {
     let layerNames = Object.getOwnPropertyNames(tileLayers);
 
     layerNames.forEach(layer => {
-      console.log(tileLayers[layer]);
       let tileLayer: any = {
         name: tileLayers[layer].name,
         label: tileLayers[layer].label,

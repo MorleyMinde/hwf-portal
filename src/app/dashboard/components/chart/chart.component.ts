@@ -134,5 +134,7 @@ export class ChartComponent implements OnInit {
     }
   }
 
+  resizeChart() {}
+
 
 }

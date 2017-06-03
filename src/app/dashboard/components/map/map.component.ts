@@ -28,6 +28,7 @@ export class MapComponent implements OnInit {
   mapLegend: any;
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
+  subtitle: string = "";
   constructor(
     private mapVisualizationService: MapVisualizationService,
     private visualizationObjectService: VisualizationObjectService
@@ -68,6 +69,8 @@ export class MapComponent implements OnInit {
     this.map = L.map(mapObject.id, mapObject.options);
     this.centeringLayer = mapObject.centeringLayer;
     this.mapLegend = mapObject.mapLegend;
+
+
     L.control.zoom({position: "topright"}).addTo(this.map);
     this.updateOnLayerLoad(mapObject);
   }
@@ -102,14 +105,26 @@ export class MapComponent implements OnInit {
     parentElement.appendChild(div);
   }
 
+  resizeMap() {
+    if(this.map) {
+      setTimeout(() => {
+        this.map.invalidateSize();
+      },10);
+    }
+  }
+
 
   toggleLegendContainerView() {
     this.legendIsOpen = !this.legendIsOpen;
   }
 
   changeMapTileLayer(event) {
-    this.mapData.details.mapConfiguration.basemap = event.name;
-    this.drawMap(this.mapData);
+    if (this.mapData.details.mapConfiguration.basemap != event.name) {
+      this.mapData.details.mapConfiguration.basemap = event.name;
+      this.drawMap(this.mapData);
+    }
+
+
   }
 
 }

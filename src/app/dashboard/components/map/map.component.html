@@ -7,8 +7,8 @@
 <div class="layers-button" [ngClass]="{hide: loading||hasError}" (mouseover)="toggleLegendContainerView()">
   <img src="assets/img/layers-icon.png" style="width:24px;height:24px;">
 </div>
-<!--(mouseleave)="toggleLegendContainerView()"-->
-<div *ngIf="!loading&&legendIsOpen" class="legendContainer"  [ngStyle]="{'margin-right':legendMarginRight,'margin-left':legendMarginLeft}">
+
+<div *ngIf="!loading&&legendIsOpen" class="legendContainer" (mouseleave)="toggleLegendContainerView()"  [ngStyle]="{'margin-right':legendMarginRight,'margin-left':legendMarginLeft}">
   <app-visualization-legend [visualizationObject]="mapData" (changeMapTileLayer)="changeMapTileLayer($event)"></app-visualization-legend>
 </div>
 

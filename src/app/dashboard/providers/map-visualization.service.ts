@@ -75,7 +75,6 @@ export class MapVisualizationService {
     const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap);
     mapObject.options.layers = layers[0];
     mapObject.centeringLayer = layers[1];
-    mapObject.mapLegend = "am there";
 
     return mapObject;
   }
@@ -177,12 +176,12 @@ export class MapVisualizationService {
     options.style = (feature) => {
       return this._prepareFeatureStyle(feature, visualizationLayerSettings, mapLegend);
     }
-    const layer = this._getGEOJSONLayer(L,visualizationLayerSettings, visualizationAnalytics, options);
+    const layer = this._getGEOJSONLayer(L, visualizationLayerSettings, visualizationAnalytics, options);
     // this._prepareDataCatchedValues(visualizationLayerSettings, visualizationAnalytics);
     return layer;
   }
 
-  private _getGEOJSONLayer(L,visualizationLayerSettings, visualizationAnalytics, options) {
+  private _getGEOJSONLayer(L, visualizationLayerSettings, visualizationAnalytics, options) {
 
     options.onEachFeature = (feature) => {
       if (feature.properties.dataElement) {
@@ -652,20 +651,20 @@ export class MapVisualizationService {
     let htmlContent = '<div style="' +
       'color:#ffffff;text-align:center;' +
       'box-shadow: 0 1px 4px rgba(0, 0, 0, 0.65);' +
-      'opacity:'+layerSettings.opacity +';'+
+      'opacity:' + layerSettings.opacity + ';' +
       'background-color:' + this._eventColor(layerSettings.eventPointColor) + ';' +
-      'height:'+height+'px;width:'+width+'px;' +
-      'font-style:'+layerSettings.labelFontStyle +';'+
-      'font-size:'+layerSettings.labelFontSize +';'+
-      'border-radius:'+iconSize[0]+'px;">' +
-      '<span style="line-height:'+width+'px;">'+this._writeInKNumberSystem(parseInt(cluster.getChildCount()))+'</span>' +
+      'height:' + height + 'px;width:' + width + 'px;' +
+      'font-style:' + layerSettings.labelFontStyle + ';' +
+      'font-size:' + layerSettings.labelFontSize + ';' +
+      'border-radius:' + iconSize[0] + 'px;">' +
+      '<span style="line-height:' + width + 'px;">' + this._writeInKNumberSystem(parseInt(cluster.getChildCount())) + '</span>' +
       '</div>';
     return htmlContent;
   }
 
-  private _eventColor(color){
+  private _eventColor(color) {
     let colorArray = color.split("#");
-    return "#"+colorArray[colorArray.length-1];
+    return "#" + colorArray[colorArray.length - 1];
   }
 
   private _writeInKNumberSystem(childCount: any): any {

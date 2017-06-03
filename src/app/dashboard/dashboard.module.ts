@@ -46,6 +46,6 @@ import { ChartBlockComponent } from './components/chart-block/chart-block.compon
     TileLayers,
     LegendSetService
   ],
-  declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent]
+  declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent, VisualizationLegendComponent]
 })
 export class DashboardModule { }

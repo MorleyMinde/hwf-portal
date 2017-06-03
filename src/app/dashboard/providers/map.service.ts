@@ -794,7 +794,7 @@ export class MapService {
     let params: string = 'ou=ou:';
     let customFilter = _.find(filters, ['name', 'ou']);
 
-    if(mapView.layer == 'boundary' ||  mapView.layer.indexOf('thematic') != -1 || mapView.layer == 'facility' || !mapView.hasOwnProperty('layer')) {
+    if(!mapView.hasOwnProperty('layer') || (mapView.layer == 'boundary' ||  mapView.layer.indexOf('thematic') != -1 || mapView.layer == 'facility')) {
       if (customFilter) {
         params += customFilter.value + ";";
       } else {
