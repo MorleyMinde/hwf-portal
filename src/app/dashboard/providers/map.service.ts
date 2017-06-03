@@ -4,11 +4,11 @@ import {VisualizationStore} from "./visualization-store";
 import {AnalyticsService} from "./analytics.service";
 import {VisualizerService} from "./visualizer.service";
 import {Http, Response} from "@angular/http";
-import {Constants} from "./constants";
 import {Visualization} from "../model/visualization";
 import {Observable} from "rxjs";
 import {MapConfiguration} from "../model/map-configuration";
 import * as _ from 'lodash';
+import {Constants} from "./constants";
 
 interface Legend {
   htmlLegend: Object;

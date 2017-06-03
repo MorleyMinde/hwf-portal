@@ -10,6 +10,8 @@ import {FilterPipe} from "./menu/filter.pipe";
 import {DashboardService} from "./providers/dashboard.service";
 import {HttpClientService} from "./providers/http-client.service";
 import {CurrentUserService} from "./providers/current-user.service";
+import {Constants} from "./providers/constants";
+import {DndModule} from "ng2-dnd";
 
 @NgModule({
   declarations: [
@@ -21,12 +23,14 @@ import {CurrentUserService} from "./providers/current-user.service";
     BrowserModule,
     FormsModule,
     HttpModule,
-    AppRoutingModule
+    AppRoutingModule,
+    DndModule.forRoot()
   ],
   providers: [
     HttpClientService,
     DashboardService,
-    CurrentUserService
+    CurrentUserService,
+    Constants
   ],
   bootstrap: [AppComponent]
 })

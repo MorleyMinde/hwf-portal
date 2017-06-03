@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs";
-import {Constants} from "./constants";
 import * as _ from 'lodash';
 import {Visualization} from "../model/visualization";
+import {Constants} from "../../providers/constants";
 
 @Injectable()
 export class AnalyticsService {

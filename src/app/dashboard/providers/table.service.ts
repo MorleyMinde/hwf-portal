@@ -3,10 +3,10 @@ import {VisualizationStore} from "./visualization-store";
 import {AnalyticsService} from "./analytics.service";
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs";
-import {Constants} from "./constants";
 import {VisualizerService} from "./visualizer.service";
 import {Visualization} from "../model/visualization";
 import {TableConfiguration} from "../model/table-configuration";
+import {Constants} from "../../providers/constants";
 
 @Injectable()
 export class TableService {

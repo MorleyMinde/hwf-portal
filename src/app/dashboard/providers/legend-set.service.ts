@@ -7,8 +7,58 @@ export class LegendSetService {
   constructor(private colorInterpolation: ColorInterpolationService) {
   }
 
+  // osmLight: {
+  //   name: 'openStreetMap',
+  //   label: 'OSM Light',
+  //   url: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+  //   maxZoom: 18,
+  //   attribution: '&copy;<a href="https://carto.com/attribution">cartoDB</a>',
+  //   image:'/assets/img/map-tiles/esri_osm_light.png'
+  // }
 
-  public prepareMapLegendClasses(visualizationLayerSettings, visualizationAnalytics) {
+  public prepareTileLayers(tileLayers) {
+    let baseMapLayers: any = [];
+
+    let layerNames = Object.getOwnPropertyNames(tileLayers);
+
+    layerNames.forEach(layer => {
+      console.log(tileLayers[layer]);
+      let tileLayer: any = {
+        name: tileLayers[layer].name,
+        label: tileLayers[layer].label,
+        aliasName: tileLayers[layer].aliasName,
+        url: tileLayers[layer].url,
+        image: tileLayers[layer].image,
+        maxZoom: tileLayers[layer].maxZoom
+      }
+      baseMapLayers.push(tileLayer);
+    })
+
+    return baseMapLayers;
+  }
+
+  public prepareEventLayerLegendClasses(visualizationLayerSettings, visualizationAnalytics) {
+    let legend: any[] = [];
+    const eventPointColor = this._strimMoreHashFromColor(visualizationLayerSettings.eventPointColor);
+    const eventPointRadius = visualizationLayerSettings.eventPointRadius;
+
+
+    legend.push({
+      name: this.getEventName(visualizationAnalytics)[1],
+      label: this.getEventName(visualizationAnalytics)[1],
+      description: "",
+      relativeFrequency: "",
+      min: 0,
+      max: 0,
+      color: eventPointColor,
+      count: visualizationAnalytics.height,
+      radius: eventPointRadius,
+      boundary: false
+    });
+    return legend;
+  }
+
+  public prepareThematicLayerLegendClasses(visualizationLayerSettings, visualizationAnalytics) {
     let legendSettings = visualizationLayerSettings;
     let dataArray = [];
 
@@ -63,6 +113,21 @@ export class LegendSetService {
     }
 
     return obtainedDataLegend;
+  }
+
+  public getEventName(visualizationAnalytics) {
+    let metaDataObject = visualizationAnalytics.metaData;
+
+    // TODO : Find a best way to remove this hardcoding
+    let eventId: string = "";
+    for (let propt in metaDataObject) {
+      if (['names', 'pe', 'ou'].indexOf(propt) == -1) {
+        eventId = propt;
+      }
+
+    }
+
+    return [metaDataObject.names[eventId], metaDataObject[eventId]];
   }
 
   private _generateLegendClassLimits(visualizationLayerSettings, visualizationAnalytics) {
@@ -122,7 +187,7 @@ export class LegendSetService {
 
 
       if (doneWorkAround) dataArray.pop();
-      //Offset Workaround
+
       //Populate data count into classes
       classLimits.forEach(function (classLimit, classIndex) {
         if (classIndex < classLimits.length - 1) {
@@ -227,6 +292,11 @@ export class LegendSetService {
       })
     })
     return legend;
+  }
+
+  private _strimMoreHashFromColor(color) {
+    let colorArray = color.split("#");
+    return "#" + colorArray[colorArray.length - 1];
   }
 
 }

@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {Visualization} from "../model/visualization";
 import {MapObject} from "../model/map-object";
-import {TileLayers} from "./constants/tile-layers";
+import {TileLayers} from "../constants/tile-layers";
 import * as _ from 'lodash';
 import {Color} from "./color";
 import {ColorInterpolationService} from "./color-interpolation.service";
