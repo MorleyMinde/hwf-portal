@@ -3,17 +3,19 @@ export const TILE_LAYERS = {
   osmLight: {
     name: 'openStreetMap',
     label: 'OSM Light',
-    url: 'https://cartodb-basemaps-{s}.global.ssl.fastly.net/light_all/{z}/{x}/{y}.png',
+    url: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     maxZoom: 18,
-    attribution: '&copy;<a href="https://carto.com/attribution">cartoDB</a>'
+    attribution: '&copy;<a href="https://carto.com/attribution">cartoDB</a>',
+    image:'/assets/img/map-tiles/esri_osm_light.png'
   },
 
-  googleSheetsBaseMap: {
-    name: 'googleSheetsBaseMap',
+  googleStreetsBaseMap: {
+    name: 'googleStreetsBaseMap',
     label: 'Esri WorldStreetMap',
     maxZoom: 18,
     url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
-    attribution: '&copy; Esri'
+    attribution: '&copy; Esri',
+    image:'/assets/img/map-tiles/esri_street_map.png'
   },
 
   googleHybrid: {
@@ -21,7 +23,8 @@ export const TILE_LAYERS = {
     label: 'Earth Imagery',
     maxZoom: 18,
     url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attribution: '&copy; Esri'
+    attribution: '&copy; Esri',
+    image:'/assets/img/map-tiles/esri_world_imagery.png'
   }
 };
 

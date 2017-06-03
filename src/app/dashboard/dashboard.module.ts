@@ -1,13 +1,13 @@
-import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import {NgModule} from '@angular/core';
+import {CommonModule} from '@angular/common';
 
-import { DashboardRoutingModule } from './dashboard-routing.module';
-import { DashboardComponent } from './dashboard.component';
+import {DashboardRoutingModule} from './dashboard-routing.module';
+import {DashboardComponent} from './dashboard.component';
 import {SharedModule} from "../shared/shared.module";
-import { DashboardItemCardComponent } from './components/dashboard-item-card/dashboard-item-card.component';
-import { MapComponent } from './components/map/map.component';
-import { ChartComponent } from './components/chart/chart.component';
-import { TableComponent } from './components/table/table.component';
+import {DashboardItemCardComponent} from './components/dashboard-item-card/dashboard-item-card.component';
+import {MapComponent} from './components/map/map.component';
+import {ChartComponent} from './components/chart/chart.component';
+import {TableComponent} from './components/table/table.component';
 import {VisualizerService} from "./providers/visualizer.service";
 import {VisualizationObjectService} from "./providers/visualization-object.service";
 import {AnalyticsService} from "./providers/analytics.service";
@@ -21,6 +21,8 @@ import {VisualizationStore} from "./providers/visualization-store";
 import {Constants} from "./providers/constants";
 import {MapVisualizationService} from "./providers/map-visualization.service";
 import {TileLayers} from "./constants/tile-layers";
+import {LegendSetService} from "./providers/legend-set.service";
+import {VisualizationLegendComponent} from "./components/visualization-legend/visualization-legend.component";
 import { ChartBlockComponent } from './components/chart-block/chart-block.component';
 
 @NgModule({
@@ -41,7 +43,8 @@ import { ChartBlockComponent } from './components/chart-block/chart-block.compon
     TableService,
     ColorInterpolationService,
     Constants,
-    TileLayers
+    TileLayers,
+    LegendSetService
   ],
   declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent]
 })

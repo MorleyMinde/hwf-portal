@@ -38,7 +38,8 @@ import {ErrorNotifierComponent} from "./components/error-notifier/error-notifier
     FilterLevelPipe,
     FuseSearchPipe,
     ReadableNamePipe,
-    ErrorNotifierComponent
+    ErrorNotifierComponent,
+    DndModule
   ]
 })
 export class SharedModule { }

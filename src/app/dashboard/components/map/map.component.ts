@@ -107,4 +107,9 @@ export class MapComponent implements OnInit {
     this.legendIsOpen = !this.legendIsOpen;
   }
 
+  changeMapTileLayer(event) {
+    this.mapData.details.mapConfiguration.basemap = event.name;
+    this.drawMap(this.mapData);
+  }
+
 }
