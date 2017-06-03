@@ -1,0 +1,7 @@
+.navbar-light {
+  height: 60px;
+}
+
+.navbar-light .navbar-brand{
+  color:#87cefa;
+}

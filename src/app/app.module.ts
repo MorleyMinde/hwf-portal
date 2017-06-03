@@ -4,17 +4,30 @@ import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AppComponent } from './app.component';
+import {AppRoutingModule} from "./app.routing.module";
+import { MenuComponent } from './menu/menu.component';
+import {FilterPipe} from "./menu/filter.pipe";
+import {DashboardService} from "./providers/dashboard.service";
+import {HttpClientService} from "./providers/http-client.service";
+import {CurrentUserService} from "./providers/current-user.service";
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    MenuComponent,
+    FilterPipe
   ],
   imports: [
     BrowserModule,
     FormsModule,
-    HttpModule
+    HttpModule,
+    AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    HttpClientService,
+    DashboardService,
+    CurrentUserService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

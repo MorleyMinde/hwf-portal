@@ -1,0 +1,43 @@
+<div>
+  <div *ngIf="authorities" class="container-fluid">
+    <div *ngIf="authorities.indexOf('M_dhis-web-dataentry') > -1 || authorities.indexOf('ALL') > -1" class="row">
+      <div class="col-md-12">
+        <div class="panel panel-default">
+          <div class="panel-body">
+            <div class="row">
+              <div class="col-md-6 col-sm-6">
+                <app-org-unit-filter (onOrgUnitUpdate)="onOrganisationUnitSelect($event)"
+                                     (onOrgUnitInit)="onOrganisationUnitInitialized($event)"></app-org-unit-filter>
+              </div>
+              <div class="col-md-6 col-sm-6">
+                <!--<app-period-filter (onPeriodUpdate)="getPeriodValues($event)"></app-period-filter>-->
+                <div class="tree-input" style="opacity:0.7">
+                  <div>
+                    <div class="show_items">
+      <span>
+            <span class="selected-item">
+              {{ previousDate | date:'MMMM yyyy' }}
+            </span>
+      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!(authorities.indexOf('M_dhis-web-dataentry') > -1 || authorities.indexOf('ALL') > -1)" class="alert alert-danger">
+      <strong>Permission Error!</strong> You don't have permission to see the Data Entry Module. Please contact administrator.
+    </div>
+  </div>
+  <br/>
+  <div class="container-fluid">
+    <div class="row">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+
