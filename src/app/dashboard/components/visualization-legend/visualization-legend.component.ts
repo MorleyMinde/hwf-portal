@@ -1,4 +1,4 @@
-import {Component, OnInit, Input} from '@angular/core';
+import {Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 import * as _ from 'lodash';
 import {LegendSet} from "../../model/legend-set";
 import {LegendSetService} from "../../providers/legend-set.service";
@@ -11,6 +11,8 @@ import {TILE_LAYERS} from "../../constants/tile-layers";
 })
 export class VisualizationLegendComponent implements OnInit {
   @Input() visualizationObject: any;
+  @Output() changeMapTileLayer: EventEmitter<any> = new EventEmitter();
+  @Output() changeMapDataLayer: EventEmitter<any> = new EventEmitter();
   visualizationLegends: LegendSet[] = [];
   visualizationTileLayersLegends: any[];
   openTileLegend: boolean = false;
@@ -73,6 +75,10 @@ export class VisualizationLegendComponent implements OnInit {
     }
 
     return layerLegend;
+  }
+
+  changeTileLayer(tileLegend){
+    this.changeMapTileLayer.emit(tileLegend);
   }
 
   toggleLegendView(legendToggled) {

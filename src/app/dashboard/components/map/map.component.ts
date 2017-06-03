@@ -26,7 +26,9 @@ export class MapComponent implements OnInit {
   mapLegend: any;
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
-  constructor(private mapVisualizationService: MapVisualizationService) { }
+
+  constructor(private mapVisualizationService: MapVisualizationService) {
+  }
 
   ngOnInit() {
     this.loading = true;
@@ -90,6 +92,11 @@ export class MapComponent implements OnInit {
 
   toggleLegendContainerView() {
     this.legendIsOpen = !this.legendIsOpen;
+  }
+
+  changeMapTileLayer(event) {
+    this.mapData.details.mapConfiguration.basemap = event.name;
+    this.drawMap(this.mapData);
   }
 
 }

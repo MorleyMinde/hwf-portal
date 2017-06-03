@@ -9,7 +9,7 @@
 </div>
 <!--(mouseleave)="toggleLegendContainerView()"-->
 <div *ngIf="!loading&&legendIsOpen" class="legendContainer"  [ngStyle]="{'margin-right':legendMarginRight,'margin-left':legendMarginLeft}">
-  <app-visualization-legend [visualizationObject]="mapData"></app-visualization-legend>
+  <app-visualization-legend [visualizationObject]="mapData" (changeMapTileLayer)="changeMapTileLayer($event)"></app-visualization-legend>
 </div>
 
 

@@ -107,3 +107,28 @@ table.legend-table tr td:nth-child(2) {
   background-color: #ffffff;
   padding-right:22px;
 }
+
+tr a.map-tile-icons {
+  color: #333333;
+  border-color: #333333;
+}
+
+tr a.map-tile-icons img{
+  color: #333333;
+  border-color: #333333;
+}
+
+tr a.map-tile-icons img:hover {
+  color: #337ab7;
+  border-color: #337ab7;
+  outline: 1px solid #337ab7;
+  text-decoration: none;
+}
+
+tr a.map-tile-icons:hover {
+  color: #337ab7;
+  border-color: #337ab7;
+  text-decoration: none;
+}
+
+

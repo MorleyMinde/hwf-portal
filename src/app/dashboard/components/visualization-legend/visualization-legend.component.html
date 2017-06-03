@@ -7,19 +7,26 @@
 " (click)="toggleTileLegendView()">
           <a><i class="fa fa-map-o" style="color:#000000;"></i></a>
         </div>
-        <div class="col-lg-9 col-md-9 col-xs-9 class-container" style="cursor: pointer" >
+        <div class="col-lg-9 col-md-9 col-xs-9 class-container" style="cursor: pointer">
           <div class="header parent-inner-header" (click)="toggleTileLegendView()">
-            <span>Base Maps {{openTileLegend}}</span>
+            <span>Base Maps </span>
           </div>
           <div class="body" [ngClass]="{hideLegend:!openTileLegend}">
-            <div class="base-map-container" >
-                <table dnd-sortable-container [sortableData]="visualizationTileLayersLegends">
-                  <tr  *ngFor="let tileLegend of visualizationTileLayersLegends;let tileIndex = index;" style="padding-bottom: 5px;">
-                    <td >
-                      <img class="img-thumbnail" [src]="tileLegend.image" style="width:50px;height:30px;" />
-                    </td><td style="font-weight: bold;font-size: 12px;">&nbsp;{{tileLegend.label}}</td>
-                  </tr>
-                </table>
+            <div class="base-map-container">
+              <table style="margin-top: 5px;">
+                <tr *ngFor="let tileLegend of visualizationTileLayersLegends;let tileIndex = index;"
+                    [ngClass]="{rowActive:tileLegend.active}"
+                    (click)="changeTileLayer(tileLegend)">
+                  <td>
+                    <a class="map-tile-icons">
+                      <img [src]="tileLegend.image"
+                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                    </a>
+                  </td>
+                  <td style="font-weight: bold;font-size: 12px;">&nbsp;<a
+                    class="map-tile-icons">{{tileLegend.label}}</a></td>
+                </tr>
+              </table>
             </div>
           </div>
         </div>
