@@ -10,6 +10,7 @@ import {FilterLevelPipe} from "./pipes/filter-level.pipe";
 import {FuseSearchPipe} from "./pipes/fuse-search.pipe";
 import {ReadableNamePipe} from "./pipes/readable-name.pipe";
 import {DndModule} from "ng2-dnd";
+import {ErrorNotifierComponent} from "./components/error-notifier/error-notifier.component";
 
 @NgModule({
   imports: [
@@ -24,7 +25,8 @@ import {DndModule} from "ng2-dnd";
     PeriodFilterComponent,
     FilterLevelPipe,
     FuseSearchPipe,
-    ReadableNamePipe
+    ReadableNamePipe,
+    ErrorNotifierComponent
   ],
   providers: [
     OrgUnitService
@@ -35,7 +37,8 @@ import {DndModule} from "ng2-dnd";
     PeriodFilterComponent,
     FilterLevelPipe,
     FuseSearchPipe,
-    ReadableNamePipe
+    ReadableNamePipe,
+    ErrorNotifierComponent
   ]
 })
 export class SharedModule { }

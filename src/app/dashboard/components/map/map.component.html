@@ -1,3 +1,23 @@
-<p>
-  map works!
-</p>
+<!--loader block-->
+<app-loader *ngIf="loading" [loadingMessage]="'Moving map into position'"></app-loader>
+<!--end of loader block-->
+
+<app-error-notifier *ngIf="hasError && !loading" [errorMessage]="errorMessage"></app-error-notifier>
+
+<div class="layers-button" [ngClass]="{hide: loading||hasError}" (mouseover)="toggleLegendContainerView()">
+  <img src="assets/img/layers-icon.png" style="width:24px;height:24px;">
+</div>
+<!--<div *ngIf="!loading&&legendIsOpen" class="legendContainer" (mouseleave)="toggleLegendContainerView()" [ngStyle]="{'margin-right':legendMarginRight,'margin-left':legendMarginLeft}">-->
+  <!--<app-visualization-legend [visualizationObject]="mapData"></app-visualization-legend>-->
+<!--</div>-->
+
+
+<div class="recenter-button" [ngClass]="{hide: loading||hasError}" (click)="recenterMap(map,centeringLayer)">
+  <i class="fa fa-arrows"></i>
+</div>
+<div class="row" [ngClass]="{hide: loading||hasError}" style="text-align: center">
+  <h4 class="forViewOnly">
+    {{mapData?.name}}</h4>
+</div>
+<div class="map-view-port-{{mapData.id}}" [ngClass]="{hide: loading||hasError}"></div>
+

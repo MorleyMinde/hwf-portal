@@ -65,7 +65,7 @@
       <!--end of table  block-->
 
       <!--map block-->
-      <app-map *ngIf="currentVisualization == 'MAP'"></app-map>
+      <app-map [mapData]="visualizationObject$ | async" *ngIf="currentVisualization == 'MAP'"></app-map>
       <!--end of map block-->
 
       <!--&lt;!&ndash;user block&ndash;&gt;-->
