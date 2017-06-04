@@ -142,6 +142,8 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
         }
       });
     }
+    this.visualizationObject.shape = newShape;
+    this.resizeChildren(this.visualizationObject,false)
   }
 
   /**
@@ -209,12 +211,20 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
       }
     } else if(this.currentVisualization == 'MAP') {
       if(this.mapComponent) {
-        this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues))
+        this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues), true)
       }
 
     } else if(this.currentVisualization == 'CHART') {
       if(this.chartComponent) {
         this.chartComponent.loadChart(this.chartComponent.loadChart(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues)))
+      }
+    }
+  }
+
+  getMouseAction(event) {
+    if(this.currentVisualization == 'CHART') {
+      if(this.chartComponent) {
+        this.chartComponent.toggleChartOptions(event);
       }
     }
   }

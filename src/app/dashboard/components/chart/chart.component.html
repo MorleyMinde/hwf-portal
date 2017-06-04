@@ -8,7 +8,7 @@
 <div class="row" *ngIf="!loading && !hasError">
 
   <div class="col-md-12 chart-body" *ngFor="let chartObject of chartObjects; let i=index" [ngStyle]="{'height': chartData.details.cardHeight}">
-    <div class="chart-block text-center" [ngStyle]="{'width': 'calc('+ chartConfiguration.blockWidth + ')'}">
+    <div class="chart-block text-center" [ngStyle]="{'width': chartConfiguration.blockWidth}">
       <!--<div [ngStyle]="{'height': chartData.details.itemHeight}"  [ng2-highcharts]="chartObject"></div>-->
       <app-chart-block [ngStyle]="{'height': chartData.details.itemHeight, width: '100%'}" [renderId]="chartData.id + '_' + i" [chartObject]="chartObject" ></app-chart-block>
     </div>

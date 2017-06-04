@@ -71,10 +71,10 @@ export class MapVisualizationService {
               private colorInterpolation: ColorInterpolationService) {
   }
 
-  drawMap(L, visualizationObject: Visualization): MapObject {
+  drawMap(L, visualizationObject: Visualization, prioritizeFilter?: boolean): MapObject {
     let mapObject: MapObject = this._getInitialMapObject(visualizationObject);
 
-    const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap, mapObject.id);
+    const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap, mapObject.id, prioritizeFilter);
     mapObject.options.layers = layers[0];
     mapObject.centeringLayer = layers[1];
 
@@ -98,7 +98,7 @@ export class MapVisualizationService {
     };
   }
 
-  private _getMapLayers(L, visualizationLayers, basemap, mapObjectId): any {
+  private _getMapLayers(L, visualizationLayers, basemap, mapObjectId,prioritizeFilter): any {
     let mapLayers: any[] = [];
     let centeringLayer: any = null;
     /**
@@ -124,9 +124,9 @@ export class MapVisualizationService {
 
         } else if (layer.settings.layer == 'event') {
           if (layer.settings.eventClustering) {
-            const markerClusters = _.find(this.mapObjects, ['id', mapObjectId]);
+            const markerClusters: any = !prioritizeFilter ? _.find(this.mapObjects, ['id', mapObjectId]) : undefined;
             let centerLayer: any = null;
-            if(markerClusters) {
+            if(markerClusters && !prioritizeFilter) {
               centerLayer = markerClusters.layer;
             } else {
               centerLayer = this._prepareMarkerClusters(L, layer.settings, layer.analytics);

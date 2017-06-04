@@ -29,7 +29,7 @@ export class MapComponent implements OnInit {
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
   subtitle: string = "";
-  pinned: false;
+  pinned: boolean = false;
 
   constructor(private mapVisualizationService: MapVisualizationService,
               private visualizationObjectService: VisualizationObjectService) {
@@ -55,7 +55,7 @@ export class MapComponent implements OnInit {
     }
   }
 
-  loadMap(initialMapData) {
+  loadMap(initialMapData, prioritizeFilter?: boolean) {
     this.loading = true;
     if (initialMapData) {
       this.mapData = initialMapData;
@@ -66,7 +66,7 @@ export class MapComponent implements OnInit {
             if (this.mapData.details.loaded) {
               if (!this.mapData.details.hasError) {
                 setTimeout(() => {
-                  this.drawMap(this.mapData);
+                  this.drawMap(this.mapData, prioritizeFilter);
                 }, 10);
                 this.hasError = false;
               } else {
@@ -80,8 +80,8 @@ export class MapComponent implements OnInit {
     }
   }
 
-  drawMap(mapData: Visualization) {
-    const mapObject = this.mapVisualizationService.drawMap(L, mapData);
+  drawMap(mapData: Visualization, prioritizeFilter?: boolean) {
+    const mapObject = this.mapVisualizationService.drawMap(L, mapData, prioritizeFilter);
     this.prepareMapContainer(mapObject.id, this.mapHeight, this.mapWidth);
     this.map = L.map(mapObject.id, mapObject.options);
     this.centeringLayer = mapObject.centeringLayer;
