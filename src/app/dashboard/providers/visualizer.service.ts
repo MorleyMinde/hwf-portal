@@ -646,6 +646,8 @@ export class VisualizerService {
   drawTable ( analyticsObject , tableConfiguration ) {
     // console.log(tableConfiguration);
     let table = {
+      'title': tableConfiguration.title,
+      'subtitle': tableConfiguration.subtitle,
       'headers': [],
       'columns': [],
       'rows': [],

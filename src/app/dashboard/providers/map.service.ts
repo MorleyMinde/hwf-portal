@@ -59,6 +59,7 @@ export class MapService {
   private colorType: String = "Hex";
   private ends: Array<any> = [Color, Color];
   private step: Array<any> = [];
+  private geoFeatures: any[] = [];
   public mapLegend: any = {scriptLegenumbernd: [], htmlLegend: ""};
 
 
@@ -666,22 +667,58 @@ export class MapService {
     this.colorLow = colorLow;
   }
 
-  private _getGeoFeatures(geoFeature): Observable<any> {
-    return this.http.get(this._getGeoFeatureUrl(geoFeature))
-      .map((res: Response) => res.json())
-      .catch(error => Observable.throw(new Error(error)));
+  private _getGeoFeatures(geoFeatureUrl: string, canSave: boolean = true): Observable<any> {
+    return Observable.create(observer => {
+      if(geoFeatureUrl == null) {
+        observer.next(null);
+        observer.complete();
+      } else {
+        const geoFeature: any = canSave ?  _.find(this.geoFeatures, ['url', geoFeatureUrl]) : undefined;
+        if(geoFeature) {
+          observer.next(geoFeature.content);
+          observer.complete();
+        } else {
+          this.http.get(this._getGeoFeatureUrl(geoFeatureUrl))
+            .map((res: Response) => res.json())
+            .catch(error => Observable.throw(new Error(error)))
+            .subscribe(geoFeatureResponse => {
+              const availableGeoFeature: any = _.find(this.geoFeatures, ['url', geoFeatureUrl]);
+              if(!availableGeoFeature) {
+                this.geoFeatures.push({url: geoFeatureUrl, content: geoFeatureResponse})
+              }
+              observer.next(geoFeatureResponse);
+              observer.complete();
+            }, error => {
+              observer.error(error)
+            })
+        }
+      }
+    })
   }
 
   getGeoFeatures(visualizationObject: Visualization): Observable<any> {
     return Observable.create(observer => {
-      let expectedGeoFeatureCount: number = visualizationObject.layers.length;
-      let geoFeatureResponse: number = 0;
       let geoFeatureArray: any[] = [];
-      visualizationObject.layers.forEach(layer => {
-        let geoFeatureParams = layer.settings.hasOwnProperty('geoFeature') ? null : this._getGeoFeatureParameters(layer.settings, visualizationObject.details.filters);
-        geoFeatureArray.push(geoFeatureParams != null ? this._getGeoFeatures(geoFeatureParams) : []);
+      let count: number = 0;
 
+      const saveGeoFeature: boolean = visualizationObject.details.filters.length > 0 ? false : true;
+      visualizationObject.layers.forEach(layer => {
+        const geoFeatureParams = this._getGeoFeatureParameters(layer.settings, visualizationObject.details.filters);
+        this._getGeoFeatures(geoFeatureParams, saveGeoFeature).subscribe(geoFeature => {
+          if(geoFeature != null) {
+            layer.settings.geoFeature = geoFeature;
+          }
+          count++;
+          if(count == visualizationObject.layers.length) {
+            observer.next(visualizationObject);
+            observer.complete();
+          }
+
+        }, error => {
+          observer.error(error)
+        })
       });
+
       Observable.forkJoin(geoFeatureArray).subscribe((geoFeatures: any) => {
         let index: number = 0;
         visualizationObject.layers.forEach(layer => {
@@ -792,7 +829,6 @@ export class MapService {
     let dimensionItems: any;
     let params: string = 'ou=ou:';
     let customFilter = _.find(filters, ['name', 'ou']);
-
     if(!mapView.hasOwnProperty('layer') || (mapView.layer == 'boundary' ||  mapView.layer.indexOf('thematic') != -1 || mapView.layer == 'facility')) {
       if (customFilter) {
         params += customFilter.value + ";";
