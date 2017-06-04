@@ -699,7 +699,6 @@ export class MapService {
     return Observable.create(observer => {
       let geoFeatureArray: any[] = [];
       let count: number = 0;
-
       const saveGeoFeature: boolean = visualizationObject.details.filters.length > 0 ? false : true;
       visualizationObject.layers.forEach(layer => {
         const geoFeatureParams = this._getGeoFeatureParameters(layer.settings, visualizationObject.details.filters);
@@ -709,6 +708,7 @@ export class MapService {
           }
           count++;
           if(count == visualizationObject.layers.length) {
+            console.log(visualizationObject)
             observer.next(visualizationObject);
             observer.complete();
           }
