@@ -68,7 +68,8 @@
             <span title="{{legend.name}} {{legend.description}}">{{shortenTitle(legend.name)}}</span>
           </div>
           <div class="body" [ngClass]="{hideLegend:!legend.opened}">
-            <div>&nbsp;</div>
+            <br/>
+            <p>&nbsp;{{legend.description}}</p>
             <div *ngFor="let class of legend.classes">
               <table class="legend-table">
                 <tr>

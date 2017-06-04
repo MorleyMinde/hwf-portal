@@ -44,6 +44,7 @@ export class MapComponent implements OnInit {
         this.loading = false;
         if (!this.mapData.details.hasError) {
           setTimeout(() => {
+            this.mapData = this.getSubtitle(this.mapData);
             this.drawMap(this.mapData);
           }, 10);
           this.hasError = false;
@@ -100,7 +101,7 @@ export class MapComponent implements OnInit {
       map.fitBounds(layer.getBounds());
     } else {
       this.hasError = true;
-      this.errorMessage = "Invalid coordinates found!";
+      this.errorMessage = "Invalid organisation unit boundaries found!";
     }
 
   }
@@ -117,7 +118,6 @@ export class MapComponent implements OnInit {
   }
 
   getSubtitle(mapData) {
-    let subtible
     let layers = mapData.layers;
     layers.forEach(layer => {
       if (layer.settings.subtitle) {
@@ -139,7 +139,7 @@ export class MapComponent implements OnInit {
   }
 
   prepareMapContainer(mapObjectId, height, width) {
-    let parentElement = document.getElementsByClassName('map-view-port-' + mapObjectId)[0];
+    let parentElement = document.getElementById('map-view-port-' + mapObjectId);
     let mapContainer = document.getElementById(mapObjectId);
 
     if (mapContainer) {
@@ -154,28 +154,61 @@ export class MapComponent implements OnInit {
     }
   }
 
-  resizeMap(fullSize) {
-    if (this.map) {
-      let container = document.getElementById(this.mapData.id);
+  //
+  // resizeMap(size) {
+  //   console.log(size);
+  //   if (this.map) {
+  //     let container = document.getElementById(this.mapData.id);
+  //
+  //     container.style.width = '0%';
+  //     this.mapWidth = '0%';
+  //
+  //     if (size == true) {
+  //       container.style.height = '75vh';
+  //       container.style.width = '100%';
+  //       this.mapWidth = '100%';
+  //     } else if (size == "FULL_WIDTH"){
+  //       container.style.height = '350px';
+  //       container.style.width = '100%';
+  //       this.mapWidth = '100%';
+  //     }
+  //     setTimeout(() => {
+  //       this.map.invalidateSize({pan: true});
+  //     }, 10);
+  //   }
+  // }
 
-      container.style.width = '0%';
-      this.mapWidth = '0%';
 
+  resizeMap(dimension, dimensionType) {
+    let container = document.getElementById(this.mapData.id);
+    // this.mapHeight = '0px';
+    // this.mapWidth = "0%";
+    console.log(dimension, dimensionType);
+    container.style.width = '0%';
+    container.style.width = "0%";
+    this.mapWidth = '0%';
 
-      setTimeout(() => {
+    if (dimension && dimensionType) {
+      console.log(dimensionType);
+      if (dimensionType == "fullscreen") {
+        container.style.height = '80vh';
+        container.style.width = "100%";
+        this.mapWidth = "100%";
+      } else {
+        container.style.height = '340px';
+        container.style.width = "100%";
+        this.mapWidth = "100%";
+      }
 
-        if (fullSize) {
-          container.style.height = '75vh';
-          container.style.width = '100%';
-          this.mapWidth = '100%';
-        } else {
-          container.style.height = '350px';
-          container.style.width = '100%';
-          this.mapWidth = '100%';
-        }
-        this.map.invalidateSize(true);
-      }, 100);
+    } else {
+      container.style.height = '340px';
+      container.style.width = "100%";
+      this.mapWidth = "100%";
     }
+
+    setTimeout(() => {
+      this.map.invalidateSize({pan: true});
+    }, 800);
   }
 
 

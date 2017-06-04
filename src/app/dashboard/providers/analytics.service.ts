@@ -90,8 +90,27 @@ export class AnalyticsService {
 
 
     newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
-      newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
+      if (newAnalytic && newAnalytic.metaData) {
+        let dx = newAnalytic.metaData.dx[0];
+        let ou = newAnalytic.metaData.ou[0];
+        let pe = newAnalytic.metaData.pe[0];
+
+
+        let names = {
+          dx: "Data",
+          ou: "Organisation unit",
+          pe: "Period"
+        }
+
+        names[dx] = newAnalytic.metaData.names[dx];
+        names[ou] = newAnalytic.metaData.names[ou];
+        names[pe] = newAnalytic.metaData.names[pe];
+        newAnalytic.metaData.names = names;
+        settings.name = names[dx];
+        newLayers.push({settings: settings, analytics: newAnalytic});
+      }
     });
+
     visualization.layers = newLayers;
     return visualization;
   }
@@ -99,9 +118,7 @@ export class AnalyticsService {
   getMergedAnalytics(visualizationObject: Visualization) {
     let favourite: any = this.mergeFavorite(visualizationObject.layers);
     let analytics: any = this.mergeAnalytics(visualizationObject.layers);
-    if (visualizationObject.details.rowMergingStrategy == 'event') {
-      this._deduceAggregateAnalyticsFromEventAnalytics(visualizationObject.layers);
-    }
+
     const newLayer = {
       settings: favourite,
       analytics: analytics
@@ -436,28 +453,6 @@ export class AnalyticsService {
     return splitAnalytics;
   }
 
-  private _deduceAggregateAnalyticsFromEventAnalytics(layers) {
-    if (layers) {
-      let eventLayer = _.find(layers, ['settings.layer', 'event']);
-
-      const headers = eventLayer.analytics.headers;
-      const ou = eventLayer.analytics.metaData.ou;
-      const names = eventLayer.analytics.metaData.names;
-      const rows = eventLayer.analytics.rows;
-
-      const ouNameIndex = _.find(headers,['name','ouname']);
-      const ouIndex = _.find(headers,['name','ou']);
-
-      console.log(JSON.stringify(headers));
-    }
-
-  }
-
-  private _sanitizeLayerSetting(settings, analytics) {
-    let layerName = analytics.metaData.names[analytics.metaData.dx[0]] + " " + analytics.metaData.names[analytics.metaData.pe[0]];
-    settings.name = layerName;
-    return settings;
-  }
 
   private _getAnalyticsDataGroups(analyticsHeaders: any): Array<any> {
     let headers: any[] = [];

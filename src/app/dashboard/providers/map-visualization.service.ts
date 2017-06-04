@@ -73,7 +73,6 @@ export class MapVisualizationService {
 
   drawMap(L, visualizationObject: Visualization, prioritizeFilter?: boolean): MapObject {
     let mapObject: MapObject = this._getInitialMapObject(visualizationObject);
-
     const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap, mapObject.id, prioritizeFilter);
     mapObject.options.layers = layers[0];
     mapObject.centeringLayer = layers[1];

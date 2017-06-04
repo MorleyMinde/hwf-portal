@@ -63,7 +63,6 @@ export class VisualizationLegendComponent implements OnInit {
   }
 
   private _prepareLayerLegend(mapVisualizationSettings, mapVisualizationAnalytics, legendClasses) {
-    console.log(mapVisualizationSettings);
     let layerLegend: LegendSet = {
       id: mapVisualizationSettings.id,
       name: mapVisualizationSettings.layer == 'event' ? this.legend.getEventName(mapVisualizationAnalytics)[0] : mapVisualizationSettings.name,
