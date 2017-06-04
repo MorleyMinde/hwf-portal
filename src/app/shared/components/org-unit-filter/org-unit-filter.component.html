@@ -75,7 +75,7 @@
               <span style="margin-top: 20px;">Loading Hierarchy</span>
             </div>
           </div>
-          <Tree
+          <tree-root
             #orgtree
             [nodes]="organisationunits"
             [focused]="true"
@@ -83,10 +83,10 @@
             (onActivate)="activateOrg($event)"
             (onDeactivate)="deactivateOrg($event)"
           >
-            <template #treeNodeTemplate let-node>
+            <ng-template #treeNodeTemplate let-node>
               <span (click)="updateModelOnSelect(node.data)">{{ node.data.name }}</span>
-            </template>
-          </Tree>
+            </ng-template>
+          </tree-root>
         </div>
         <div class="close-area">
           <button class="btn btn-default pull-right" style="height: 30px"  (click)="displayOrgTree()">

@@ -61,6 +61,7 @@ export class ChartComponent implements OnInit {
 
   @Input() initialChartData: Visualization;
   chartData: Visualization;
+  chartHeight: string;
   @Input() customFilters: any;
   @Input() parentEvent: any;
   loading: boolean = true;
@@ -103,7 +104,7 @@ export class ChartComponent implements OnInit {
     this.loading = true;
     if(initialChartData) {
       this.chartData = initialChartData;
-
+      this.chartHeight = initialChartData.details.itemHeight;
       this.visualizationObjectService.getSanitizedVisualizationObject(initialChartData)
         .subscribe(sanitizedChartData => {
           //todo quick fix lebel and legends
@@ -155,7 +156,7 @@ export class ChartComponent implements OnInit {
   resizeChart(visualizationObject) {
     this.chartData = visualizationObject;
     if(this.chartBlock) {
-      this.chartBlock.resize()
+      this.chartBlock.resize(visualizationObject.details.itemHeight)
     }
   }
 

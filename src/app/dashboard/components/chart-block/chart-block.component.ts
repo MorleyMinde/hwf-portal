@@ -10,6 +10,7 @@ export class ChartBlockComponent implements OnInit {
 
   @Input() chartObject: any;
   @Input() renderId: string;
+  @Input() chartHeight: string;
   chart: any;
   constructor() { }
 
@@ -25,7 +26,9 @@ export class ChartBlockComponent implements OnInit {
     this.chart = Highcharts.chart(chartObject);
   }
 
-  resize() {
+  resize(height) {
+
+    this.chartHeight = height
     setTimeout(() => {
       if(this.chart) {
         this.chart.setSize(null,null);
