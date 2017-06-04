@@ -152,6 +152,7 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
      * Change card height when toggling full screen to enable items to stretch accordingly
      */
     if (this.showFullScreen) {
+      console.log(this.visualizationObject.details.itemHeight);
       this.visualizationObject.details.cardHeight = this.cardConfiguration.defaultHeight;
       this.visualizationObject.details.itemHeight = this.cardConfiguration.defaultItemHeight;
     } else {
@@ -161,7 +162,7 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
     this.showFullScreen = !this.showFullScreen;
 
-    this.resizeChildren(this.visualizationObject)
+    this.resizeChildren(this.visualizationObject,this.showFullScreen)
 
   }
 
@@ -188,10 +189,10 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     }
   }
 
-  resizeChildren(visualizationObject) {
+  resizeChildren(visualizationObject,size) {
     if(this.currentVisualization == 'MAP') {
       if(this.mapComponent) {
-        this.mapComponent.resizeMap();
+        this.mapComponent.resizeMap(size);
       }
 
     } else if(this.currentVisualization == 'CHART') {

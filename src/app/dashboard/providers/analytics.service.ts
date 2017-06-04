@@ -61,9 +61,8 @@ export class AnalyticsService {
       // });
 
       if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
-        if (visualization.type == "REPORT_TABLE") {
+        if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
-            console.log(analytics);
             newAnalytics.push(analytics)
           });
         }
@@ -88,8 +87,7 @@ export class AnalyticsService {
     //
 
     newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
-      settings['zoom'] = 6;
-      newLayers.push({settings: settings, analytics: newAnalytic});
+      newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
     });
     visualization.layers = newLayers;
     return visualization;
@@ -308,23 +306,20 @@ export class AnalyticsService {
     const periodIdentifiers = reportTableAnalytics.metaData.pe;
     const orgUnitIdentifiers = reportTableAnalytics.metaData.ou;
     const rows = reportTableAnalytics.rows;
-
+    const names = reportTableAnalytics.metaData.names;
     const indexOfPeriod = _.findIndex(reportTableAnalytics.headers, ['name', 'pe']);
     const indexOfOrgUnit = _.findIndex(reportTableAnalytics.headers, ['name', 'ou']);
     const indexOfData = _.findIndex(reportTableAnalytics.headers, ['name', 'dx']);
 
 
     dataIdentifiers.forEach((dataIdentifier) => {
-
-
       periodIdentifiers.forEach((periodIdentifier) => {
-        console.log(periodIdentifier);
         let analyticsTemplate = {
           headers: reportTableAnalytics.headers,
           metaData: {
             co: reportTableAnalytics.metaData.co,
             dx: [],
-            names: {},
+            names: names,
             ou: reportTableAnalytics.metaData.ou,
             pe: []
           },
@@ -352,7 +347,8 @@ export class AnalyticsService {
     let splitAnalytics: Array<any> = [];
     const periodIdentifiers = reportTableAnalytics.metaData.pe;
     const rows = reportTableAnalytics.rows;
-
+    const names = reportTableAnalytics.metaData.names;
+    console.log(JSON.stringify(names));
     const dataGroups = this._getAnalyticsDataGroups(reportTableAnalytics.headers);
     let verticalDataGroups = this._getAnalyticsDataArrayGroups(reportTableAnalytics)[0];
     let horizontalDataGroups = this._getAnalyticsDataArrayGroups(reportTableAnalytics)[1];
@@ -370,7 +366,7 @@ export class AnalyticsService {
             metaData: {
               co: reportTableAnalytics.metaData.co,
               dx: [],
-              names: {},
+              names: names,
               ou: reportTableAnalytics.metaData.ou,
               pe: [period]
             },
@@ -402,6 +398,12 @@ export class AnalyticsService {
     })
 
     return splitAnalytics;
+  }
+
+  private _sanitizeLayerSetting(settings, analytics) {
+    let layerName = analytics.metaData.names[analytics.metaData.dx[0]] + " " + analytics.metaData.names[analytics.metaData.pe[0]];
+    settings.name = layerName;
+    return settings;
   }
 
   private _getAnalyticsDataGroups(analyticsHeaders: any): Array<any> {

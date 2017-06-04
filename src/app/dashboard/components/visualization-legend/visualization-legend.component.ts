@@ -26,7 +26,8 @@ export class VisualizationLegendComponent implements OnInit {
     let boundaryLegends = [];
     let eventLegends = [];
     let thematicLegends = [];
-    if (this.visualizationObject.type == "MAP") {
+    console.log(this.visualizationObject.type);
+    if (this.visualizationObject.type == "MAP" || this.visualizationObject.type == "REPORT_TABLE" || this.visualizationObject.type == "EVENT_REPORT") {
       const mapLayers = this.visualizationObject.layers;
 
       this.visualizationTileLayersLegends = this.legend.prepareTileLayers(TILE_LAYERS);
@@ -69,6 +70,7 @@ export class VisualizationLegendComponent implements OnInit {
       pinned: false,
       opened: false,
       useIcons: false,
+      isEvent:mapVisualizationSettings.layer == 'event'?true:false,
       opacity: mapVisualizationSettings.opacity,
       classes: legendClasses,
       change: []
@@ -81,10 +83,10 @@ export class VisualizationLegendComponent implements OnInit {
     this.changeMapTileLayer.emit(tileLegend);
   }
 
-  toggleLegendView(legendToggled) {
+  toggleLegendView(legendToggled,index) {
 
     this.visualizationLegends.forEach((legend, legendIndex) => {
-      legendToggled.id == legend.id ? legend.opened = !legend.opened : legend.opened = false;
+      index == legendIndex ? legend.opened = !legend.opened : legend.opened = false;
     })
   }
 
@@ -94,12 +96,12 @@ export class VisualizationLegendComponent implements OnInit {
   }
 
   shortenTitle(longTitle) {
-    if (longTitle.length > 29) {
-      return longTitle.substr(0, 29) + "..";
+    if (longTitle.length > 25) {
+      return longTitle.substr(0, 25) + "..";
     } else if (longTitle.length == 0) {
       return "Layer Legend";
     }
-    else if (longTitle.length <= 29) {
+    else if (longTitle.length <= 25) {
       return longTitle;
     }
     return longTitle;

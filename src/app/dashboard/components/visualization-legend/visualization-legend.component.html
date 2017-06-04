@@ -36,22 +36,22 @@
       </div>
     </div>
     <!--<div class="row" style="border-bottom: 1px solid #cccccc">-->
-      <!--<div class="col-lg-12 col-md-12 col-xs-12 legend-header">-->
-        <!--<div class="col-lg-1 col-md-1 col-xs-1 legend-draggable-icon" style="padding-right: 20px;padding-left: 5px;-->
-<!--">-->
-          <!--<a><i class="fa fa-connectdevelop" style="color:#000000;"></i></a>-->
-        <!--</div>-->
-        <!--<div class="col-lg-9 col-md-9 col-xs-9 class-container" style="cursor: pointer">-->
-          <!--<div class="header parent-inner-header">-->
-            <!--<span>Boundaries </span>-->
-          <!--</div>-->
-          <!--<div class="body">-->
-          <!--</div>-->
-        <!--</div>-->
-        <!--<div class="col-lg-1 col-md-1 col-xs-1 eye-container">-->
-          <!--<a style="color:#ffffff;"><i class="fa fa-eye"></i></a>-->
-        <!--</div>-->
-      <!--</div>-->
+    <!--<div class="col-lg-12 col-md-12 col-xs-12 legend-header">-->
+    <!--<div class="col-lg-1 col-md-1 col-xs-1 legend-draggable-icon" style="padding-right: 20px;padding-left: 5px;-->
+    <!--">-->
+    <!--<a><i class="fa fa-connectdevelop" style="color:#000000;"></i></a>-->
+    <!--</div>-->
+    <!--<div class="col-lg-9 col-md-9 col-xs-9 class-container" style="cursor: pointer">-->
+    <!--<div class="header parent-inner-header">-->
+    <!--<span>Boundaries </span>-->
+    <!--</div>-->
+    <!--<div class="body">-->
+    <!--</div>-->
+    <!--</div>-->
+    <!--<div class="col-lg-1 col-md-1 col-xs-1 eye-container">-->
+    <!--<a style="color:#ffffff;"><i class="fa fa-eye"></i></a>-->
+    <!--</div>-->
+    <!--</div>-->
     <!--</div>-->
     <div class="row" dnd-sortable-container [sortableData]="visualizationLegends">
       <div class="col-lg-12 col-md-12 col-xs-12 legend-header"
@@ -62,7 +62,7 @@
           <a><i class="fa fa-th" style="color:#000000;"></i></a>
         </div>
         <div class="col-lg-9 col-md-9 col-xs-9 class-container">
-          <div class="header parent-inner-header" (click)="toggleLegendView(legend)">
+          <div class="header parent-inner-header" (click)="toggleLegendView(legend,i)">
             <span title="{{legend.name}} {{legend.description}}">{{shortenTitle(legend.name)}}</span>
           </div>
           <div class="body" [ngClass]="{hideLegend:!legend.opened}">
@@ -70,9 +70,9 @@
             <div *ngFor="let class of legend.classes">
               <table class="legend-table">
                 <tr>
-                  <td rowspan="2" *ngIf="class.min!=0 && class.max!=0"
+                  <td rowspan="2" *ngIf="!legend.isEvent"
                       [ngStyle]="{backgroundColor:class.color,width:'50px',height:'20px'}">&nbsp;</td>
-                  <td rowspan="2" *ngIf="class.min==0 && class.max==0"
+                  <td rowspan="2" *ngIf="legend.isEvent"
                       [ngStyle]="{backgroundColor:class.color,width:(class.radius*5)+'px',height:(class.radius*5)+'px',borderRadius:(class.radius*5)+'px'}">
                     &nbsp;</td>
                   <td [ngStyle]="{fontSize:'12px',fontWeight:'bold'}">{{class.label}}</td>

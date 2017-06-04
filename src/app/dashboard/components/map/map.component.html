@@ -7,8 +7,8 @@
 <div class="layers-button" [ngClass]="{hide: loading||hasError}" (mouseover)="toggleLegendContainerView()">
   <img src="assets/img/layers-icon.png" style="width:24px;height:24px;">
 </div>
-
-<div *ngIf="!loading&&legendIsOpen" class="legendContainer" (mouseleave)="toggleLegendContainerView()"  [ngStyle]="{'margin-right':legendMarginRight,'margin-left':legendMarginLeft}">
+<!--(mouseleave)="toggleLegendContainerView()"-->
+<div *ngIf="!loading&&legendIsOpen" class="legendContainer"  (mouseleave)="toggleLegendContainerView()"  [ngStyle]="{'margin-right':legendMarginRight,'margin-left':legendMarginLeft}">
   <app-visualization-legend [visualizationObject]="mapData" (changeMapTileLayer)="changeMapTileLayer($event)"></app-visualization-legend>
 </div>
 
@@ -19,6 +19,7 @@
 <div class="row" [ngClass]="{hide: loading||hasError}" style="text-align: center">
   <h4 class="forViewOnly">
     {{mapData?.name}}</h4>
+  <h6 class="text-center item-title" style="font-size: 12px; font-weight: 100;">{{mapData?.details?.mapConfiguration?.subtitle}}&nbsp;</h6>
 </div>
 <div class="map-view-port-{{mapData.id}}" [ngClass]="{hide: loading||hasError}"></div>
 
