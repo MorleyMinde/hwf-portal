@@ -127,9 +127,8 @@ export class MapComponent implements OnInit {
     if (this.map) {
       let container = document.getElementById(this.mapData.id);
 
-        container.style.width = '0%';
-        this.mapWidth = '0%';
-
+      container.style.width = '0%';
+      this.mapWidth = '0%';
 
 
       setTimeout(() => {

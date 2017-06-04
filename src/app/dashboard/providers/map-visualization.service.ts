@@ -98,7 +98,7 @@ export class MapVisualizationService {
     };
   }
 
-  private _getMapLayers(L, visualizationLayers, basemap, mapObjectId,prioritizeFilter): any {
+  private _getMapLayers(L, visualizationLayers, basemap, mapObjectId, prioritizeFilter): any {
     let mapLayers: any[] = [];
     let centeringLayer: any = null;
     /**
@@ -126,7 +126,7 @@ export class MapVisualizationService {
           if (layer.settings.eventClustering) {
             const markerClusters: any = !prioritizeFilter ? _.find(this.mapObjects, ['id', mapObjectId]) : undefined;
             let centerLayer: any = null;
-            if(markerClusters && !prioritizeFilter) {
+            if (markerClusters && !prioritizeFilter) {
               centerLayer = markerClusters.layer;
             } else {
               centerLayer = this._prepareMarkerClusters(L, layer.settings, layer.analytics);
@@ -196,6 +196,21 @@ export class MapVisualizationService {
       if (feature.properties.dataElement) {
       }
     }
+
+    options.pointToLayer = (feature, latlng) => {
+      var geojsonMarkerOptions = {
+        radius: visualizationLayerSettings.radiusLow,
+        fillColor: "#ff7800",
+        color: "#000",
+        weight: 0.5,
+        opacity: visualizationLayerSettings.opacity,
+        fillOpacity: visualizationLayerSettings.opacity
+      };
+
+      let circleMarker = L.circleMarker(latlng, geojsonMarkerOptions);
+      return circleMarker
+    }
+
     let layer: any = L.geoJSON(this._getGeoJSONObject(visualizationLayerSettings.geoFeature, visualizationAnalytics), options);
 
     layer.on(
@@ -635,19 +650,12 @@ export class MapVisualizationService {
           const longitude = row[longitudeIndex];
           if (latitude && longitude) {
 
-            let icon1 = L.divIcon({
+            let icon = L.divIcon({
               iconSize: null,
               html: '<i class="fa fa-map-marker fa-2x" style="color:#276696"></i>'
             });
-            let icon2 = L.icon({
-              iconUrl: 'assets/img/marker-icon.png',
-              iconSize: [21, 31],
-              iconAnchor: [10, 31],
-              popupAnchor: [0, -31]
-            })
-
             markers.addLayer(L.marker([latitude, longitude], {
-              icon: icon1
+              icon: icon
             }).bindPopup(title).on({
               mouseover: (event) => {
               }
