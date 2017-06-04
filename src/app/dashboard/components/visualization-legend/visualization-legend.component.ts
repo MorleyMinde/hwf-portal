@@ -13,9 +13,11 @@ export class VisualizationLegendComponent implements OnInit {
   @Input() visualizationObject: any;
   @Output() changeMapTileLayer: EventEmitter<any> = new EventEmitter();
   @Output() changeMapDataLayer: EventEmitter<any> = new EventEmitter();
+  @Output() stickyLegend: EventEmitter<any> = new EventEmitter();
   visualizationLegends: LegendSet[] = [];
   visualizationTileLayersLegends: any[];
   openTileLegend: boolean = false;
+  sticky:boolean = false;
 
 
   constructor(private legend: LegendSetService) {
@@ -26,8 +28,7 @@ export class VisualizationLegendComponent implements OnInit {
     let boundaryLegends = [];
     let eventLegends = [];
     let thematicLegends = [];
-    console.log(this.visualizationObject.type);
-    if (this.visualizationObject.type == "MAP" || this.visualizationObject.type == "REPORT_TABLE" || this.visualizationObject.type == "EVENT_REPORT") {
+    if (this.visualizationObject.type == "MAP" || this.visualizationObject.type == "REPORT_TABLE" || this.visualizationObject.type == "CHART" || this.visualizationObject.type == "EVENT_REPORT" || this.visualizationObject.type == "EVENT_CHART") {
       const mapLayers = this.visualizationObject.layers;
 
       this.visualizationTileLayersLegends = this.legend.prepareTileLayers(TILE_LAYERS);
@@ -93,6 +94,11 @@ export class VisualizationLegendComponent implements OnInit {
 
   toggleTileLegendView() {
     this.openTileLegend = !this.openTileLegend;
+  }
+
+  stickLegendContainer(){
+    this.sticky =!this.sticky;
+    this.stickyLegend.emit(this.sticky)
   }
 
   shortenTitle(longTitle) {

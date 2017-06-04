@@ -67,7 +67,7 @@ export class AnalyticsService {
           });
         }
 
-        if (visualization.type == "EVENT_REPORT") {
+        if (visualization.type == "EVENT_REPORT" || visualization.type == "EVENT_CHART") {
 
           this.splitEventReportAnalytics(layer.analytics).forEach(analytics => {
 
