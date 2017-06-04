@@ -7,6 +7,7 @@ import {Constants} from "./constants";
 import {Utilities} from "./utilities";
 import * as _ from 'lodash';
 import {Visualization} from "../model/visualization";
+import {HttpClientService} from "../../providers/http-client.service";
 export interface Dashboard {
   id: string;
   name: string;
@@ -18,7 +19,7 @@ export class DashboardService {
   dashboards: Dashboard[];
   url: string;
 
-  constructor(private http: Http,
+  constructor(private http: HttpClientService,
               private constant: Constants,
               private utility: Utilities) {
     this.url = this.constant.api + 'dashboards';
@@ -32,8 +33,6 @@ export class DashboardService {
         observer.complete();
       } else {
         this.http.get(this.url + '.json?paging=false&fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
-          .map((res: Response) => res.json())
-          .catch(this.utility.handleError)
           .subscribe((response: any) => {
             response.dashboards.forEach(dashboard => {
               if (this.utility.isUndefined(this.dashboards.filter((item) => {
@@ -73,8 +72,6 @@ export class DashboardService {
   load(id: string): Observable<any> {
     return Observable.create(observer => {
       this.http.get(this.url + '/' + id + '.json?fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
-        .map((res: Response) => res.json())
-        .catch(this.utility.handleError)
         .subscribe(dashboard => {
           if (this.utility.isUndefined(this.dashboards.filter((item) => {
               return item.id == id ? item : null;
@@ -95,8 +92,6 @@ export class DashboardService {
         .subscribe(uniqueId => {
           dashboardData.id = uniqueId;
           this.http.post(this.url, dashboardData)
-            .map(res => res.json())
-            .catch(this.utility.handleError)
             .subscribe(
               response => {
                 this.load(uniqueId).subscribe(dashboard => {
@@ -129,7 +124,6 @@ export class DashboardService {
       }
     }
     return this.http.put(this.url + '/' + dashboardId, {name: dashboardName})
-      .catch(this.utility.handleError)
   }
 
   delete(id: string): Observable<any> {
@@ -140,9 +134,7 @@ export class DashboardService {
         break;
       }
     }
-    return this.http.delete(this.url + '/' + id)
-      .map((res: Response) => res.json())
-      .catch(this.utility.handleError)
+    return this.http.delete(this.url + '/' + id);
   }
 
   removeDashboardItem(dashboardItemId, dashboardId) {
@@ -332,7 +324,7 @@ export class DashboardService {
       });
     //update permanently to the source
     //@todo find best way to show success for no body request
-    this.http.put(this.constant.root_url + 'api/dashboardItems/' + dashboardItemId + '/shape/' + shape, '').map(res => res.json()).subscribe(response => {
+    this.http.put(this.constant.root_url + 'api/dashboardItems/' + dashboardItemId + '/shape/' + shape, '').subscribe(response => {
     }, error => {
       console.log(error)
     })
@@ -345,13 +337,10 @@ export class DashboardService {
       if (this.utility.isNull(existingDashboardId) && this.utility.isNull(updatableDashboardId)) {
         let options = new RequestOptions({headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'})});
         this.http.post(this.url + '/' + dashboardId + '/items/content?type=' + dashboardItemData.type + '&id=' + dashboardItemData.id, options)
-          .map(res => res.json())
-          .catch(this.utility.handleError)
           .subscribe(response => {
               //get and update the created item
               this.http.get(this.url + '/' + dashboardId + '.json?fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
-                .map((res: Response) => res.json())
-                .catch(this.utility.handleError).subscribe(dashboard => {
+               .subscribe(dashboard => {
                 for (let dashboardItem of dashboard.dashboardItems) {
                   if (!dashboardItem.hasOwnProperty('shape')) {
                     dashboardItem.shape = 'NORMAL';
@@ -388,13 +377,10 @@ export class DashboardService {
       } else if (!this.utility.isNull(updatableDashboardId)) {
         let options = new RequestOptions({headers: new Headers({'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'})});
         this.http.post(this.url + '/' + dashboardId + '/items/content?type=' + dashboardItemData.type + '&id=' + dashboardItemData.id, options)
-          .map(res => res.json())
-          .catch(this.utility.handleError)
           .subscribe(response => {
             //get and update the created item
             this.http.get(this.url + '/' + dashboardId + '.json?fields=id,name,dashboardItems[:all,users[:all],resources[:all],reports[:all]]')
-              .map((res: Response) => res.json())
-              .catch(this.utility.handleError).subscribe(dashboard => {
+              .subscribe(dashboard => {
               for (let dashboardItem of dashboard.dashboardItems) {
                 if (!dashboardItem.hasOwnProperty('shape')) {
                   dashboardItem.shape = 'NORMAL';
@@ -535,7 +521,6 @@ export class DashboardService {
       }
     });
     return this.http.delete(this.url + '/' + dashboardId + '/items/' + dashboardItemId)
-      .map((res: Response) => res.json())
   }
 
   loadDashboardSharingData(dashboardId): Observable<any> {
@@ -547,8 +532,6 @@ export class DashboardService {
             observer.complete()
           } else {
             this.http.get(this.constant.api + 'sharing?type=dashboard&id=' + dashboardId)
-              .map(res => res.json())
-              .catch(this.utility.handleError)
               .subscribe(sharing => {
                 //persist sharing locally
                 dashboard['sharing'] = sharing;
@@ -571,9 +554,7 @@ export class DashboardService {
     });
 
     //update to the server
-    return this.http.post(this.constant.api + 'sharing?type=dashboard&id=' + dashboardId, sharingData)
-      .map(res => res.json())
-      .catch(this.utility.handleError);
+    return this.http.post(this.constant.api + 'sharing?type=dashboard&id=' + dashboardId, sharingData);
   }
 
 

@@ -9,6 +9,7 @@ import {Observable} from "rxjs";
 import {MapConfiguration} from "../model/map-configuration";
 import * as _ from 'lodash';
 import {Constants} from "./constants";
+import {HttpClientService} from "../../providers/http-client.service";
 
 interface Legend {
   htmlLegend: Object;
@@ -66,7 +67,7 @@ export class MapService {
   constructor(private visualizationStore: VisualizationStore,
               private analyticsService: AnalyticsService,
               private visualizationService: VisualizerService,
-              private http: Http,
+              private http: HttpClientService,
               private constant: Constants) {
   }
 
@@ -679,8 +680,6 @@ export class MapService {
           observer.complete();
         } else {
           this.http.get(this._getGeoFeatureUrl(geoFeatureUrl))
-            .map((res: Response) => res.json())
-            .catch(error => Observable.throw(new Error(error)))
             .subscribe(geoFeatureResponse => {
               const availableGeoFeature: any = _.find(this.geoFeatures, ['url', geoFeatureUrl]);
               if(!availableGeoFeature) {
@@ -771,8 +770,6 @@ export class MapService {
         if (groupSetId != null) {
           let groupSetUrl = this.constant.api + "organisationUnitGroupSets/" + groupSetId + ".json?fields=id,name,organisationUnitGroups[id,name,displayName,symbol]";
           this.http.get(groupSetUrl)
-            .map((res: Response) => res.json())
-            .catch(error => Observable.throw(new Error(error)))
             .subscribe((organisationUnitGroup: any) => {
               layer.settings.groupSet = organisationUnitGroup;
               groupSetResponse++;
@@ -795,15 +792,11 @@ export class MapService {
   }
 
   private _getPredefinedLegend(url): Observable<any> {
-    return this.http.get(url)
-      .map((res: Response) => res.json())
-      .catch(error => Observable.throw(new Error(error)));
+    return this.http.get(url);
   }
 
   public getOrganisationUnitGroupSet(url): Observable<any> {
-    return this.http.get(url)
-      .map((res: Response) => res.json())
-      .catch(error => Observable.throw(new Error(error)));
+    return this.http.get(url);
   }
 
   private _getGeoFeatureUrl(geoFeatureParams: string) {
