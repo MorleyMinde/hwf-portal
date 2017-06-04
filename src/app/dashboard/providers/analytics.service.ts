@@ -61,7 +61,7 @@ export class AnalyticsService {
       // });
 
       if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
-        if (visualization.type == "REPORT_TABLE") {
+        if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
             newAnalytics.push(analytics)
           });
@@ -402,8 +402,6 @@ export class AnalyticsService {
 
   private _sanitizeLayerSetting(settings, analytics) {
     let layerName = analytics.metaData.names[analytics.metaData.dx[0]] + " " + analytics.metaData.names[analytics.metaData.pe[0]];
-    console.log(analytics.metaData.pe[0]);
-    console.log(analytics.metaData.names);
     settings.name = layerName;
     return settings;
   }

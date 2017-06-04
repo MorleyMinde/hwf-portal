@@ -708,7 +708,6 @@ export class MapService {
           }
           count++;
           if(count == visualizationObject.layers.length) {
-            console.log(visualizationObject)
             observer.next(visualizationObject);
             observer.complete();
           }

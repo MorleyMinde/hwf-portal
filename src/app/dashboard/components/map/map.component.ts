@@ -118,7 +118,6 @@ export class MapComponent implements OnInit {
     div.style.width = width;
     div.style.height = height;
     parentElement.appendChild(div);
-    console.log(parentElement);
   }
 
   resizeMap(fullSize) {
