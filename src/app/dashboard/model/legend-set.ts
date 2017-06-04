@@ -5,6 +5,7 @@ export interface LegendSet {
   description: string;
   opened: boolean;
   pinned: boolean;
+  isEvent:boolean;
   useIcons: boolean;
   opacity: number;
   classes: Array<LegendClass>;
