@@ -189,7 +189,6 @@ export class MapComponent implements OnInit {
     this.mapWidth = '0%';
 
     if (dimension && dimensionType) {
-      console.log(dimensionType);
       if (dimensionType == "fullscreen") {
         container.style.height = '80vh';
         container.style.width = "100%";
