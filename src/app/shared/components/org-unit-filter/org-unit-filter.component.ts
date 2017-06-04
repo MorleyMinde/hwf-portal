@@ -315,7 +315,8 @@ export class OrgUnitFilterComponent implements OnInit {
   }
   changeUserOrgUnit(event){
     console.log("changeUserOrgUnit Event:",event,this.organisationunits);
-
+    this.selected_orgunits = [this.organisationunits[0].id];
+    this.orgunit_model.selected_orgunits = [this.organisationunits[0].id];
   }
   changeSelectionMode(event){
     this.changeUserOrgUnit(this.orgunit_model.selected_user_orgunit);
@@ -373,7 +374,6 @@ export class OrgUnitFilterComponent implements OnInit {
         orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 3));
       }
       if(orgunit_model.user_orgunits.length == 1){
-        let user_orgunit = this.orgtree.treeModel.getNodeById(orgunit_model.user_orgunits[0].id);
         this.organisationunits.forEach((orgUnit)=>{
           orgUnits.push(orgUnit.id);
         })
