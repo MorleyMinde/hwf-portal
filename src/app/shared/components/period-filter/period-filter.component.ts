@@ -68,7 +68,7 @@ export class PeriodFilterComponent implements OnInit, AfterViewInit {
     if(this.period_type != '') {
       this.changePeriodType();
     }
-
+    this.period_tree_config.multiple_key = "none";
     if(this.period_tree_config.multiple) {
       if(this.period_tree_config.multiple_key == "none"){
         let actionMapping:IActionMapping = {
@@ -108,10 +108,17 @@ export class PeriodFilterComponent implements OnInit, AfterViewInit {
       }
 
     }else{
-      let actionMapping:IActionMapping = {
+      /*let actionMapping:IActionMapping = {
         mouse: {
           dblClick: TREE_ACTIONS.TOGGLE_EXPANDED,
           click: (node, tree, $event) => TREE_ACTIONS.TOGGLE_SELECTED(node, tree, $event)
+        }
+      };
+      this.customTemplateStringOrgunitOptions = {actionMapping};*/
+      let actionMapping:IActionMapping = {
+        mouse: {
+          dblClick: TREE_ACTIONS.TOGGLE_EXPANDED,
+          click: (node, tree, $event) => TREE_ACTIONS.TOGGLE_SELECTED_MULTI(node, tree, $event)
         }
       };
       this.customTemplateStringOrgunitOptions = {actionMapping};
@@ -203,8 +210,16 @@ export class PeriodFilterComponent implements OnInit, AfterViewInit {
   }
 
   // action to be called when a tree item is deselected(Remove item in array of selected items
+  deactivateOnSelect ( $event ) {
+    console.log("Deactivate Data:",$event.node.data,JSON.stringify(this.selected_periods),this.selected_periods.indexOf($event.node.data));
+    this.selected_periods.forEach((p,index)=>{
+      if(p.id == $event.node.data.id){
+        this.selected_periods.splice(index,1);
+      }
+    })
+  };
   deactivatePer ( $event ) {
-    this.selected_periods.splice(this.selected_periods.indexOf($event.node.data),1)
+    this.selected_periods.splice(this.selected_periods.indexOf($event.node.data),1);
   };
 
   // add item to array of selected items when item is selected

@@ -63,14 +63,13 @@ export class AnalyticsService {
       if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
         if (visualization.type == "REPORT_TABLE") {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
-
+            console.log(analytics);
             newAnalytics.push(analytics)
           });
         }
 
         if (visualization.type == "EVENT_REPORT") {
 
-          console.log(visualization.layers);
           this.splitEventReportAnalytics(layer.analytics).forEach(analytics => {
 
             newAnalytics.push(analytics)
@@ -89,6 +88,7 @@ export class AnalyticsService {
     //
 
     newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
+      settings['zoom'] = 6;
       newLayers.push({settings: settings, analytics: newAnalytic});
     });
     visualization.layers = newLayers;
@@ -306,33 +306,38 @@ export class AnalyticsService {
     let splitAnalytics: Array<any> = []
     const dataIdentifiers = reportTableAnalytics.metaData.dx;
     const periodIdentifiers = reportTableAnalytics.metaData.pe;
+    const orgUnitIdentifiers = reportTableAnalytics.metaData.ou;
     const rows = reportTableAnalytics.rows;
 
     const indexOfPeriod = _.findIndex(reportTableAnalytics.headers, ['name', 'pe']);
     const indexOfOrgUnit = _.findIndex(reportTableAnalytics.headers, ['name', 'ou']);
+    const indexOfData = _.findIndex(reportTableAnalytics.headers, ['name', 'dx']);
 
 
     dataIdentifiers.forEach((dataIdentifier) => {
 
 
       periodIdentifiers.forEach((periodIdentifier) => {
+        console.log(periodIdentifier);
         let analyticsTemplate = {
           headers: reportTableAnalytics.headers,
           metaData: {
             co: reportTableAnalytics.metaData.co,
             dx: [],
-            name: {},
+            names: {},
             ou: reportTableAnalytics.metaData.ou,
             pe: []
           },
           rows: []
         }
 
+        analyticsTemplate.metaData.names[dataIdentifier] = reportTableAnalytics.metaData.names[dataIdentifier];
+
         analyticsTemplate.metaData.dx.push(dataIdentifier);
         analyticsTemplate.metaData.pe.push(periodIdentifier);
 
         rows.forEach((row) => {
-          if (row[indexOfOrgUnit] == dataIdentifier && row[indexOfPeriod] == periodIdentifier) {
+          if (row[indexOfData] == dataIdentifier && row[indexOfPeriod] == periodIdentifier) {
             analyticsTemplate.rows.push(row);
           }
         })
@@ -365,7 +370,7 @@ export class AnalyticsService {
             metaData: {
               co: reportTableAnalytics.metaData.co,
               dx: [],
-              name: {},
+              names: {},
               ou: reportTableAnalytics.metaData.ou,
               pe: [period]
             },
@@ -374,12 +379,12 @@ export class AnalyticsService {
           dataGroups.forEach(dataGroup => {
             if (reportTableAnalytics.metaData[dataGroup].indexOf(verticalDataGroup) > -1) {
               analyticsTemplate.metaData.dx.push(dataGroup);
-              analyticsTemplate.metaData.name[dataGroup] = verticalDataGroup + " " + horizontalDataGroup;
+              analyticsTemplate.metaData.names[dataGroup] = verticalDataGroup + " " + horizontalDataGroup;
             }
 
             if (reportTableAnalytics.metaData[dataGroup].indexOf(horizontalDataGroups) > -1) {
               analyticsTemplate.metaData.dx.push(dataGroup);
-              analyticsTemplate.metaData.name[dataGroup] = verticalDataGroup + " " + horizontalDataGroup;
+              analyticsTemplate.metaData.names[dataGroup] = verticalDataGroup + " " + horizontalDataGroup;
             }
 
           })

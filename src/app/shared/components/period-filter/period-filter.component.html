@@ -51,18 +51,18 @@
       </div>
       <div *ngIf="period_tree_config.loading">{{ period_tree_config.loading_message }}</div>
       <div class="tree-area1" *ngIf="!period_tree_config.loading">
-        <tree-root
+        <Tree
           #pertree
           [nodes]="periods"
           [focused]="true"
           [options]="customTemplateStringOrgunitOptions"
           (onActivate)="activatePer($event)"
-          (onDeactivate)="deactivatePer($event)"
+          (onDeactivate)="deactivateOnSelect($event)"
         >
-          <ng-template #treeNodeTemplate let-node>
+          <template #treeNodeTemplate let-node>
             <span>{{ node.data.name }}</span>
-          </ng-template>
-        </tree-root>
+          </template>
+        </Tree>
       </div>
       <div class="close-area">
         <div class="pull-right">
