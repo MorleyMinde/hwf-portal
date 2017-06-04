@@ -58,7 +58,6 @@ export class MapComponent implements OnInit {
   loadMap(initialMapData, prioritizeFilter?: boolean) {
     this.loading = true;
     if (initialMapData) {
-      console.log(this.mapData);
       this.mapData = initialMapData;
       this.visualizationObjectService.getSanitizedVisualizationObject(initialMapData)
         .subscribe(sanitizedMapData => {
@@ -119,30 +118,41 @@ export class MapComponent implements OnInit {
     div.setAttribute("id", mapObjectId);
     div.style.width = width;
     div.style.height = height;
-    parentElement.appendChild(div);
+    if (parentElement) {
+      parentElement.appendChild(div);
+    }
   }
 
   resizeMap(fullSize) {
     if (this.map) {
+      let container = document.getElementById(this.mapData.id);
+
+        container.style.width = '0%';
+        this.mapWidth = '0%';
+
+
+
       setTimeout(() => {
-        let container = document.getElementById(this.mapData.id);
-        if (fullSize){
+
+        if (fullSize) {
           container.style.height = '75vh';
-          container.style.width = '1459px';
+          container.style.width = '100%';
+          this.mapWidth = '100%';
         } else {
           container.style.height = '350px';
-          container.style.width = '440px';
+          container.style.width = '100%';
+          this.mapWidth = '100%';
         }
-        this.map.invalidateSize();
+        this.map.invalidateSize(true);
       }, 100);
     }
   }
 
 
   toggleLegendContainerView() {
-    if (this.pinned){
+    if (this.pinned) {
       this.legendIsOpen = this.pinned;
-    } else{
+    } else {
       this.legendIsOpen = !this.legendIsOpen;
     }
 
@@ -156,6 +166,7 @@ export class MapComponent implements OnInit {
 
 
   }
+
   stickyMapLegend(event) {
     this.pinned = event;
   }

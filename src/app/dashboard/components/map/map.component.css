@@ -381,3 +381,8 @@ legend-content {
 img[title] {
   display: none;
 }
+
+div.leaflet-div-icon{
+  background-color: transparent;
+  border-color: transparent;
+}

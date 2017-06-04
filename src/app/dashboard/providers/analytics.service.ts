@@ -56,9 +56,9 @@ export class AnalyticsService {
     let newLayers: any[] = [];
     let settings: any = visualization.layers[0].settings;
     visualization.layers.forEach(layer => {
-      this.splitFavorite(layer.settings).forEach(settings => {
-        newSettings.push(settings);
-      });
+      // this.splitFavorite(layer.settings).forEach(settings => {
+      //   newSettings.push(settings);
+      // });
 
       if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
         if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
@@ -83,14 +83,14 @@ export class AnalyticsService {
     });
 
 
-    newSettings.forEach((settingsItem, settingsIndex) => {
-      newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
-    });
-
-
-    // newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
-    //   newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
+    // newSettings.forEach((settingsItem, settingsIndex) => {
+    //   newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
     // });
+
+
+    newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
+      newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
+    });
     visualization.layers = newLayers;
     return visualization;
   }

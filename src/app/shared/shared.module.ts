@@ -30,8 +30,7 @@ import {HttpClientService} from "./providers/http-client.service";
     ErrorNotifierComponent
   ],
   providers: [
-    OrgUnitService,
-    HttpClientService
+    OrgUnitService,HttpClientService
   ],
   exports: [
     LoaderComponent,
