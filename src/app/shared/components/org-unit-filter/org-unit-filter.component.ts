@@ -310,8 +310,7 @@ export class OrgUnitFilterComponent implements OnInit {
 
   updateOrgUnitModel() {
     this.displayOrgTree();
-    console.log("Update:",this.getOrgUnitsForAnalytics(this.orgunit_model,false));
-    this.onOrgUnitUpdate.emit({name: 'ou', value: this.getOrgUnitsForAnalytics(this.orgunit_model,false)});
+    this.onOrgUnitUpdate.emit({name: 'ou', value: this.getOrgUnitsForAnalytics(this.orgunit_model,false), title: this.orgunit_model.selected_orgunits[0].name});
   }
   changeUserOrgUnit(event){
     this.selected_orgunits = [this.organisationunits[0].id];

@@ -60,7 +60,7 @@ export class AnalyticsService {
       //   newSettings.push(settings);
       // });
 
-      if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
+      if (layer.hasOwnProperty('analytics')) {
         if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
             newAnalytics.push(analytics)
@@ -118,33 +118,51 @@ export class AnalyticsService {
     let favoriteArray: any[] = [];
 
     if (favorite.hasOwnProperty('columns')) {
-      favorite.columns.forEach(column => {
-        column.items.forEach(item => {
-          dimensionArray[column.dimension].type = 'columns';
-          dimensionArray[column.dimension].items.push(item);
-        });
-      })
-
+      if(favorite.columns.length > 0) {
+        favorite.columns.forEach(column => {
+          const items: any[] = column.items;
+          if(items.length > 0) {
+            column.items.forEach(item => {
+              if(column.dimension) {
+                dimensionArray[column.dimension].type = 'columns';
+                dimensionArray[column.dimension].items.push(item);
+              }
+            });
+          }
+        })
+      }
     }
 
     if (favorite.hasOwnProperty('rows')) {
-      favorite.rows.forEach(row => {
-        row.items.forEach(item => {
-          dimensionArray[row.dimension].type = 'rows';
-          dimensionArray[row.dimension].items.push(item);
-        });
-      })
-
+      if(favorite.rows.length > 0) {
+        favorite.rows.forEach(row => {
+          const items: any[] = row.items;
+          if(items.length > 0) {
+            row.items.forEach(item => {
+              if(row.dimension) {
+                dimensionArray[row.dimension].type = 'rows';
+                dimensionArray[row.dimension].items.push(item);
+              }
+            });
+          }
+        })
+      }
     }
 
     if (favorite.hasOwnProperty('filters')) {
-      favorite.filters.forEach(filter => {
-        filter.items.forEach(item => {
-          dimensionArray[filter.dimension].type = 'filters';
-          dimensionArray[filter.dimension].items.push(item);
-        });
-      })
-
+      if(favorite.filters.length > 0) {
+        favorite.filters.forEach(filter => {
+          const items: any[] = filter.items;
+          if(items.length > 0) {
+            filter.items.forEach(item => {
+              if(filter.dimension) {
+                dimensionArray[filter.dimension].type = 'filters';
+                dimensionArray[filter.dimension].items.push(item);
+              }
+            });
+          }
+        })
+      }
     }
 
     favorite.columns = [];
@@ -155,24 +173,29 @@ export class AnalyticsService {
      * create favorite copy
      */
 
-    dimensionArray.dx.items.forEach(dxItem => {
-      dimensionArray.pe.items.forEach(peItem => {
-        let newFavorite = favorite;
-        const currentDate = new Date();
-        const year: number = currentDate.getFullYear();
-        const month: number = currentDate.getMonth();
-        const monthArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-        const readableNames = {
-          LAST_MONTH: year + ' ' + monthArray[month > 0 ? month - 1 : 11]
-        };
+    if(dimensionArray.dx.items) {
+      dimensionArray.dx.items.forEach(dxItem => {
+        if(dimensionArray.pe.items) {
+          dimensionArray.pe.items.forEach(peItem => {
+            let newFavorite = favorite;
+            const currentDate = new Date();
+            const year: number = currentDate.getFullYear();
+            const month: number = currentDate.getMonth();
+            const monthArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const readableNames = {
+              LAST_MONTH: year + ' ' + monthArray[month > 0 ? month - 1 : 11]
+            };
 
-        newFavorite.name = dxItem.displayName + " " + readableNames[peItem.id];
-        newFavorite[dimensionArray.dx.type] = [{dimension: 'dx', items: dxItem}];
-        newFavorite[dimensionArray.pe.type] = [{dimension: 'pe', items: peItem}];
-        newFavorite[dimensionArray.ou.type] = [{dimension: 'ou', items: dimensionArray.ou.items}];
-        favoriteArray.push(newFavorite);
-      })
-    });
+            newFavorite.name = dxItem.displayName + " " + readableNames[peItem.id];
+            newFavorite[dimensionArray.dx.type] = [{dimension: 'dx', items: dxItem}];
+            newFavorite[dimensionArray.pe.type] = [{dimension: 'pe', items: peItem}];
+            newFavorite[dimensionArray.ou.type] = [{dimension: 'ou', items: dimensionArray.ou.items}];
+            favoriteArray.push(newFavorite);
+          })
+        }
+      });
+    }
+
     return favoriteArray;
   }
 
