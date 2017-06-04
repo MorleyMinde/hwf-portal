@@ -1,6 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 //import { SelectComponent } from 'ng2-select/components/select/select';
-import {HttpClientService} from "../../../providers/http-client.service";
+import {HttpClientService} from "../../../shared/providers/http-client.service";
 
 @Component({
   selector: 'app-input',

@@ -1,13 +1,13 @@
-<ng-template #defaultTemplate let-option="option">
+<template #defaultTemplate let-option="option">
   {{option[settings.textField]}}
-</ng-template>
+</template>
 <div class="btn-group input" dropdown (onShown)="isOpen = true" (onHidden)="isOpen = false">
   <input class="form-control dropdown-toggle" [(ngModel)]="selected"/>
   <input dropdownToggle [ngClass]="{'is-open':isOpen}" class="form-control dropdown-toggle editor" (blur)="onBlur()" [(ngModel)]="searchText" placeholder="Type to Search"/><span class="caret"></span>
   <ul *dropdownMenu class="dropdown-menu" role="menu">
     <li role="menuitem" *ngFor="let option of options | fuseSearch:searchOptions:searchText" (click)="select(option)">
       <a class="dropdown-item">
-        <ng-template [ngTemplateOutlet]="template || defaultTemplate" [ngOutletContext]="{option: option}"></ng-template>
+        <template [ngTemplateOutlet]="template || defaultTemplate" [ngOutletContext]="{option: option}"></template>
       </a>
     </li>
   </ul>

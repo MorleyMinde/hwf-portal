@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import 'rxjs/Rx';
 import {Observable, Observer} from 'rxjs';
-import {AngularIndexedDB} from 'angular2-indexeddb/angular2-indexeddb';
+import {AngularIndexedDB} from "../../providers/angular2-indexeddb";
 
 @Injectable()
 export class OrgUnitService {

@@ -1,6 +1,6 @@
 import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
-import {HttpClientService} from "../../../providers/http-client.service";
+import {HttpClientService} from "../../../shared/providers/http-client.service";
 import {OrderByPipe} from "../../pipes/order-by.pipe";
 import {Observable} from 'rxjs/Observable';
 import {ChangeService} from "../../providers/change.service";

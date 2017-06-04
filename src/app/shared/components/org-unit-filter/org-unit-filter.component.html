@@ -31,7 +31,7 @@
       <div class="tree-view" [ngClass]="{'hiddenTree':showOrgTree}" id="tree_view">
         <div class="col-sm-6" style="padding-left: 0px; margin-bottom: 5px">
           <label>Selection Mode</label>
-          <select [disabled]="orgunit_tree_config.loading" id="selectionMode" [(ngModel)]="orgunit_model.selection_mode" class="form-control" style="height: 30px ">
+          <select [disabled]="orgunit_tree_config.loading" id="selectionMode" [(ngModel)]="orgunit_model.selection_mode"  (ngModelChange)="changeSelectionMode($event)" class="form-control" style="height: 30px ">
             <option value="Usr_orgUnit">User Organisation Unit</option>
             <option value="orgUnit">Select Organisation Unit</option>
             <option value="Level">Select Level</option>
@@ -49,7 +49,7 @@
         <!--org_unit_groups-->
         <div class="col-sm-6" style="padding-right: 0px; margin-bottom: 5px" *ngIf="orgunit_model.selection_mode == 'Usr_orgUnit'">
           <label>Available Groups</label>
-          <select [disabled]="orgunit_tree_config.loading" id="userOrgSelection" [(ngModel)]="orgunit_model.selected_user_orgunit" class="form-control" style="height: 30px ">
+          <select [disabled]="orgunit_tree_config.loading" id="userOrgSelection" [(ngModel)]="orgunit_model.selected_user_orgunit" (ngModelChange)="changeUserOrgUnit($event)" class="form-control" style="height: 30px ">
             <option value="USER_ORGUNIT">User Organisation Unit</option>
             <option value="USER_ORGUNIT_CHILDREN">User Sub-units</option>
             <option value="USER_ORGUNIT_GRANDCHILDREN">User Sub-x2-units</option>
