@@ -308,11 +308,8 @@ export class VisualizerService {
     }
     chartObject.series.push({
       name: chartConfiguration.title ,
-      data: serie,
-      showInLegend: false,
-      dataLabels: {
-        enabled: false
-      } });
+      data: serie
+    });
     return chartObject;
   }
 

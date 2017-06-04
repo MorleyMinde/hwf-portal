@@ -79,15 +79,32 @@ export class ChartComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadChart(this.initialChartData);
+    if(this.initialChartData) {
+      if(!this.initialChartData.details.loaded) {
+        this.loadChart(this.initialChartData)
+      } else {
+        this.chartData = this.initialChartData;
+        this.loading = false;
+        if(!this.chartData.details.hasError) {
+
+          this.chartObjects = this.chartService.getChartObjects(this.chartData);
+          this.hasError = false;
+        } else {
+          this.hasError = true;
+          this.errorMessage = this.chartData.details.errorMessage;
+        }
+      }
+    }
   }
 
   loadChart(initialChartData) {
     this.loading = true;
     if(initialChartData) {
-      this.chartData = this.initialChartData;
+      this.chartData = initialChartData;
+
       this.visualizationObjectService.getSanitizedVisualizationObject(initialChartData)
         .subscribe(sanitizedChartData => {
+          //todo quick fix lebel and legends
           if(sanitizedChartData) {
             this.chartData = sanitizedChartData;
             if(this.chartData) {

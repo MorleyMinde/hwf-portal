@@ -195,7 +195,7 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
     } else if(this.currentVisualization == 'CHART') {
       if(this.chartComponent) {
-        this.chartComponent.loadChart(this.mapComponent.loadMap(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues)))
+        this.chartComponent.loadChart(this.chartComponent.loadChart(this.visualizationObjectService.updateVisualizationObjectsWithFilters(this.visualizationObject, filterValues)))
       }
     }
   }

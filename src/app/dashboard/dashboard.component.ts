@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {DashboardService} from "../providers/dashboard.service";
+import {DashboardService} from "./providers/dashboard.service";
 import {Visualization} from "./model/visualization";
 import * as _ from 'lodash';
 import {Observable, Subject} from "rxjs";
@@ -39,6 +39,8 @@ export class DashboardComponent implements OnInit {
                * Load initial visualization
                */
               visualizationObjects.push(this.getInitialVisualization(dashboardItem, params['pageId']));
+            } else {
+              visualizationObjects.push(dashboardItem.visualizationObject);
             }
           });
 
