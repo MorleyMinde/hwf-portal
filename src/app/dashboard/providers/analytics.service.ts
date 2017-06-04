@@ -65,6 +65,7 @@ export class AnalyticsService {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
             newAnalytics.push(analytics)
           });
+
         }
 
         if (visualization.type == "EVENT_REPORT" || visualization.type == "EVENT_CHART") {
@@ -311,14 +312,16 @@ export class AnalyticsService {
     const indexOfOrgUnit = _.findIndex(reportTableAnalytics.headers, ['name', 'ou']);
     const indexOfData = _.findIndex(reportTableAnalytics.headers, ['name', 'dx']);
 
+    // console.log(dataIdentifiers);
 
     dataIdentifiers.forEach((dataIdentifier) => {
+      // console.log(dataIdentifier);
       periodIdentifiers.forEach((periodIdentifier) => {
         let analyticsTemplate = {
           headers: reportTableAnalytics.headers,
           metaData: {
             co: reportTableAnalytics.metaData.co,
-            dx: [],
+            dx: [dataIdentifier],
             names: names,
             ou: reportTableAnalytics.metaData.ou,
             pe: []
@@ -326,9 +329,8 @@ export class AnalyticsService {
           rows: []
         }
 
-        analyticsTemplate.metaData.names[dataIdentifier] = reportTableAnalytics.metaData.names[dataIdentifier];
+        analyticsTemplate.metaData.names[analyticsTemplate.metaData.dx[0]] = reportTableAnalytics.metaData.names[analyticsTemplate.metaData.dx[0]];
 
-        analyticsTemplate.metaData.dx.push(dataIdentifier);
         analyticsTemplate.metaData.pe.push(periodIdentifier);
 
         rows.forEach((row) => {
