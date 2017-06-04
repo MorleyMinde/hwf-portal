@@ -308,11 +308,8 @@ export class VisualizerService {
     }
     chartObject.series.push({
       name: chartConfiguration.title ,
-      data: serie,
-      showInLegend: false,
-      dataLabels: {
-        enabled: false
-      } });
+      data: serie
+    });
     return chartObject;
   }
 
@@ -1109,14 +1106,8 @@ export class VisualizerService {
             borderWidth: 0,
             allowPointSelect: true,
             cursor: 'pointer',
-            dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-              style: {
-                color: 'black'
-              }
-            },
-
+            dataLabels: {enabled: false},
+            showInLegend: true
           }
         },
         series: []

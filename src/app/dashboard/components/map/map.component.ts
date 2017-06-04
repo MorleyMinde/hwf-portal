@@ -35,7 +35,23 @@ export class MapComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadMap(this.initialMapData)
+    if(this.initialMapData) {
+      if(!this.initialMapData.details.loaded) {
+        this.loadMap(this.initialMapData)
+      } else {
+        this.mapData = this.initialMapData;
+        this.loading = false;
+        if(!this.mapData.details.hasError) {
+          setTimeout(() => {
+            this.drawMap(this.mapData);
+          }, 10);
+          this.hasError = false;
+        } else {
+          this.hasError = true;
+          this.errorMessage = this.mapData.details.errorMessage;
+        }
+      }
+    }
   }
 
   loadMap(initialMapData) {

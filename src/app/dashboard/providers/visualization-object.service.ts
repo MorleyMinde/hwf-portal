@@ -8,6 +8,7 @@ import {TableService} from "./table.service";
 import * as _ from 'lodash';
 import {AnalyticsService} from "./analytics.service";
 import {error} from "util";
+import {DashboardService} from "./dashboard.service";
 
 @Injectable()
 export class VisualizationObjectService {
@@ -17,7 +18,8 @@ export class VisualizationObjectService {
     private mapService: MapService,
     private chartService: ChartService,
     private tableService: TableService,
-    private analyticsService: AnalyticsService
+    private analyticsService: AnalyticsService,
+    private dashboardService: DashboardService
   ) { }
 
   getSanitizedVisualizationObject(initialVisualization: Visualization): Observable<any> {
@@ -36,13 +38,17 @@ export class VisualizationObjectService {
                     this.mapService.getGeoFeatures(visualizationWithAnalytics).subscribe(visualizationWithGeoFeature => {
                       this.mapService.getPredefinedLegend(visualizationWithGeoFeature).subscribe(visualizationWithLegendSet => {
                         this.mapService.getGroupSet(visualizationWithLegendSet).subscribe(visualizationWithGroupSet => {
-                          observer.next(this.validateVisualization(visualizationWithGroupSet,''));
+                          const validatedVisualization = this.validateVisualization(visualizationWithGroupSet,'');
+                          this.dashboardService.saveVisualizationObject(validatedVisualization);
+                          observer.next(validatedVisualization);
                           observer.complete();
                         })
                       })
                     })
                   } else {
-                    observer.next(this.validateVisualization(visualizationWithAnalytics,''));
+                    const validatedVisualization = this.validateVisualization(visualizationWithAnalytics,'');
+                    this.dashboardService.saveVisualizationObject(validatedVisualization);
+                    observer.next(validatedVisualization);
                     observer.complete();
                   }
 
@@ -385,19 +391,6 @@ export class VisualizationObjectService {
     }
 
     return visualizationObject;
-  }
-
-  getFilterUpdatedVisualizationObject(visualizationObject: Visualization, filters: any): Observable<Visualization> {
-    return Observable.create(observer => {
-      this.getSanitizedVisualizationObject(this.updateVisualizationObjectsWithFilters(visualizationObject, filters))
-        .subscribe(sanitizedVisualizationObject => {
-          observer.next(sanitizedVisualizationObject);
-          observer.complete();
-        }, visualizationObjectWithError => {
-          observer.next(visualizationObjectWithError);
-          observer.complete();
-        });
-    })
   }
 
 }

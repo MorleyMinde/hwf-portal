@@ -1,7 +1,8 @@
-import {Component, OnInit, OnChanges, Input} from '@angular/core';
+import {Component, OnInit, OnChanges, Input, ViewChild} from '@angular/core';
 import {Visualization} from "../../model/visualization";
 import {ChartService} from "../../providers/chart.service";
 import {VisualizationObjectService} from "../../providers/visualization-object.service";
+import {ChartBlockComponent} from "../chart-block/chart-block.component";
 
 export const CHART_TYPES = [
   {
@@ -73,28 +74,45 @@ export class ChartComponent implements OnInit {
   chartTypes: any[] = CHART_TYPES;
 
   chartObjects: any;
+  @ViewChild(ChartBlockComponent) chartBlock: ChartBlockComponent;
   constructor(
     private chartService: ChartService,
     private visualizationObjectService: VisualizationObjectService
   ) { }
 
   ngOnInit() {
-    this.loadChart(this.initialChartData);
+    if(this.initialChartData) {
+      if(!this.initialChartData.details.loaded) {
+        this.loadChart(this.initialChartData)
+      } else {
+        this.chartData = this.initialChartData;
+        this.loading = false;
+        if(!this.chartData.details.hasError) {
+
+          this.chartObjects = this.chartService.getChartObjects(this.chartData);
+          this.hasError = false;
+        } else {
+          this.hasError = true;
+          this.errorMessage = this.chartData.details.errorMessage;
+        }
+      }
+    }
   }
 
   loadChart(initialChartData) {
     this.loading = true;
     if(initialChartData) {
-      this.chartData = this.initialChartData;
+      this.chartData = initialChartData;
+
       this.visualizationObjectService.getSanitizedVisualizationObject(initialChartData)
         .subscribe(sanitizedChartData => {
+          //todo quick fix lebel and legends
           if(sanitizedChartData) {
             this.chartData = sanitizedChartData;
             if(this.chartData) {
               if(this.chartData.details.loaded) {
                 this.loading = false;
                 if(!this.chartData.details.hasError) {
-
                   this.chartObjects = this.chartService.getChartObjects(this.chartData);
                   this.hasError = false;
                 } else {
@@ -134,7 +152,12 @@ export class ChartComponent implements OnInit {
     }
   }
 
-  resizeChart() {}
+  resizeChart(visualizationObject) {
+    this.chartData = visualizationObject;
+    if(this.chartBlock) {
+      this.chartBlock.resize()
+    }
+  }
 
 
 }

@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import {DashboardService} from "./providers/dashboard.service";
 import {CurrentUserService} from "./providers/current-user.service";
 
 @Component({
@@ -11,10 +10,8 @@ export class AppComponent {
   title = 'Water Point Data Manager';
 
   constructor(
-    private dashboardService: DashboardService,
     private currentUserService: CurrentUserService
   ) {
     currentUserService.load();
-    dashboardService.loadAll();
   }
 }

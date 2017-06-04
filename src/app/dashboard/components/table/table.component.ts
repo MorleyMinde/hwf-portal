@@ -23,7 +23,22 @@ export class TableComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.loadTable(this.initialTableData);
+    if(this.initialTableData) {
+      if(!this.initialTableData.details.loaded) {
+        this.loadTable(this.initialTableData)
+      } else {
+        this.tableData = this.initialTableData;
+        this.loading = false;
+        if(!this.tableData.details.hasError) {
+
+          this.tableObjects = this.tableService.getTableObjects(this.tableData);
+          this.hasError = false;
+        } else {
+          this.hasError = true;
+          this.errorMessage = this.tableData.details.errorMessage;
+        }
+      }
+    }
   }
 
   loadTable(initialTableData) {

@@ -24,18 +24,10 @@
 
 <!--Dashboard Items-->
 <div class="container-fluid">
-  <div class="row" *ngIf="visualizationObjects.length == 0">
-    <div class="col-md-12">
-      <div class="row">
-        <div class="col-md-12 text-center">
-          <h2><b>Welcome to Water Point Data Manager</b></h2>
-        </div>
-      </div>
-    </div>
-  </div>
-  <div class="row">
+  <app-loader *ngIf="loading" [loadingMessage]="'Moving dashboards into position'"></app-loader>
+  <div class="row" *ngIf="!loading">
     <app-dashboard-item-card
-      *ngFor="let visualizationObject of visualizationObjects$ | async"
+      *ngFor="let visualizationObject of visualizationObjects"
       [visualizationObject]="visualizationObject"
       (onFilterUpdate)="updateFilters($event)"
       [globalFilters]="globalFilters"

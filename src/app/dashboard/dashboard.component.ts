@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {ActivatedRoute} from "@angular/router";
-import {DashboardService} from "../providers/dashboard.service";
+import {DashboardService} from "./providers/dashboard.service";
 import {Visualization} from "./model/visualization";
 import * as _ from 'lodash';
 import {Observable, Subject} from "rxjs";
@@ -17,26 +17,20 @@ export class DashboardComponent implements OnInit {
   visualizationObjects: any[] = [];
   globalFilters: Observable<any>;
   globalFilters$: Subject<any> = new Subject<any>();
-  visualizationObjects$: Observable<any[]>;
-  visualizationObjectsSubject$: Subject<any> = new Subject<any>();
+  loading: boolean = true;
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
     private visualizationObjectService: VisualizationObjectService
   ) {
-    this.visualizationObjectsSubject$.next([]);
     this.globalFilters$.next(null);
-    this.visualizationObjects$ = this.visualizationObjectsSubject$.asObservable();
     this.globalFilters = this.globalFilters$.asObservable();
   }
 
   ngOnInit() {
     this.route.params.subscribe(params => {
       let visualizationObjects = [];
-      this.visualizationObjectsSubject$.next([]);
       this.dashboardService.find(params['pageId']).subscribe(dashboard => {
-        console.log(dashboard)
-
         if(dashboard.dashboardItems) {
           dashboard.dashboardItems.forEach(dashboardItem => {
             if(!dashboardItem.hasOwnProperty('visualizationObject')) {
@@ -45,11 +39,13 @@ export class DashboardComponent implements OnInit {
                * Load initial visualization
                */
               visualizationObjects.push(this.getInitialVisualization(dashboardItem, params['pageId']));
-              this.visualizationObjectsSubject$.next(visualizationObjects);
+            } else {
+              visualizationObjects.push(dashboardItem.visualizationObject);
             }
           });
 
           this.visualizationObjects = visualizationObjects;
+          this.loading = false;
         }
       })
     });
