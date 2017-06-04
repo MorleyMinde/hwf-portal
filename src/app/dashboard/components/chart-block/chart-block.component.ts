@@ -25,4 +25,12 @@ export class ChartBlockComponent implements OnInit {
     this.chart = Highcharts.chart(chartObject);
   }
 
+  resize() {
+    setTimeout(() => {
+      if(this.chart) {
+        this.chart.setSize(null,null);
+      }
+    }, 5)
+  }
+
 }

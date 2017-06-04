@@ -123,3 +123,7 @@
   padding-top: 4px;
   padding-right: 2px;
 }
+
+.active-visualisation {
+  background-color: #cecece !important;
+}

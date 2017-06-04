@@ -6,25 +6,36 @@ import {HttpClientService} from "./http-client.service";
 @Injectable()
 export class CurrentUserService {
 
-  currentUser$: Subject<any> = new Subject<any>();
-  currentUser: Observable<any>;
   private _currentUser: any;
   constructor(private http: HttpClientService) {
     this._currentUser = {}
-    this.currentUser$.next(this._currentUser);
-    this.currentUser = this.currentUser$.asObservable();
   }
 
   getUserInformation(): Observable <any> {
-    return this.currentUser;
+    return Observable.create(observer => {
+      if(this._currentUser.hasOwnProperty('id')) {
+        observer.next(this._currentUser);
+        observer.complete();
+      } else {
+        this.load().subscribe(currentUser => {
+          observer.next(currentUser);
+          observer.complete();
+        }, error => observer.error(error));
+      }
+    })
   }
 
   load() {
-    this.http.get('../../../api/me.json?fields=*,dataViewOrganisationUnits[id,name,level],organisationUnits[id,name,level]')
-      .subscribe(currentUser => {
-        this._currentUser = currentUser;
-        this.currentUser$.next(currentUser);
-      })
+    return Observable.create(observer => {
+      this.http.get('../../../api/me.json?fields=*,dataViewOrganisationUnits[id,name,level],organisationUnits[id,name,level]')
+        .subscribe(currentUser => {
+          this._currentUser = currentUser;
+          observer.next(currentUser);
+          observer.complete();
+        }, error => {
+          observer.error(error)
+        })
+    })
   }
 
 }

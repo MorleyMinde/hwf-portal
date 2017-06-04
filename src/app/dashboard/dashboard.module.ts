@@ -24,6 +24,8 @@ import {TileLayers} from "./constants/tile-layers";
 import {LegendSetService} from "./providers/legend-set.service";
 import {VisualizationLegendComponent} from "./components/visualization-legend/visualization-legend.component";
 import { ChartBlockComponent } from './components/chart-block/chart-block.component';
+import {DashboardService} from "./providers/dashboard.service";
+import {Utilities} from "./providers/utilities";
 
 @NgModule({
   imports: [
@@ -44,7 +46,9 @@ import { ChartBlockComponent } from './components/chart-block/chart-block.compon
     ColorInterpolationService,
     Constants,
     TileLayers,
-    LegendSetService
+    LegendSetService,
+    DashboardService,
+    Utilities
   ],
   declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent, VisualizationLegendComponent]
 })

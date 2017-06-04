@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs";
 import * as _ from 'lodash';
@@ -8,17 +8,16 @@ import {Constants} from "../../providers/constants";
 @Injectable()
 export class AnalyticsService {
 
-  constructor(
-    private constant: Constants,
-    private http: Http
-  ) { }
+  constructor(private constant: Constants,
+              private http: Http) {
+  }
 
   public getAnalytic(visualization: Visualization): Observable<Visualization> {
     let visualizationObject: Visualization = _.clone(visualization);
     return Observable.create(observer => {
       let analyticCallAArray: any[] = [];
       visualizationObject.layers.forEach(layer => {
-        if(visualizationObject.type == 'MAP') {
+        if (visualizationObject.type == 'MAP') {
           if (layer.settings.layer != 'boundary' && layer.settings.layer != 'external' && layer.settings.layer != 'earthEngine' && layer.settings.layer != 'facility') {
             analyticCallAArray.push(this.http.get(this.constructUrl(layer.settings, visualizationObject.type, visualizationObject.details.filters))
               .map((res: Response) => res.json())
@@ -32,7 +31,7 @@ export class AnalyticsService {
             .catch(error => Observable.throw(new Error(error))))
         }
       });
-      if(analyticCallAArray.length > 0) {
+      if (analyticCallAArray.length > 0) {
         Observable.forkJoin(analyticCallAArray).subscribe(analyticsObjects => {
           let layerIndex: number = 0;
           visualizationObject.layers.forEach((layer: any) => {
@@ -55,30 +54,54 @@ export class AnalyticsService {
     let newSettings: any[] = [];
     let newAnalytics: any[] = [];
     let newLayers: any[] = [];
+    let settings: any = visualization.layers[0].settings;
     visualization.layers.forEach(layer => {
-      this.splitFavorite(layer.settings).forEach(settings => {
-        newSettings.push(settings);
-      });
+      // this.splitFavorite(layer.settings).forEach(settings => {
+      //   newSettings.push(settings);
+      // });
 
-      if(layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
-        this.splitAnalyticsObject(layer.analytics).forEach(analytics => {
-          newAnalytics.push(analytics)
-        });
+      if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
+        if (visualization.type == "REPORT_TABLE") {
+          this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
+
+            newAnalytics.push(analytics)
+          });
+        }
+
+        if (visualization.type == "EVENT_REPORT") {
+
+          console.log(visualization.layers);
+          this.splitEventReportAnalytics(layer.analytics).forEach(analytics => {
+
+            newAnalytics.push(analytics)
+          });
+        }
+
+
       }
+
+
     });
 
-    newSettings.forEach((settingsItem,settingsIndex) => {
-      newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
+    // newSettings.forEach((settingsItem, settingsIndex) => {
+    //   newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
+    // });
+    //
+
+    newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
+      newLayers.push({settings: settings, analytics: newAnalytic});
     });
     visualization.layers = newLayers;
-
     return visualization;
   }
 
   getMergedAnalytics(visualizationObject: Visualization) {
     let newSettings: any = this.mergeFavorite(visualizationObject.layers);
     let newAnalytics: any = this.mergeAnalytics(visualizationObject.layers);
-    const newLayer = {settings: this.mergeFavorite(visualizationObject.layers), analytics: this.mergeAnalytics(visualizationObject.layers)};
+    const newLayer = {
+      settings: this.mergeFavorite(visualizationObject.layers),
+      analytics: this.mergeAnalytics(visualizationObject.layers)
+    };
 
     visualizationObject.layers = [newLayer];
 
@@ -94,7 +117,7 @@ export class AnalyticsService {
 
     let favoriteArray: any[] = [];
 
-    if(favorite.hasOwnProperty('columns')) {
+    if (favorite.hasOwnProperty('columns')) {
       favorite.columns.forEach(column => {
         column.items.forEach(item => {
           dimensionArray[column.dimension].type = 'columns';
@@ -104,7 +127,7 @@ export class AnalyticsService {
 
     }
 
-    if(favorite.hasOwnProperty('rows')) {
+    if (favorite.hasOwnProperty('rows')) {
       favorite.rows.forEach(row => {
         row.items.forEach(item => {
           dimensionArray[row.dimension].type = 'rows';
@@ -114,7 +137,7 @@ export class AnalyticsService {
 
     }
 
-    if(favorite.hasOwnProperty('filters')) {
+    if (favorite.hasOwnProperty('filters')) {
       favorite.filters.forEach(filter => {
         filter.items.forEach(item => {
           dimensionArray[filter.dimension].type = 'filters';
@@ -145,31 +168,33 @@ export class AnalyticsService {
   }
 
   mergeFavorite(layers: any[]) {
-    const favoriteArray = layers.map((layer: any) => {return layer.settings});
+    const favoriteArray = layers.map((layer: any) => {
+      return layer.settings
+    });
     let columns: any[] = [];
     let rows: any[] = [];
     let filters: any[] = [];
     let newFavorite: any = {};
 
-    if(favoriteArray.length > 0) {
+    if (favoriteArray.length > 0) {
       newFavorite = favoriteArray[0];
       favoriteArray.forEach((favorite: any) => {
         /**
          * Start with columns
          */
-        if(favorite.columns) {
-          if(favorite.columns.length > 0) {
-            if(columns.length == 0) {
+        if (favorite.columns) {
+          if (favorite.columns.length > 0) {
+            if (columns.length == 0) {
               columns = favorite.columns;
             } else {
               columns.forEach(column => {
                 favorite.columns.forEach(favoriteColumn => {
-                  if(column.dimension == favoriteColumn.dimension) {
-                    if(column.items) {
+                  if (column.dimension == favoriteColumn.dimension) {
+                    if (column.items) {
                       let columnItems: any[] = column.items.length > 0 ? column.items : [];
-                      if(favoriteColumn.items) {
+                      if (favoriteColumn.items) {
                         const favoriteItems: any[] = favoriteColumn.items.length > 0 ? favoriteColumn.items : [];
-                        if(favoriteItems.length > 0) {
+                        if (favoriteItems.length > 0) {
                           favoriteItems.forEach(item => {
                             columnItems.push(item);
                           })
@@ -187,19 +212,19 @@ export class AnalyticsService {
         /**
          * Start with rows
          */
-        if(favorite.rows) {
-          if(favorite.rows.length > 0) {
-            if(rows.length == 0) {
+        if (favorite.rows) {
+          if (favorite.rows.length > 0) {
+            if (rows.length == 0) {
               rows = favorite.rows;
             } else {
               rows.forEach(row => {
                 favorite.columns.forEach(favoriteRow => {
-                  if(row.dimension == favoriteRow.dimension) {
-                    if(row.items) {
+                  if (row.dimension == favoriteRow.dimension) {
+                    if (row.items) {
                       let rowItems: any[] = row.items.length > 0 ? row.items : [];
-                      if(favoriteRow.items) {
+                      if (favoriteRow.items) {
                         const favoriteItems: any[] = favoriteRow.items.length > 0 ? favoriteRow.items : [];
-                        if(favoriteItems.length > 0) {
+                        if (favoriteItems.length > 0) {
                           favoriteItems.forEach(item => {
                             rowItems.push(item);
                           })
@@ -217,20 +242,20 @@ export class AnalyticsService {
         /**
          * Start with filters
          */
-        if(favorite.filters) {
-          if(favorite.filters.length > 0) {
-            if(filters.length == 0) {
+        if (favorite.filters) {
+          if (favorite.filters.length > 0) {
+            if (filters.length == 0) {
               filters = favorite.filters;
             } else {
               filters.forEach(filter => {
                 favorite.filters.forEach(favoriteFilter => {
-                  if(filter.dimension == favoriteFilter.dimension) {
-                    if(filter.items) {
+                  if (filter.dimension == favoriteFilter.dimension) {
+                    if (filter.items) {
 
                       let filterItems: any[] = filter.items.length > 0 ? filter.items : [];
-                      if(favoriteFilter.items) {
+                      if (favoriteFilter.items) {
                         const favoriteItems: any[] = favoriteFilter.items.length > 0 ? favoriteFilter.items : [];
-                        if(favoriteItems.length > 0) {
+                        if (favoriteItems.length > 0) {
                           favoriteItems.forEach(item => {
                             filterItems.push(item);
                           })
@@ -254,16 +279,18 @@ export class AnalyticsService {
   }
 
   mergeAnalytics(layers: any) {
-    const analyticsArray = layers.map((layer: any) => {return layer.analytics});
+    const analyticsArray = layers.map((layer: any) => {
+      return layer.analytics
+    });
     let newAnalytics: any = {};
     let newAnalyticsRows: any[] = [];
 
-    if(analyticsArray.length > 0) {
+    if (analyticsArray.length > 0) {
       newAnalytics = analyticsArray[0];
       analyticsArray.forEach((analytics: any) => {
-        if(analytics.rows) {
+        if (analytics.rows) {
           const analyticsRows: any[] = analytics.rows.length > 0 ? analytics.rows : [];
-          if(analyticsRows.length > 0) {
+          if (analyticsRows.length > 0) {
             analyticsRows.forEach(row => {
               newAnalyticsRows.push(row)
             })
@@ -275,91 +302,161 @@ export class AnalyticsService {
     return newAnalytics;
   }
 
+  splitReportTableAnalytics(reportTableAnalytics: any): Array<any> {
+    let splitAnalytics: Array<any> = []
+    const dataIdentifiers = reportTableAnalytics.metaData.dx;
+    const periodIdentifiers = reportTableAnalytics.metaData.pe;
+    const rows = reportTableAnalytics.rows;
 
-  splitAnalyticsObject(analytics: any): Array<any> {
-
-    let analyticsArray: Array<any> = [];
-    let headers: any = analytics.headers;
-    let rows: Array<any> = analytics.rows;
-    let metaData: any = analytics.metaData;
-    let names: any = analytics.metaData.names;
-    let periods: any = analytics.metaData.pe;
-    let data: any = analytics.metaData.dx;
-    let ou: any = analytics.metaData.ou;
-    let numberOfAnalytics: number = 0;
+    const indexOfPeriod = _.findIndex(reportTableAnalytics.headers, ['name', 'pe']);
+    const indexOfOrgUnit = _.findIndex(reportTableAnalytics.headers, ['name', 'ou']);
 
 
-    let dataIndex: number = 0;
-    let valueIndex: number = 0;
-    let periodIndex: number = 0;
-    let orgUnitIndex: number = 0;
+    dataIdentifiers.forEach((dataIdentifier) => {
 
-    if(headers) {
-      headers.forEach((header, headerIndex) => {
-        if (header.name == "dx") {
-          dataIndex = headerIndex;
+
+      periodIdentifiers.forEach((periodIdentifier) => {
+        let analyticsTemplate = {
+          headers: reportTableAnalytics.headers,
+          metaData: {
+            co: reportTableAnalytics.metaData.co,
+            dx: [],
+            name: {},
+            ou: reportTableAnalytics.metaData.ou,
+            pe: []
+          },
+          rows: []
         }
 
-        if (header.name == "pe") {
-          periodIndex = headerIndex;
-        }
+        analyticsTemplate.metaData.dx.push(dataIdentifier);
+        analyticsTemplate.metaData.pe.push(periodIdentifier);
 
-        if (header.name == "value") {
-          valueIndex = headerIndex;
-        }
+        rows.forEach((row) => {
+          if (row[indexOfOrgUnit] == dataIdentifier && row[indexOfPeriod] == periodIdentifier) {
+            analyticsTemplate.rows.push(row);
+          }
+        })
 
-        if (header.name == "ou") {
-          orgUnitIndex = headerIndex;
-        }
-
+        splitAnalytics.push(analyticsTemplate);
       })
-    }
-    if(data) {
-      data.forEach((dataName, dataIndex) => {
-        periods.forEach((periodName, periodIndex) => {
-          let singleAnalytics: any = {headers: headers, metaData: {names: {}, pe: [], ou: {}, dx: []}, rows: []};
-          singleAnalytics.metaData.names[dataName] = names[dataName];
-          singleAnalytics.metaData.names[periodName] = names[periodName];
-          singleAnalytics.metaData.pe.push(periodName);
-          singleAnalytics.metaData.dx.push(dataName);
-          singleAnalytics.metaData.ou = ou;
+    })
+    return splitAnalytics;
+  }
 
-          analyticsArray.push(singleAnalytics);
-        });
-      });
-    }
+  splitEventReportAnalytics(reportTableAnalytics: any): Array<any> {
+    let splitAnalytics: Array<any> = [];
+    const periodIdentifiers = reportTableAnalytics.metaData.pe;
+    const rows = reportTableAnalytics.rows;
+
+    const dataGroups = this._getAnalyticsDataGroups(reportTableAnalytics.headers);
+    let verticalDataGroups = this._getAnalyticsDataArrayGroups(reportTableAnalytics)[0];
+    let horizontalDataGroups = this._getAnalyticsDataArrayGroups(reportTableAnalytics)[1];
+    const indexOfPeriod = _.findIndex(reportTableAnalytics.headers, ['name', 'pe']);
+    const indexOfOrgUnit = _.findIndex(reportTableAnalytics.headers, ['name', 'ou']);
+    const indexOfValue = _.findIndex(reportTableAnalytics.headers, ['name', 'value']);
+    let verticalIndex = _.findIndex(reportTableAnalytics.headers, ['name', dataGroups[0]]);
+    let holizontalIndex = _.findIndex(reportTableAnalytics.headers, ['name', dataGroups[1]]);
+
+    verticalDataGroups.forEach(verticalDataGroup => {
+      horizontalDataGroups.forEach(horizontalDataGroup => {
+        periodIdentifiers.forEach(period => {
+          let analyticsTemplate = {
+            headers: this._getHeaders(reportTableAnalytics.headers),
+            metaData: {
+              co: reportTableAnalytics.metaData.co,
+              dx: [],
+              name: {},
+              ou: reportTableAnalytics.metaData.ou,
+              pe: [period]
+            },
+            rows: []
+          }
+          dataGroups.forEach(dataGroup => {
+            if (reportTableAnalytics.metaData[dataGroup].indexOf(verticalDataGroup) > -1) {
+              analyticsTemplate.metaData.dx.push(dataGroup);
+              analyticsTemplate.metaData.name[dataGroup] = verticalDataGroup + " " + horizontalDataGroup;
+            }
+
+            if (reportTableAnalytics.metaData[dataGroup].indexOf(horizontalDataGroups) > -1) {
+              analyticsTemplate.metaData.dx.push(dataGroup);
+              analyticsTemplate.metaData.name[dataGroup] = verticalDataGroup + " " + horizontalDataGroup;
+            }
+
+          })
 
 
-    analyticsArray.forEach(analytics => {
-      let data = analytics.metaData.dx[0];
-      let period = analytics.metaData.pe[0];
+          rows.forEach(row => {
+            if (row[verticalIndex] == verticalDataGroup && row[holizontalIndex] == horizontalDataGroup && row[indexOfPeriod] == period) {
+              analyticsTemplate.rows.push([analyticsTemplate.metaData.dx[0], row[indexOfOrgUnit], row[indexOfPeriod], row[indexOfValue]]);
+            }
+          })
 
-      rows.forEach(row => {
-        if (row[dataIndex] == data) {
-          analytics.rows.push(row);
-        }
+          splitAnalytics.push(analyticsTemplate);
+        })
       })
     })
 
+    return splitAnalytics;
+  }
 
-    return analyticsArray;
+  private _getAnalyticsDataGroups(analyticsHeaders: any): Array<any> {
+    let headers: any[] = [];
+    if (analyticsHeaders) {
+      analyticsHeaders.forEach(header => {
+        if (
+          header.name != "ou" &&
+          header.name != "pe" &&
+          header.name != "value") {
+          headers.push(header.name);
+        }
+      })
+    }
+
+    return headers;
+  }
+
+  private _getAnalyticsDataArrayGroups(reportTableAnalytics): Array<any> {
+    let dataGroupsArray: any[] = [];
+    const dataGroups = this._getAnalyticsDataGroups(reportTableAnalytics.headers);
+
+    dataGroups.forEach(dataGroup => {
+      dataGroupsArray.push(reportTableAnalytics.metaData[dataGroup]);
+    })
+
+    return dataGroupsArray;
+  }
+
+  private _getHeaders(headers) {
+    return [{
+      column: "Data",
+      hidden: false,
+      meta: true,
+      name: "dx",
+      type: "java.lang.String",
+      valueType: "TEXT"
+    }
+      ,
+      headers[_.findIndex(headers, ['name', 'ou'])],
+      headers[_.findIndex(headers, ['name', 'pe'])],
+      headers[_.findIndex(headers, ['name', 'value'])]
+    ]
   }
 
   constructUrl(visualizationSettings: any, visualizationType: string, filters: any): string {
     let url: string = this.constant.api + "analytics";
-    const rowParameters: string = this._getDimension('rows',visualizationSettings, filters);
-    const columnParameters: string = this._getDimension('columns',visualizationSettings, filters);
+    const rowParameters: string = this._getDimension('rows', visualizationSettings, filters);
+    const columnParameters: string = this._getDimension('columns', visualizationSettings, filters);
     const filterParameters: string = this._getDimension('filters', visualizationSettings, filters);
 
     let aggregationType: string = visualizationSettings.hasOwnProperty('aggregationType') ? '&aggregationType=' + visualizationSettings.aggregationType : '';
     let value: string = visualizationSettings.hasOwnProperty('value') ? '&value=' + visualizationSettings.value.id : '';
 
-    if(visualizationType == 'EVENT_CHART') {
+    if (visualizationType == 'EVENT_CHART') {
       url += "/events/aggregate/" + this._getProgramParameters(visualizationSettings);
 
     } else if (visualizationType == "EVENT_REPORT") {
 
-      if(visualizationSettings.hasOwnProperty('dataType')) {
+      if (visualizationSettings.hasOwnProperty('dataType')) {
         if (visualizationSettings.dataType == "AGGREGATED_VALUES") {
           url += "/events/aggregate/" + this._getProgramParameters(visualizationSettings);
         } else {
@@ -367,18 +464,18 @@ export class AnalyticsService {
         }
       }
 
-    } else if ( visualizationType == "EVENT_MAP") {
+    } else if (visualizationType == "EVENT_MAP") {
 
       url += "/events/aggregate/" + this._getProgramParameters(visualizationSettings);
 
-    } else if(visualizationType == 'MAP' && visualizationSettings.layer == 'event') {
+    } else if (visualizationType == 'MAP' && visualizationSettings.layer == 'event') {
 
       url += "/events/query/" + this._getProgramParameters(visualizationSettings);
 
       /**
        * Also get startDate and end date if available
        */
-      if(visualizationSettings.hasOwnProperty('startDate') && visualizationSettings.hasOwnProperty('endDate')) {
+      if (visualizationSettings.hasOwnProperty('startDate') && visualizationSettings.hasOwnProperty('endDate')) {
         url += 'startDate=' + visualizationSettings.startDate + '&' + 'endDate=' + visualizationSettings.endDate + '&';
       }
 
@@ -403,19 +500,21 @@ export class AnalyticsService {
 
   _getDimensionParameters(dimensionArray: any[], filters: any[] = []): string {
     let parameterArray: any = [];
-    if(dimensionArray.length > 0) {
+    if (dimensionArray.length > 0) {
       dimensionArray.forEach(dimensionObject => {
         let customDimension: any = _.find(filters, ['name', dimensionObject.dimension]);
 
-        if(customDimension) {
+        if (customDimension) {
           parameterArray.push('dimension=' + customDimension.name + ':' + customDimension.value)
         } else {
-          if(dimensionObject.dimension != 'dy') {
-            if(dimensionObject.hasOwnProperty('filter')) {
+          if (dimensionObject.dimension != 'dy') {
+            if (dimensionObject.hasOwnProperty('filter')) {
               parameterArray.push('dimension=' + dimensionObject.dimension + ':' + dimensionObject.filter)
             } else {
               let dimensionConnector: string = dimensionObject.items.length > 0 ? ':' : '';
-              parameterArray.push('dimension=' + dimensionObject.dimension + dimensionConnector + dimensionObject.items.map(item => {return item.dimensionItem}).join(';'));
+              parameterArray.push('dimension=' + dimensionObject.dimension + dimensionConnector + dimensionObject.items.map(item => {
+                  return item.dimensionItem
+                }).join(';'));
             }
           }
         }
@@ -449,7 +548,7 @@ export class AnalyticsService {
 
     } else if (favoriteType == "EVENT_REPORT") {
 
-      if(favoriteObject.hasOwnProperty('dataType')) {
+      if (favoriteObject.hasOwnProperty('dataType')) {
         if (favoriteObject.dataType == "AGGREGATED_VALUES") {
           url += "/events/aggregate/" + this._getProgramParameters(favoriteObject);
         } else {
@@ -459,18 +558,18 @@ export class AnalyticsService {
         console.warn('No dataType attribute found for event report');
       }
 
-    } else if ( favoriteType=="EVENT_MAP") {
+    } else if (favoriteType == "EVENT_MAP") {
 
       url += "/events/aggregate/" + this._getProgramParameters(favoriteObject);
 
-    } else if(favoriteType =='MAP' && favoriteObject.layer == 'event') {
+    } else if (favoriteType == 'MAP' && favoriteObject.layer == 'event') {
 
       url += "/events/query/" + this._getProgramParameters(favoriteObject);
 
       /**
        * Also get startDate and end date if available
        */
-      if(favoriteObject.hasOwnProperty('startDate') && favoriteObject.hasOwnProperty('endDate')) {
+      if (favoriteObject.hasOwnProperty('startDate') && favoriteObject.hasOwnProperty('endDate')) {
         url += 'startDate=' + favoriteObject.startDate + '&' + 'endDate=' + favoriteObject.endDate + '&';
       }
 
@@ -492,7 +591,7 @@ export class AnalyticsService {
      * Get analytic strategies
      * @type {string}
      */
-    url += this._getAnalyticsCallStrategies(favoriteType,favoriteObject.layer);
+    url += this._getAnalyticsCallStrategies(favoriteType, favoriteObject.layer);
 
 
     return url;
@@ -501,7 +600,7 @@ export class AnalyticsService {
   private _getAnalyticsCallStrategies(visualizationType, layerType: string = null): string {
     let strategies: string = '';
 
-    strategies += visualizationType == "EVENT_CHART" || visualizationType == "EVENT_REPORT"  || visualizationType == "EVENT_MAP" ? "&outputType=EVENT" : "";
+    strategies += visualizationType == "EVENT_CHART" || visualizationType == "EVENT_REPORT" || visualizationType == "EVENT_MAP" ? "&outputType=EVENT" : "";
 
     strategies += "&displayProperty=NAME";
 
@@ -513,9 +612,9 @@ export class AnalyticsService {
 
   private _getProgramParameters(favoriteObject: any): string {
     let params: string = "";
-    if(favoriteObject.hasOwnProperty('program') && favoriteObject.hasOwnProperty('programStage')) {
+    if (favoriteObject.hasOwnProperty('program') && favoriteObject.hasOwnProperty('programStage')) {
 
-      if(favoriteObject.program.hasOwnProperty('id') && favoriteObject.programStage.hasOwnProperty('id')) {
+      if (favoriteObject.program.hasOwnProperty('id') && favoriteObject.programStage.hasOwnProperty('id')) {
         params = favoriteObject.program.id + ".json?stage=" + favoriteObject.programStage.id + "&";
       }
     }
@@ -524,14 +623,13 @@ export class AnalyticsService {
 
   private _getDimension(dimension: string, favoriteObject: any, filters: any[]): string {
     let items: string = "";
-
-    if(favoriteObject.hasOwnProperty(dimension)) {
+    if (favoriteObject.hasOwnProperty(dimension)) {
 
       favoriteObject[dimension].forEach((dimensionValue: any) => {
         items += items != "" ? '&' : "";
         if (dimensionValue.hasOwnProperty('dimension') && dimensionValue.dimension != 'dy') {
           const customDimension: any = _.find(filters, ['name', dimensionValue.dimension]);
-          if(dimensionValue.hasOwnProperty('items')) {
+          if (dimensionValue.hasOwnProperty('items')) {
             items += 'dimension=';
             items += dimensionValue.dimension;
             items += dimensionValue.hasOwnProperty('legendSet') ? '-' + dimensionValue.legendSet.id : "";
@@ -539,11 +637,13 @@ export class AnalyticsService {
             items += dimensionValue.hasOwnProperty('filter') ? dimensionValue.filter : "";
 
 
-            if(customDimension) {
-              items  += customDimension.value;
+            if (customDimension) {
+              items += customDimension.value;
             } else {
               const dimensionItems: any[] = _.clone(dimensionValue.items);
-              items += dimensionItems.map(item => {return item.hasOwnProperty('dimensionItem') ? item.dimensionItem: ''}).join(';');
+              items += dimensionItems.map(item => {
+                return item.hasOwnProperty('dimensionItem') ? item.dimensionItem : ''
+              }).join(';');
             }
           }
         }
@@ -552,7 +652,7 @@ export class AnalyticsService {
     return items;
   }
 
-  private _getCustomDimensionValue(customFilter,dimension): string {
+  private _getCustomDimensionValue(customFilter, dimension): string {
     let customValue: any = _.filter(customFilter, ['name', dimension]);
     return customValue.length > 0 ? customValue[0] : null;
   }
