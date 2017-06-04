@@ -1,9 +1,9 @@
 import {Component, OnInit, Input, Output, EventEmitter, ViewChild} from '@angular/core';
 import {Response, Http} from "@angular/http";
-import {Observable} from "rxjs";
-import {OrgUnitService} from "./org-unit.service";
 import {IActionMapping, TREE_ACTIONS} from "angular-tree-component/dist/models/tree-options.model";
 import {TreeComponent} from "angular-tree-component/dist/components/tree.component";
+import {Observable} from "rxjs";
+import {OrgUnitService} from "./org-unit.service";
 
 @Component({
   selector: 'app-org-unit-filter',
@@ -60,9 +60,9 @@ export class OrgUnitFilterComponent implements OnInit {
     private http: Http,
     private orgunitService: OrgUnitService
   ) {
-    if(!this.orgunit_tree_config.hasOwnProperty("multiple_key")){
-      this.orgunit_tree_config.multiple_key = "none";
-    }
+     if(!this.orgunit_tree_config.hasOwnProperty("multiple_key")){
+       this.orgunit_tree_config.multiple_key = "none";
+     }
   }
 
   updateModelOnSelect(data){
@@ -125,63 +125,63 @@ export class OrgUnitFilterComponent implements OnInit {
 
 
     // if (this.orgunitService.nodes == null) {
-    this.orgunitService.getOrgunitLevelsInformation()
-      .subscribe(
-        (data: any) => {
-          // assign urgunit levels and groups to variables
-          this.orgunit_model.orgunit_levels = data.organisationUnitLevels;
-          // setting organisation groups
-          this.orgunitService.getOrgunitGroups().subscribe( groups => {//noinspection TypeScriptUnresolvedVariable
-            this.orgunit_model.orgunit_groups = groups;
-          });
+      this.orgunitService.getOrgunitLevelsInformation()
+        .subscribe(
+          (data: any) => {
+            // assign urgunit levels and groups to variables
+            this.orgunit_model.orgunit_levels = data.organisationUnitLevels;
+            // setting organisation groups
+            this.orgunitService.getOrgunitGroups().subscribe( groups => {//noinspection TypeScriptUnresolvedVariable
+              this.orgunit_model.orgunit_groups = groups;
+            });
 
-          // identify currently logged in usser
-          this.orgunitService.getUserInformation(this.orgunit_model.type).subscribe(
-            userOrgunit => {
-              let level = this.orgunitService.getUserHighestOrgUnitlevel( userOrgunit );
-              this.orgunit_model.user_orgunits = this.orgunitService.getUserOrgUnits( userOrgunit );
-              this.orgunitService.user_orgunits = this.orgunitService.getUserOrgUnits( userOrgunit );
-              if(this.orgunit_model.selection_mode == "Usr_orgUnit"){
-                this.orgunit_model.selected_orgunits = this.orgunit_model.user_orgunits;
-              }
-              let all_levels = data.pager.total;
-              let orgunits = this.orgunitService.getuserOrganisationUnitsWithHighestlevel( level, userOrgunit );
-              let use_level = parseInt(all_levels) - (parseInt(level) - 1);
-              // this.orgunit_model.user_orgunits = orgunits;
-
-              let fields = this.orgunitService.generateUrlBasedOnLevels(use_level);
-              this.orgunitService.getAllOrgunitsForTree1(fields, orgunits).subscribe(
-                items => {
-                  this.organisationunits = items;
-                  //activate organisation units
-                  for (let active_orgunit of this.orgunit_model.selected_orgunits) {
-                    this.activateNode(active_orgunit.id, this.orgtree);
-                  }
-                  this.prepareOrganisationUnitTree(this.organisationunits, 'parent');
-                  this.orgunit_tree_config.loading = false;
-                },
-                error => {
-                  console.log('something went wrong while fetching Organisation units');
-                  this.orgunit_tree_config.loading = false;
+            // identify currently logged in usser
+            this.orgunitService.getUserInformation(this.orgunit_model.type).subscribe(
+              userOrgunit => {
+                let level = this.orgunitService.getUserHighestOrgUnitlevel( userOrgunit );
+                this.orgunit_model.user_orgunits = this.orgunitService.getUserOrgUnits( userOrgunit );
+                this.orgunitService.user_orgunits = this.orgunitService.getUserOrgUnits( userOrgunit );
+                if(this.orgunit_model.selection_mode == "Usr_orgUnit"){
+                  this.orgunit_model.selected_orgunits = this.orgunit_model.user_orgunits;
                 }
-              )
-              //load inital orgiunits to speed up loading speed
-              /*this.orgunitService.getInitialOrgunitsForTree(orgunits).subscribe(
-               (initial_data) => {
-               this.organisationunits = initial_data
-               // after done loading initial organisation units now load all organisation units
+                let all_levels = data.pager.total;
+                let orgunits = this.orgunitService.getuserOrganisationUnitsWithHighestlevel( level, userOrgunit );
+                let use_level = parseInt(all_levels) - (parseInt(level) - 1);
+                // this.orgunit_model.user_orgunits = orgunits;
 
-               },
-               error => {
-               console.log('something went wrong while fetching Organisation units');
-               this.orgunit_tree_config.loading = false;
-               }
-               )*/
+                let fields = this.orgunitService.generateUrlBasedOnLevels(use_level);
+                this.orgunitService.getAllOrgunitsForTree1(fields, orgunits).subscribe(
+                  items => {
+                    this.organisationunits = items;
+                    //activate organisation units
+                    for (let active_orgunit of this.orgunit_model.selected_orgunits) {
+                      this.activateNode(active_orgunit.id, this.orgtree);
+                    }
+                    this.prepareOrganisationUnitTree(this.organisationunits, 'parent');
+                    this.orgunit_tree_config.loading = false;
+                  },
+                  error => {
+                    console.log('something went wrong while fetching Organisation units');
+                    this.orgunit_tree_config.loading = false;
+                  }
+                )
+                //load inital orgiunits to speed up loading speed
+                /*this.orgunitService.getInitialOrgunitsForTree(orgunits).subscribe(
+                  (initial_data) => {
+                    this.organisationunits = initial_data
+                    // after done loading initial organisation units now load all organisation units
 
-            }
-          )
-        }
-      );
+                  },
+                  error => {
+                    console.log('something went wrong while fetching Organisation units');
+                    this.orgunit_tree_config.loading = false;
+                  }
+                )*/
+
+              }
+            )
+          }
+        );
     // }
     // else {
     //

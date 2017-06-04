@@ -7,8 +7,8 @@
 <!--end of error block-->
 <div class="row" *ngIf="!loading && !hasError">
   <div class="col-md-12" *ngFor="let tableObject of tableObjects">
-    <h4 class="text-center item-title">{{tableData.name}}</h4>
-    <h6 class="text-center item-title">{{tableObject.subtitle}}</h6>
+    <h4 class="text-center item-title" style="font-size: 15px;">{{tableObject.title}}</h4>
+    <h6 class="text-center item-title" style="font-size: 12px; font-weight: 100;">{{tableObject.subtitle}}</h6>
     <h5 style="margin-top: 80px" class="text-center" *ngIf="tableObject.rows.length == 0"> No
       data to display</h5>
     <table class="table table-bordered table-responsive custom-table"

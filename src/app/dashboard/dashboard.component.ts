@@ -5,6 +5,7 @@ import {Visualization} from "./model/visualization";
 import * as _ from 'lodash';
 import {Observable, Subject} from "rxjs";
 import {VisualizationObjectService} from "./providers/visualization-object.service";
+import {CurrentUserService} from "../providers/current-user.service";
 
 @Component({
   selector: 'app-dashboard',
@@ -21,7 +22,8 @@ export class DashboardComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
-    private visualizationObjectService: VisualizationObjectService
+    private visualizationObjectService: VisualizationObjectService,
+    private currenUserService: CurrentUserService
   ) {
     this.globalFilters$.next(null);
     this.globalFilters = this.globalFilters$.asObservable();
@@ -30,24 +32,26 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       let visualizationObjects = [];
-      this.dashboardService.find(params['pageId']).subscribe(dashboard => {
-        if(dashboard.dashboardItems) {
-          dashboard.dashboardItems.forEach(dashboardItem => {
-            if(!dashboardItem.hasOwnProperty('visualizationObject')) {
+      this.currenUserService.getUserInformation().subscribe(currentUser => {
+        this.dashboardService.find(params['pageId']).subscribe(dashboard => {
+          if(dashboard.dashboardItems) {
+            dashboard.dashboardItems.forEach(dashboardItem => {
+              if(!dashboardItem.hasOwnProperty('visualizationObject')) {
 
-              /**
-               * Load initial visualization
-               */
-              visualizationObjects.push(this.getInitialVisualization(dashboardItem, params['pageId']));
-            } else {
-              visualizationObjects.push(dashboardItem.visualizationObject);
-            }
-          });
+                /**
+                 * Load initial visualization
+                 */
+                visualizationObjects.push(this.getInitialVisualization(dashboardItem, params['pageId'], currentUser));
+              } else {
+                visualizationObjects.push(dashboardItem.visualizationObject);
+              }
+            });
 
-          this.visualizationObjects = visualizationObjects;
-          this.loading = false;
-        }
-      })
+            this.visualizationObjects = visualizationObjects;
+            this.loading = false;
+          }
+        })
+      });
     });
   }
 
@@ -79,7 +83,7 @@ export class DashboardComponent implements OnInit {
         filters: [],
         layout: {},
         analyticsStrategy: 'normal',
-        userOrganisationUnit: ''
+        userOrganisationUnit: this.getUserOrganisationUnit(currentUser)
       },
       layers: this.getLayerDetailsForNonVisualizableObject(cardData),
       operatingLayers: []

@@ -166,7 +166,6 @@ export class TableService {
       }
     }
 
-
     return {
       title: favoriteObject.hasOwnProperty('displayName') ? favoriteObject.displayName : favoriteObject.hasOwnProperty('name') ? favoriteObject.name : '',
       subtitle: favoriteObject.hasOwnProperty('subtitle') ? favoriteObject.subtitle: '',
