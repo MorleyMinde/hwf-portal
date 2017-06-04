@@ -18,6 +18,7 @@ export class DashboardComponent implements OnInit {
   globalFilters: Observable<any>;
   globalFilters$: Subject<any> = new Subject<any>();
   loading: boolean = true;
+  dashboardId:string = '';
   constructor(
     private route: ActivatedRoute,
     private dashboardService: DashboardService,
@@ -30,6 +31,7 @@ export class DashboardComponent implements OnInit {
   ngOnInit() {
     this.route.params.subscribe(params => {
       let visualizationObjects = [];
+      this.dashboardId = params['pageId'];
       this.dashboardService.find(params['pageId']).subscribe(dashboard => {
         if(dashboard.dashboardItems) {
           dashboard.dashboardItems.forEach(dashboardItem => {
@@ -56,14 +58,17 @@ export class DashboardComponent implements OnInit {
   }
 
   getInitialVisualization(cardData, dashboardId, currentUser?): Visualization {
-
+    let shape = cardData.hasOwnProperty('shape') ? cardData.shape : 'NORMAL';
+    if( dashboardId == 'reports'){
+       shape = 'FULL_WIDTH';
+    }
     return {
       id: cardData.hasOwnProperty('id') ? cardData.id : null,
       name: null,
       type: cardData.hasOwnProperty('type') ? cardData.type : null,
       created: cardData.hasOwnProperty('created') ? cardData.created : null,
       lastUpdated: cardData.hasOwnProperty('lastUpdated') ? cardData.lastUpdated: null,
-      shape: cardData.hasOwnProperty('shape') ? cardData.shape : 'NORMAL',
+      shape: shape,
       dashboardId: dashboardId,
       details: {
         loaded: false,

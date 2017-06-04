@@ -26,6 +26,7 @@ import {VisualizationLegendComponent} from "./components/visualization-legend/vi
 import { ChartBlockComponent } from './components/chart-block/chart-block.component';
 import {DashboardService} from "./providers/dashboard.service";
 import {Utilities} from "./providers/utilities";
+import {ReportComponent} from "./report/report.component";
 
 @NgModule({
   imports: [
@@ -50,6 +51,6 @@ import {Utilities} from "./providers/utilities";
     DashboardService,
     Utilities
   ],
-  declarations: [DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent, VisualizationLegendComponent]
+  declarations: [ReportComponent,DashboardComponent, DashboardItemCardComponent, MapComponent, ChartComponent, TableComponent, ChartBlockComponent, VisualizationLegendComponent]
 })
 export class DashboardModule { }

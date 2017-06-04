@@ -1,0 +1,57 @@
+#header *{
+  display: none;
+}
+#header{
+  display: none;
+}
+.not_in_report *{
+  display: none;
+}
+
+fieldset {
+  display: block;
+  margin-left: 2px;
+  margin-right: 2px;
+  padding-top: 0.35em;
+  padding-bottom: 0.625em;
+  padding-left: 0.75em;
+  padding-right: 0.75em;
+  display: block;
+  -webkit-margin-start: 2px;
+  -webkit-margin-end: 2px;
+  -webkit-padding-before: 0.35em;
+  -webkit-padding-start: 0.75em;
+  -webkit-padding-end: 0.75em;
+  -webkit-padding-after: 0.625em;
+  border-width: 2px;
+  border-style: solid;
+  border-color: threedface;
+  border-image: initial;
+}
+legend {
+  display: block;
+  width: auto;
+  -webkit-padding-start: 2px;
+  -webkit-padding-end: 2px;
+  border-width: initial;
+  border-style: none;
+  border-color: initial;
+  border-image: initial;
+}
+.chart-body{
+  width: 510px;
+}
+
+.half-item{
+  border:solid 1px #6498D9;
+  padding: 2px;
+  height: 430px
+}
+
+.rational{
+  height: 80px;
+  color:#6498D9;border-top: 0px;
+}
+.panel{
+  border: 0px;
+}

@@ -1,0 +1,164 @@
+<div class="container-fluid">
+    <!--Email section-->
+<div class="container-fluid" style="width: 1080px" *ngIf="!loading">
+    <button *ngIf="!show_warning_message && !show_sending_message && !show_other_sending_message && !show_other_warning_message && user_email != ''" class="btn btn-info pull-right btn-sm" title="Manual send emails now" (click)="show_warning_message=true"><span class="glyphicon glyphicon-envelope"> Email All</span> </button>
+    <div class="pull-right" *ngIf="show_warning_message">
+      This will send emails of Last month to all subscribed users, Send Now? <br>
+      <button class="pull-right" (click)="enableSendEmail()"><span class="glyphicon glyphicon-check"></span> Yes </button>
+      <button class="pull-right" (click)="show_warning_message = false"><span class="glyphicon glyphicon-remove"></span> No</button>
+    </div>
+    <div class="pull-right" *ngIf="show_sending_message">
+      The email is being prepared and will be send to all subscribed users
+    </div>
+    <!--no email warning-->
+    <div class="pull-right" *ngIf="user_email == ''">
+      You can not receive emails since you have not set your email address, please update your <a href="/dhis-web-user-profile/#/profile">Profile</a>!
+    </div>
+    <button *ngIf="!show_warning_message && !show_sending_message  && !show_other_warning_message && user_email != '' && !show_other_sending_message" class="btn btn-info pull-right btn-sm" title="Manual send emails now" (click)="show_other_warning_message=true"><span class="glyphicon glyphicon-envelope"> Email Me </span> </button>
+    <div class="pull-right" *ngIf="show_other_warning_message">
+      This will send email of last month report to {{ user_email }}, Send Now? <br>
+      <button class="pull-right" (click)="enableSendUserEmail()"><span class="glyphicon glyphicon-check"></span> Yes </button>
+      <button class="pull-right" (click)="show_other_warning_message = false"><span class="glyphicon glyphicon-remove"></span> No</button>
+    </div>
+    <div class="pull-right" *ngIf="show_other_sending_message">
+      The email is being prepared and will be send to {{ user_email }}
+    </div>
+</div>
+<div class="container-fluid" style="width: 1080px" *ngIf="!loading">
+
+  <!--Functional status-->
+  <fieldset  *ngIf="visualizationObjects.length > 2">
+    <legend style="font-size: 1.27em;;font-weight: bold">Functionality Status:</legend>
+    <table>
+      <tr>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item">
+            <div style="min-width: 100%;  margin: 0 auto">
+              <app-dashboard-item-card
+                [visualizationObject]="visualizationObjects[0]"
+                [globalFilters]="globalFilters"
+              ></app-dashboard-item-card>
+            </div>
+          </div>
+        </td>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item" style="border-left: 0px;">
+            <div style="min-width: 100%; margin: 0 auto">
+              <app-dashboard-item-card
+                [visualizationObject]="visualizationObjects[1]"
+                [globalFilters]="globalFilters"
+              ></app-dashboard-item-card>
+            </div>
+          </div>
+        </td>
+
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item rational" >
+            <div class="container-fluid" *ngIf="visualizationObjects[0]">
+              <b>RATIONALE:</b>
+
+            </div>
+          </div>
+        </td>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item rational"  style="border-left: 0px;" >
+            <div class="container-fluid" *ngIf="visualizationObjects[1]">
+              <b>RATIONALE:</b>
+
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <!--Reason for non functional-->
+  <fieldset  *ngIf="visualizationObjects.length > 3" style="page-break-after: always">
+    <legend style="font-size: 1.27em;;font-weight: bold">Reasons for Non Functional</legend>
+    <table>
+      <tr>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item">
+            <div style="min-width: 100%; margin: 0 auto">
+              <app-dashboard-item-card
+              [visualizationObject]="visualizationObjects[2]"
+              [globalFilters]="globalFilters"
+            ></app-dashboard-item-card>
+            </div>
+          </div>
+        </td>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item"  style="border-left: 0px;" >
+            <div id="stockoutchart" style="min-width: 100%; margin: 0 auto">
+              <app-dashboard-item-card
+                [visualizationObject]="visualizationObjects[3]"
+                [globalFilters]="globalFilters"
+              ></app-dashboard-item-card>
+            </div>
+          </div>
+        </td>
+
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item rational" >
+            <div class="container-fluid" *ngIf="visualizationObjects[2]">
+              <b>RATIONALE:</b>
+
+            </div>
+          </div>
+        </td>
+        <td style="min-width: 510px; max-width: 510px">
+          <div class="half-item rational"  style="border-left: 0px;" >
+            <div class="container-fluid" *ngIf="visualizationObjects[3]">
+              <b>RATIONALE:</b>
+
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+  </fieldset>
+
+  <!--Reason for non functional-->
+  <fieldset *ngIf="visualizationObjects.length > 4">
+    <legend style="font-size: 1.37em;;font-weight: bold">Technology Functional Status:</legend>
+    <table>
+      <tr>
+        <td style="width: 1080px">
+          <div class="half-item" >
+            <app-dashboard-item-card
+              [visualizationObject]="visualizationObjects[4]"
+              [globalFilters]="globalFilters"
+            ></app-dashboard-item-card>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <table>
+      <tr>
+        <td style="width: 1080px">
+          <div class="half-item rational" >
+            <div class="container-fluid" *ngIf="visualizationObjects[4]">
+              <b>RATIONALE:</b>
+
+            </div>
+          </div>
+        </td>
+      </tr>
+    </table>
+
+  </fieldset>
+  <div class="row" *ngIf="showGenerationDate">
+    <div class="col-md-12">
+      <h5 class="pull-right"><b>Generated on:</b> {{dateGenerated}}</h5>
+    </div>
+  </div>
+</div>
+</div>

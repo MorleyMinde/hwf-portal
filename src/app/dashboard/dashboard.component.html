@@ -23,7 +23,7 @@
 <!--End of Global filters-->
 
 <!--Dashboard Items-->
-<div class="container-fluid">
+<div class="container-fluid" *ngIf="dashboardId != 'reports'">
   <app-loader *ngIf="loading" [loadingMessage]="'Moving dashboards into position'"></app-loader>
   <div class="row" *ngIf="!loading">
     <app-dashboard-item-card
@@ -37,3 +37,12 @@
   </div>
 </div>
 <!--End of Dashboard Items-->
+
+<!--report component-->
+
+<app-report
+  *ngIf="dashboardId == 'reports'"
+ [globalFilters]="globalFilters"
+ [visualizationObjects]="visualizationObjects"
+ [loading]="loading"
+></app-report>
