@@ -18,17 +18,40 @@ export class OrgUnitService {
     this.db = new AngularIndexedDB('water-point', 1);
   }
 
+  userInfo;
   // Get current user information
   getUserInformation(priority = null) {
-    if (priority == false) {
-      return this.http.get('../../../api/me.json?fields=dataViewOrganisationUnits[id,name,level],organisationUnits[id,name,level]')
-        .map((response:Response) => response.json())
-        .catch(this.handleError);
-    } else {
-      return this.http.get('../../../api/me.json?fields=organisationUnits[id,name,level]')
-        .map((response:Response) => response.json())
-        .catch(this.handleError);
-    }
+    return Observable.create((observable)=>{
+      if(this.userInfo){
+        observable.next(this.userInfo);
+        observable.complete();
+      }else{
+        this.http.get('../../../api/me.json?fields=organisationUnits[id,name,level]')
+          .map((response:Response) => response.json())
+          .subscribe((data)=>{
+            this.userInfo = data;
+            observable.next(this.userInfo);
+            observable.complete();
+          })
+      }
+    })
+  }
+  waterPointConstant
+  getWaterPointConstant() {
+    return Observable.create((observable)=>{
+      if(this.waterPointConstant){
+        observable.next(this.waterPointConstant);
+        observable.complete();
+      }else{
+        this.http.get('../../../api/constants.json?fields=id,name,value&filter=name:eq:Water Point Parent Level')
+          .map((response:Response) => response.json())
+          .subscribe((data)=>{
+            this.waterPointConstant = data;
+            observable.next(this.waterPointConstant);
+            observable.complete();
+          })
+      }
+    })
   }
 
 

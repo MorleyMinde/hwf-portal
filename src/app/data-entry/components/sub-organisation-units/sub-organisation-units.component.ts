@@ -5,6 +5,7 @@ import {OrderByPipe} from "../../pipes/order-by.pipe";
 import {Observable} from 'rxjs/Observable';
 import {ChangeService} from "../../providers/change.service";
 import {UserService} from "../../providers/user.service";
+import {OrgUnitService} from "../../../shared/components/org-unit-filter/org-unit.service";
 declare var $:any;
 declare var document:any;
 
@@ -31,7 +32,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
 
   statusPeriod;
 
-  constructor(private http:HttpClientService, private route:ActivatedRoute, private router:Router, private changeService:ChangeService,private userService:UserService) {
+  constructor(private http:HttpClientService, private route:ActivatedRoute, private router:Router, private changeService:ChangeService,private userService:UserService,private orgUnitService:OrgUnitService) {
     this.route.params.subscribe((params)=> {
       this.init()
     })
@@ -81,7 +82,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
         this.userService.getAuthorities().subscribe((authorities)=>{
           this.authorities = authorities;
         })
-        this.http.get("constants.json?fields=id,name,value&filter=name:eq:Water Point Parent Level").subscribe((data:any) => {
+        this.orgUnitService.getWaterPointConstant().subscribe((data:any) => {
           this.waterPointParentLevel = data.constants[0].value;
           this.http.get("organisationUnits.json?filter=level:eq:" + this.waterPointParentLevel + "&filter=path:like:" + this.id + "&pageSize=1").subscribe((data:any) => {
             this.totalWaterPoints = data.pager.total;
@@ -109,9 +110,8 @@ export class SubOrganisationUnitsComponent implements OnInit {
               if (!this.level) {
                 this.level = (this.organisationUnit.level + 1);
               }
-              this.http.get("organisationUnitLevels.json?fields=name,level").subscribe((organisationUnitLevelsData:any) => {
+              this.orgUnitService.getOrgunitLevelsInformation().subscribe((organisationUnitLevelsData:any) => {
                 organisationUnitLevelsData.organisationUnitLevels.forEach((organisationUnitLevel)=> {
-                  console.log
                   if (organisationUnitLevel.level == this.level) {
                     this.nextLevel = organisationUnitLevel;
                   }

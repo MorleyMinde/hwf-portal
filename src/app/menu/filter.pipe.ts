@@ -11,7 +11,6 @@ export class FilterPipe implements PipeTransform {
     if(term == undefined) return value;
 
     return value.filter(function(val) {
-      console.log("Here:",val.name,term.toLowerCase());
       return val.name.toLowerCase().includes(term.toLowerCase()) || val.displayName.toLowerCase().includes(term.toLowerCase());
     })
   }
