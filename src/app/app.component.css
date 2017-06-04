@@ -5,3 +5,8 @@
 .navbar-light .navbar-brand{
   color:#87cefa;
 }
+
+div.leaflet-div-icon{
+  background-color: transparent;
+  border-color: transparent;
+}

@@ -634,13 +634,20 @@ export class MapVisualizationService {
           const latitude = row[latitudeIndex];
           const longitude = row[longitudeIndex];
           if (latitude && longitude) {
+
+            let icon1 = L.divIcon({
+              iconSize: null,
+              html: '<i class="fa fa-map-marker fa-2x" style="color:#276696"></i>'
+            });
+            let icon2 = L.icon({
+              iconUrl: 'assets/img/marker-icon.png',
+              iconSize: [21, 31],
+              iconAnchor: [10, 31],
+              popupAnchor: [0, -31]
+            })
+
             markers.addLayer(L.marker([latitude, longitude], {
-              icon: L.icon({
-                iconUrl: 'assets/img/marker-icon.png',
-                iconSize: [21, 31],
-                iconAnchor: [10, 31],
-                popupAnchor: [0, -31]
-              })
+              icon: icon1
             }).bindPopup(title).on({
               mouseover: (event) => {
               }

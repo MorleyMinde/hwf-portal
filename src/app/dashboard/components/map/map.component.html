@@ -21,5 +21,5 @@
     {{mapData?.name}}</h4>
   <h6 class="text-center item-title" style="font-size: 12px; font-weight: 100;">{{mapData?.details?.mapConfiguration?.subtitle}}&nbsp;</h6>
 </div>
-<div class="map-view-port-{{mapData.id}}" [ngClass]="{hide: loading||hasError}"></div>
+<div class="map-view-port-{{mapData.id}}" [ngClass]="{hide: loading||hasError}" [ngStyle]="{'width': mapWidth}"></div>
 
