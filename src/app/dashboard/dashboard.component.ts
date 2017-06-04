@@ -32,6 +32,21 @@ export class DashboardComponent implements OnInit {
 
   ngOnInit() {
     this.route.params.subscribe(params => {
+      let filtersFromParams = [];
+      this.route.queryParams.forEach(params => {
+        if(params.hasOwnProperty('ou')) {
+          filtersFromParams.push({name: 'ou', value: params['ou']})
+        }
+
+        if(params.hasOwnProperty('pe')) {
+          filtersFromParams.push({name: 'pe', value: params['pe']})
+        }
+      });
+      if(filtersFromParams.length > 0) {
+        this.updateFilters(filtersFromParams)
+      }
+
+
       let visualizationObjects = [];
       this.dashboardId = params['pageId'];
       this.currenUserService.getUserInformation().subscribe(currentUser => {
@@ -81,6 +96,9 @@ export class DashboardComponent implements OnInit {
         appKey: cardData.hasOwnProperty('appKey') ? cardData.appKey : null,
         cardHeight: "400px",
         itemHeight: "380px",
+        hideCardBorders: dashboardId == 'reports' ? true: false,
+        showCardHeader: dashboardId == 'reports' ? false : true,
+        showCardFooter: dashboardId == 'reports' ? false : true,
         fullScreen: false,
         currentVisualization: this.getsanitizedCurrentVisualizationType(cardData.hasOwnProperty('type') ? cardData.type : null),
         favorite: this.getFavoriteDetails(cardData),
@@ -88,7 +106,8 @@ export class DashboardComponent implements OnInit {
         filters: [],
         layout: {},
         analyticsStrategy: 'normal',
-        userOrganisationUnit: this.getUserOrganisationUnit(currentUser)
+        userOrganisationUnit: this.getUserOrganisationUnit(currentUser),
+        description: null
       },
       layers: this.getLayerDetailsForNonVisualizableObject(cardData),
       operatingLayers: []
