@@ -54,7 +54,8 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     showOptions: true,
     optionsVisibility: 'hidden',
     blockWidth: '100%',
-    showMailButton: true
+    showMailButton: true,
+    showResizeButton: false
   };
   @ViewChild(ChartComponent) chartComponent: ChartComponent;
   @ViewChild(TableComponent) tableComponent: TableComponent;
@@ -156,7 +157,7 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
     this.showFullScreen = !this.showFullScreen;
 
-    this.resizeChildren()
+    this.resizeChildren(this.visualizationObject)
 
   }
 
@@ -183,7 +184,7 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     }
   }
 
-  resizeChildren() {
+  resizeChildren(visualizationObject) {
     if(this.currentVisualization == 'MAP') {
       if(this.mapComponent) {
         this.mapComponent.resizeMap();
@@ -191,7 +192,7 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
     } else if(this.currentVisualization == 'CHART') {
       if(this.chartComponent) {
-        this.chartComponent.resizeChart()
+        this.chartComponent.resizeChart(visualizationObject)
       }
     }
   }

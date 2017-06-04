@@ -1106,14 +1106,8 @@ export class VisualizerService {
             borderWidth: 0,
             allowPointSelect: true,
             cursor: 'pointer',
-            dataLabels: {
-              enabled: true,
-              format: '<b>{point.name}</b>: {point.percentage:.1f} %',
-              style: {
-                color: 'black'
-              }
-            },
-
+            dataLabels: {enabled: false},
+            showInLegend: true
           }
         },
         series: []
