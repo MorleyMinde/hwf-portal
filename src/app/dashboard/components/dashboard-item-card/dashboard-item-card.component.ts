@@ -79,7 +79,11 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
         this.updateFilters(filters);
         this.onFilterDeactivate.emit(null);
       }
-    })
+    });
+
+    this.cardConfiguration.hideCardBorders = this.visualizationObject.details.hideCardBorders;
+    this.cardConfiguration.showCardFooter = this.visualizationObject.details.showCardFooter;
+    this.cardConfiguration.showCardHeader = this.visualizationObject.details.showCardHeader;
 
   }
 

@@ -310,9 +310,17 @@ export class OrgUnitFilterComponent implements OnInit {
 
   updateOrgUnitModel() {
     this.displayOrgTree();
+    console.log("Update:",this.getOrgUnitsForAnalytics(this.orgunit_model,false));
     this.onOrgUnitUpdate.emit({name: 'ou', value: this.getOrgUnitsForAnalytics(this.orgunit_model,false)});
   }
-
+  changeUserOrgUnit(event){
+    console.log("changeUserOrgUnit Event:",event,this.organisationunits);
+    this.selected_orgunits = [this.organisationunits[0].id];
+    this.orgunit_model.selected_orgunits = [this.organisationunits[0].id];
+  }
+  changeSelectionMode(event){
+    this.changeUserOrgUnit(this.orgunit_model.selected_user_orgunit);
+  }
   // prepare a proper name for updating the organisation unit display area.
   getProperPreOrgunitName() : string{
     let name = "";
@@ -366,13 +374,9 @@ export class OrgUnitFilterComponent implements OnInit {
         orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 3));
       }
       if(orgunit_model.user_orgunits.length == 1){
-        let user_orgunit = this.orgtree.treeModel.getNodeById(orgunit_model.user_orgunits[0].id);
-        orgUnits.push(user_orgunit.id);
-        if(user_orgunit.hasOwnProperty('children') && with_children){
-          for( let orgunit of user_orgunit.children ){
-            orgUnits.push(orgunit.id);
-          }
-        }
+        this.organisationunits.forEach((orgUnit)=>{
+          orgUnits.push(orgUnit.id);
+        })
       }else{
         organisation_unit_analytics_string += orgunit_model.selected_user_orgunit
       }

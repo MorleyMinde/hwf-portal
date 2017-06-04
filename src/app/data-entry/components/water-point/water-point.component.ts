@@ -1,6 +1,6 @@
 import { Component, OnInit,Output,EventEmitter } from '@angular/core';
 import { ActivatedRoute,Params,Router,NavigationEnd} from '@angular/router';
-import {HttpClientService} from "../../../providers/http-client.service";
+import {HttpClientService} from "../../../shared/providers/http-client.service";
 import {ChangeService} from "../../providers/change.service";
 import {UserService} from "../../providers/user.service";
 declare var L:any;

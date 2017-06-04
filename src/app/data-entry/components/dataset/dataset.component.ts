@@ -1,5 +1,5 @@
 import { Component, OnInit,Input } from '@angular/core';
-import {HttpClientService} from "../../../providers/http-client.service";
+import {HttpClientService} from "../../../shared/providers/http-client.service";
 import {DataElementFinderPipe} from "../../pipes/data-element-finder.pipe";
 import {UserService} from "../../providers/user.service";
 

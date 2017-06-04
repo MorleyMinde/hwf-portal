@@ -1,5 +1,5 @@
 import { Component,ViewChild,OnInit,AfterViewInit} from '@angular/core';
-import {HttpClientService} from "../providers/http-client.service";
+import {HttpClientService} from "../shared/providers/http-client.service";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {UserService} from "./providers/user.service";
 

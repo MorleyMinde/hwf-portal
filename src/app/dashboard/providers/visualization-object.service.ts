@@ -120,13 +120,15 @@ export class VisualizationObjectService {
   }
 
   public updateVisualizationConfigurationAndSettings(initialVisualization: Visualization, favoriteObject: any): Observable<Visualization> {
-    let visualizationObject = _.clone(initialVisualization);
+    let visualizationObject: Visualization = _.clone(initialVisualization);
     return Observable.create(observer => {
+
       /**
        * Get visualization object name if any
        */
       if(visualizationObject.layers.length == 0) {
         visualizationObject.name = favoriteObject.hasOwnProperty('displayName') ? favoriteObject.displayName : favoriteObject.hasOwnProperty('name') ? favoriteObject.name : null;
+        visualizationObject.details.description = favoriteObject.hasOwnProperty('displayDescription') ? favoriteObject.displayDescription : null
       }
 
       if (visualizationObject.details.currentVisualization == 'MAP') {
@@ -146,6 +148,8 @@ export class VisualizationObjectService {
               visualizationObject.layers.push({settings: view, analytics: {}})
             })
           }
+          observer.next(visualizationObject);
+          observer.complete();
         } else {
           if(visualizationObject.details.analyticsStrategy == 'split') {
             visualizationObject = this.analyticsService.getSplitedAnalytics(visualizationObject);
@@ -181,7 +185,10 @@ export class VisualizationObjectService {
           settings.chartConfiguration = this.chartService.getChartConfiguration(favoriteObject);
 
 
-          visualizationObject.layers.push({settings: settings, analytics: {}})
+          visualizationObject.layers.push({settings: settings, analytics: {}});
+
+          observer.next(visualizationObject);
+          observer.complete();
 
         } else {
 
@@ -194,6 +201,9 @@ export class VisualizationObjectService {
               layer.settings.chartConfiguration = this.chartService.getChartConfiguration(layer.settings);
             }
           })
+
+          observer.next(visualizationObject);
+          observer.complete();
         }
 
       } else if (visualizationObject.details.currentVisualization == 'TABLE') {
@@ -206,7 +216,10 @@ export class VisualizationObjectService {
             settings.subtitle = this._getVisualizationSubtitle(favoriteObject.filters,visualizationObject.details.userOrganisationUnit)
           }
           settings.tableConfiguration = this.tableService.getTableConfiguration(favoriteObject, visualizationObject.type, visualizationObject.details.layout);
-          visualizationObject.layers.push({settings: settings, analytics: {}})
+          visualizationObject.layers.push({settings: settings, analytics: {}});
+
+          observer.next(visualizationObject);
+          observer.complete();
 
         } else {
 
@@ -220,11 +233,10 @@ export class VisualizationObjectService {
             }
           });
 
+          observer.next(visualizationObject);
+          observer.complete();
         }
-
       }
-      observer.next(visualizationObject);
-      observer.complete();
     });
 
   }
