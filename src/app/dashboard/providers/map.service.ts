@@ -682,7 +682,6 @@ export class MapService {
         geoFeatureArray.push(geoFeatureParams != null ? this._getGeoFeatures(geoFeatureParams) : []);
 
       });
-
       Observable.forkJoin(geoFeatureArray).subscribe((geoFeatures: any) => {
         let index: number = 0;
         visualizationObject.layers.forEach(layer => {

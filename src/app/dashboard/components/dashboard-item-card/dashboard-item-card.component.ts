@@ -6,6 +6,7 @@ import {VisualizationObjectService} from "../../providers/visualization-object.s
 import {ChartComponent} from "../chart/chart.component";
 import {TableComponent} from "../table/table.component";
 import {MapComponent} from "../map/map.component";
+import {DashboardService} from "../../providers/dashboard.service";
 
 export const VISUALIZATION_WITH_NO_OPTIONS = ['USERS', 'REPORTS', 'RESOURCES', 'APP'];
 
@@ -58,7 +59,10 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
   @ViewChild(ChartComponent) chartComponent: ChartComponent;
   @ViewChild(TableComponent) tableComponent: TableComponent;
   @ViewChild(MapComponent) mapComponent: MapComponent;
-  constructor(private visualizationObjectService: VisualizationObjectService) { }
+  constructor(
+    private visualizationObjectService: VisualizationObjectService,
+    private dashboardService: DashboardService
+  ) { }
 
   ngOnInit() {
     /**
@@ -157,17 +161,26 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
   }
 
   updateVisualization(selectedVisualization) {
-    const visualizationObject: Visualization = _.clone(this.visualizationObject);
-    visualizationObject.details.currentVisualization = selectedVisualization;
+    const visualizationObjectFromStore = this.dashboardService.findVisualizationObject(this.visualizationObject);
 
-    if (selectedVisualization == 'MAP' && visualizationObject.type != 'MAP') {
-      visualizationObject.details.analyticsStrategy = 'split';
+    if(visualizationObjectFromStore) {
+      visualizationObjectFromStore.details.currentVisualization = selectedVisualization;
 
-    } else if (selectedVisualization != 'MAP' && visualizationObject.type == 'MAP') {
-      visualizationObject.details.analyticsStrategy = 'merge';
+      if (selectedVisualization == 'MAP' && visualizationObjectFromStore.type != 'MAP') {
+        visualizationObjectFromStore.details.analyticsStrategy = 'split';
+
+      } else if (selectedVisualization != 'MAP' && visualizationObjectFromStore.type == 'MAP') {
+        visualizationObjectFromStore.details.analyticsStrategy = 'merge';
+      }
+
+      this.visualizationObjectService.updateVisualizationConfigurationAndSettings(visualizationObjectFromStore, {})
+        .subscribe(newVisualizationObject => {
+          this.visualizationObject = newVisualizationObject;
+          this.visualizationObject$ = Observable.of(this.visualizationObject);
+          this.currentVisualization = selectedVisualization;
+        })
+
     }
-
-    this.currentVisualization = selectedVisualization;
   }
 
   resizeChildren() {

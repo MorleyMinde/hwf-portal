@@ -6,6 +6,7 @@ import {isArray} from "rxjs/util/isArray";
 import {Constants} from "./constants";
 import {Utilities} from "./utilities";
 import * as _ from 'lodash';
+import {Visualization} from "../model/visualization";
 export interface Dashboard {
   id: string;
   name: string;
@@ -458,6 +459,18 @@ export class DashboardService {
         })
       }
     })
+  }
+
+  findVisualizationObject(visualizationObject): Visualization {
+    let newVisualizationObject: Visualization = null;
+    const currentDashboard: any = _.find(this.dashboards, ['id', visualizationObject.dashboardId]);
+    if(currentDashboard) {
+      const dashboardItem: any = _.find(currentDashboard.dashboardItems, ['id', visualizationObject.id]);
+      if(dashboardItem) {
+        newVisualizationObject = dashboardItem.visualizationObject;
+      }
+    }
+    return newVisualizationObject;
   }
 
   getUpdatableDashboardItem(dashboardId, dashboardFavourate) {
