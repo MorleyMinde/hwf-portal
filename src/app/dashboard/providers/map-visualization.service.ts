@@ -191,14 +191,33 @@ export class MapVisualizationService {
 
     layer.on(
       {
-        click: (feature, layer) => {
+        click: (event) => {
+          const hoveredFeature: any = event.layer.feature;
+          const featureName = hoveredFeature.properties.name;
+
+          console.log(hoveredFeature);
+          let dataValue: any = "";
+          dataValue = this._getFeatureDataFromAnalytics(hoveredFeature, visualizationLayerSettings);
+
+          let toolTipContent: string =
+            "<div style='color:#333!important;font-size: 10px'>" +
+            "<table>" +
+            "<tr><td style='color:#333!important;font-weight:bold;'>" + featureName + "</td><td style='color:#333!important;' > " + dataValue + "</td>" +
+            "</tr>" +
+            "</table>" +
+            "</div>";
+
+
+            layer.bindPopup(toolTipContent);
+
+
+
 
         },
         mouseover: (event) => {
           const hoveredFeature: any = event.layer.feature;
           const featureName = hoveredFeature.properties.name;
           let dataValue: any = "";
-          console.log(visualizationLayerSettings.id);
           dataValue = this._getFeatureDataFromAnalytics(hoveredFeature, visualizationLayerSettings);
 
           let toolTipContent: string =
@@ -220,9 +239,7 @@ export class MapVisualizationService {
 
           let popUp = layer.getPopup();
           if (popUp && popUp.isOpen()) {
-
-          } else {
-            layer.bindPopup(toolTipContent);
+              layer.closePopup();
           }
 
 
