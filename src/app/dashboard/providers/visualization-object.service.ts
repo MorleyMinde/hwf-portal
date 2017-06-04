@@ -149,6 +149,7 @@ export class VisualizationObjectService {
         } else {
           if(visualizationObject.details.analyticsStrategy == 'split') {
             visualizationObject = this.analyticsService.getSplitedAnalytics(visualizationObject);
+            console.log(visualizationObject);
           }
 
           this.mapService.getGeoFeatures(visualizationObject).subscribe(visualizationWithGeoFeature => {
