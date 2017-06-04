@@ -314,12 +314,14 @@ export class OrgUnitFilterComponent implements OnInit {
     this.onOrgUnitUpdate.emit({name: 'ou', value: this.getOrgUnitsForAnalytics(this.orgunit_model,false)});
   }
   changeUserOrgUnit(event){
-    console.log("changeUserOrgUnit Event:",event,this.organisationunits);
     this.selected_orgunits = [this.organisationunits[0].id];
     this.orgunit_model.selected_orgunits = [this.organisationunits[0].id];
   }
   changeSelectionMode(event){
-    this.changeUserOrgUnit(this.orgunit_model.selected_user_orgunit);
+    if(event == "USER_ORGUNIT"){
+      this.changeUserOrgUnit(this.orgunit_model.selected_user_orgunit);
+    }
+    //
   }
   // prepare a proper name for updating the organisation unit display area.
   getProperPreOrgunitName() : string{

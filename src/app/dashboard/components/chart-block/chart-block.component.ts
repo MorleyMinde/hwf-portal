@@ -27,11 +27,10 @@ export class ChartBlockComponent implements OnInit {
   }
 
   resize(height) {
-
-    this.chartHeight = height
+    this.chartHeight = height;
     setTimeout(() => {
       if(this.chart) {
-        this.chart.setSize(null,null);
+        this.chart.reflow()
       }
     }, 5)
   }

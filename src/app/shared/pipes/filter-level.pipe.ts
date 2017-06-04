@@ -19,6 +19,7 @@ export class FilterLevelPipe implements PipeTransform {
         }
       }
     })
+    console.log(output);
     return output;
   }
 
