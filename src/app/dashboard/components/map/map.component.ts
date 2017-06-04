@@ -86,7 +86,6 @@ export class MapComponent implements OnInit {
     this.centeringLayer = mapObject.centeringLayer;
     this.mapLegend = mapObject.mapLegend;
 
-
     L.control.zoom({position: "topright"}).addTo(this.map);
     this.updateOnLayerLoad(mapObject);
   }
