@@ -65,14 +65,16 @@ export class MapVisualizationService {
   private ends: Array<any> = [Color, Color];
   private step: Array<any> = [];
   public centeringLayer: null;
+  private mapObjects: any[] = [];
 
   constructor(private tileLayers: TileLayers,
               private colorInterpolation: ColorInterpolationService) {
   }
 
-  drawMap(L, visualizationObject: Visualization): MapObject {
+  drawMap(L, visualizationObject: Visualization, prioritizeFilter?: boolean): MapObject {
     let mapObject: MapObject = this._getInitialMapObject(visualizationObject);
-    const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap);
+
+    const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap, mapObject.id, prioritizeFilter);
     mapObject.options.layers = layers[0];
     mapObject.centeringLayer = layers[1];
 
@@ -96,7 +98,7 @@ export class MapVisualizationService {
     };
   }
 
-  private _getMapLayers(L, visualizationLayers, basemap): any {
+  private _getMapLayers(L, visualizationLayers, basemap, mapObjectId,prioritizeFilter): any {
     let mapLayers: any[] = [];
     let centeringLayer: any = null;
     /**
@@ -122,7 +124,15 @@ export class MapVisualizationService {
 
         } else if (layer.settings.layer == 'event') {
           if (layer.settings.eventClustering) {
-            let centerLayer = this._prepareMarkerClusters(L, layer.settings, layer.analytics);
+            const markerClusters: any = !prioritizeFilter ? _.find(this.mapObjects, ['id', mapObjectId]) : undefined;
+            let centerLayer: any = null;
+            if(markerClusters && !prioritizeFilter) {
+              centerLayer = markerClusters.layer;
+            } else {
+              centerLayer = this._prepareMarkerClusters(L, layer.settings, layer.analytics);
+              this.mapObjects.push({id: mapObjectId, layer: centerLayer});
+            }
+
             mapLayers.push(centerLayer);
           } else {
             let centerLayer = this._prepareMarkersLayerGroup();

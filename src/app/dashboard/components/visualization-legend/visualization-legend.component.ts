@@ -13,9 +13,11 @@ export class VisualizationLegendComponent implements OnInit {
   @Input() visualizationObject: any;
   @Output() changeMapTileLayer: EventEmitter<any> = new EventEmitter();
   @Output() changeMapDataLayer: EventEmitter<any> = new EventEmitter();
+  @Output() stickyLegend: EventEmitter<any> = new EventEmitter();
   visualizationLegends: LegendSet[] = [];
   visualizationTileLayersLegends: any[];
   openTileLegend: boolean = false;
+  sticky:boolean = false;
 
 
   constructor(private legend: LegendSetService) {
@@ -26,11 +28,10 @@ export class VisualizationLegendComponent implements OnInit {
     let boundaryLegends = [];
     let eventLegends = [];
     let thematicLegends = [];
-    if (this.visualizationObject.type == "MAP") {
+    if (this.visualizationObject.type == "MAP" || this.visualizationObject.type == "REPORT_TABLE" || this.visualizationObject.type == "CHART" || this.visualizationObject.type == "EVENT_REPORT" || this.visualizationObject.type == "EVENT_CHART") {
       const mapLayers = this.visualizationObject.layers;
 
       this.visualizationTileLayersLegends = this.legend.prepareTileLayers(TILE_LAYERS);
-
       mapLayers.forEach((mapLayer, mapLayerIndex) => {
           const mapVisualizationSettings = mapLayer.settings;
           const mapVisualizationAnalytics = mapLayer.analytics;
@@ -69,6 +70,7 @@ export class VisualizationLegendComponent implements OnInit {
       pinned: false,
       opened: false,
       useIcons: false,
+      isEvent:mapVisualizationSettings.layer == 'event'?true:false,
       opacity: mapVisualizationSettings.opacity,
       classes: legendClasses,
       change: []
@@ -81,10 +83,10 @@ export class VisualizationLegendComponent implements OnInit {
     this.changeMapTileLayer.emit(tileLegend);
   }
 
-  toggleLegendView(legendToggled) {
+  toggleLegendView(legendToggled,index) {
 
     this.visualizationLegends.forEach((legend, legendIndex) => {
-      legendToggled.id == legend.id ? legend.opened = !legend.opened : legend.opened = false;
+      index == legendIndex ? legend.opened = !legend.opened : legend.opened = false;
     })
   }
 
@@ -93,13 +95,18 @@ export class VisualizationLegendComponent implements OnInit {
     this.openTileLegend = !this.openTileLegend;
   }
 
+  stickLegendContainer(){
+    this.sticky =!this.sticky;
+    this.stickyLegend.emit(this.sticky)
+  }
+
   shortenTitle(longTitle) {
-    if (longTitle.length > 29) {
-      return longTitle.substr(0, 29) + "..";
+    if (longTitle.length > 25) {
+      return longTitle.substr(0, 25) + "..";
     } else if (longTitle.length == 0) {
       return "Layer Legend";
     }
-    else if (longTitle.length <= 29) {
+    else if (longTitle.length <= 25) {
       return longTitle;
     }
     return longTitle;

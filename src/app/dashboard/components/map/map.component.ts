@@ -29,19 +29,20 @@ export class MapComponent implements OnInit {
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
   subtitle: string = "";
-  constructor(
-    private mapVisualizationService: MapVisualizationService,
-    private visualizationObjectService: VisualizationObjectService
-  ) { }
+  pinned: boolean = false;
+
+  constructor(private mapVisualizationService: MapVisualizationService,
+              private visualizationObjectService: VisualizationObjectService) {
+  }
 
   ngOnInit() {
-    if(this.initialMapData) {
-      if(!this.initialMapData.details.loaded) {
+    if (this.initialMapData) {
+      if (!this.initialMapData.details.loaded) {
         this.loadMap(this.initialMapData)
       } else {
         this.mapData = this.initialMapData;
         this.loading = false;
-        if(!this.mapData.details.hasError) {
+        if (!this.mapData.details.hasError) {
           setTimeout(() => {
             this.drawMap(this.mapData);
           }, 10);
@@ -54,9 +55,10 @@ export class MapComponent implements OnInit {
     }
   }
 
-  loadMap(initialMapData) {
+  loadMap(initialMapData, prioritizeFilter?: boolean) {
     this.loading = true;
-    if(initialMapData) {
+    if (initialMapData) {
+      console.log(this.mapData);
       this.mapData = initialMapData;
       this.visualizationObjectService.getSanitizedVisualizationObject(initialMapData)
         .subscribe(sanitizedMapData => {
@@ -65,7 +67,7 @@ export class MapComponent implements OnInit {
             if (this.mapData.details.loaded) {
               if (!this.mapData.details.hasError) {
                 setTimeout(() => {
-                  this.drawMap(this.mapData);
+                  this.drawMap(this.mapData, prioritizeFilter);
                 }, 10);
                 this.hasError = false;
               } else {
@@ -79,8 +81,8 @@ export class MapComponent implements OnInit {
     }
   }
 
-  drawMap(mapData: Visualization) {
-    const mapObject = this.mapVisualizationService.drawMap(L, mapData);
+  drawMap(mapData: Visualization, prioritizeFilter?: boolean) {
+    const mapObject = this.mapVisualizationService.drawMap(L, mapData, prioritizeFilter);
     this.prepareMapContainer(mapObject.id, this.mapHeight, this.mapWidth);
     this.map = L.map(mapObject.id, mapObject.options);
     this.centeringLayer = mapObject.centeringLayer;
@@ -120,17 +122,30 @@ export class MapComponent implements OnInit {
     parentElement.appendChild(div);
   }
 
-  resizeMap() {
-    if(this.map) {
+  resizeMap(fullSize) {
+    if (this.map) {
       setTimeout(() => {
+        let container = document.getElementById(this.mapData.id);
+        if (fullSize){
+          container.style.height = '75vh';
+          container.style.width = '1459px';
+        } else {
+          container.style.height = '350px';
+          container.style.width = '440px';
+        }
         this.map.invalidateSize();
-      },10);
+      }, 100);
     }
   }
 
 
   toggleLegendContainerView() {
-    this.legendIsOpen = !this.legendIsOpen;
+    if (this.pinned){
+      this.legendIsOpen = this.pinned;
+    } else{
+      this.legendIsOpen = !this.legendIsOpen;
+    }
+
   }
 
   changeMapTileLayer(event) {
@@ -140,6 +155,9 @@ export class MapComponent implements OnInit {
     }
 
 
+  }
+  stickyMapLegend(event) {
+    this.pinned = event;
   }
 
 }

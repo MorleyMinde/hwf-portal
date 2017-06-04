@@ -7,15 +7,6 @@ export class LegendSetService {
   constructor(private colorInterpolation: ColorInterpolationService) {
   }
 
-  // osmLight: {
-  //   name: 'openStreetMap',
-  //   label: 'OSM Light',
-  //   url: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
-  //   maxZoom: 18,
-  //   attribution: '&copy;<a href="https://carto.com/attribution">cartoDB</a>',
-  //   image:'/assets/img/map-tiles/esri_osm_light.png'
-  // }
-
   public prepareTileLayers(tileLayers) {
     let baseMapLayers: any = [];
 
@@ -86,7 +77,6 @@ export class LegendSetService {
       })
       const sortedData = _(dataArray).sortBy().value();
 
-
       if (legendSettings.method == 1) {
         obtainedDataLegend = this._prepareLegendSet(visualizationLayerSettings, legendsFromLegendSet, visualizationAnalytics);
       }
@@ -110,6 +100,7 @@ export class LegendSetService {
       }
 
     }
+
 
     return obtainedDataLegend;
   }
@@ -166,7 +157,7 @@ export class LegendSetService {
         }
         if (sortedData.length == 1 && doneWorkAround == false) {
           sortedData.push(sortedData[0] + 1);
-          doneWorkAround = true;
+          // doneWorkAround = true;
         }
       }
 
@@ -209,7 +200,6 @@ export class LegendSetService {
     }
 
     this._getLegendCounts(dataArray, legend);
-
     return legend;
   }
 
@@ -242,7 +232,6 @@ export class LegendSetService {
         radius: radiusArray[setIndex]
       });
     })
-
 
     this._getLegendCounts(dataArray, legend);
     return legend;
@@ -288,7 +277,7 @@ export class LegendSetService {
         if (legendIndex == legend.length - 1 && legendItem.min < data && data == legendItem.max) {
           legendItem.count += 1;
         }
-      })
+      });
     })
     return legend;
   }

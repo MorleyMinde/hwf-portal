@@ -148,6 +148,8 @@ export class VisualizationObjectService {
               visualizationObject.layers.push({settings: view, analytics: {}})
             })
           }
+          observer.next(visualizationObject);
+          observer.complete();
         } else {
           if(visualizationObject.details.analyticsStrategy == 'split') {
             visualizationObject = this.analyticsService.getSplitedAnalytics(visualizationObject);
@@ -183,7 +185,10 @@ export class VisualizationObjectService {
           settings.chartConfiguration = this.chartService.getChartConfiguration(favoriteObject);
 
 
-          visualizationObject.layers.push({settings: settings, analytics: {}})
+          visualizationObject.layers.push({settings: settings, analytics: {}});
+
+          observer.next(visualizationObject);
+          observer.complete();
 
         } else {
 
@@ -196,6 +201,9 @@ export class VisualizationObjectService {
               layer.settings.chartConfiguration = this.chartService.getChartConfiguration(layer.settings);
             }
           })
+
+          observer.next(visualizationObject);
+          observer.complete();
         }
 
       } else if (visualizationObject.details.currentVisualization == 'TABLE') {
@@ -208,7 +216,10 @@ export class VisualizationObjectService {
             settings.subtitle = this._getVisualizationSubtitle(favoriteObject.filters,visualizationObject.details.userOrganisationUnit)
           }
           settings.tableConfiguration = this.tableService.getTableConfiguration(favoriteObject, visualizationObject.type, visualizationObject.details.layout);
-          visualizationObject.layers.push({settings: settings, analytics: {}})
+          visualizationObject.layers.push({settings: settings, analytics: {}});
+
+          observer.next(visualizationObject);
+          observer.complete();
 
         } else {
 
@@ -222,11 +233,10 @@ export class VisualizationObjectService {
             }
           });
 
+          observer.next(visualizationObject);
+          observer.complete();
         }
-
       }
-      observer.next(visualizationObject);
-      observer.complete();
     });
 
   }
