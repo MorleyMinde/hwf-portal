@@ -133,20 +133,21 @@ export class VisualizationObjectService {
 
       if (visualizationObject.details.currentVisualization == 'MAP') {
 
-        if(!visualizationObject.details.hasOwnProperty('mapConfiguration')) {
+        if(!visualizationObject.details.hasOwnProperty('mapConfiguration') || visualizationObject.details.filters.length > 0) {
           visualizationObject.details.mapConfiguration = this.mapService._getMapConfiguration(favoriteObject);
         }
 
         if(visualizationObject.layers.length == 0) {
-          if(favoriteObject.hasOwnProperty('mapViews') && favoriteObject.mapViews.length > 0) {
-            favoriteObject.mapViews.forEach((view: any) => {
+          if(favoriteObject.hasOwnProperty('mapViews')) {
+            if(favoriteObject.mapViews.length > 0) {
+              favoriteObject.mapViews.forEach((view: any) => {
+                if(view.hasOwnProperty('filters') && view.filters.length > 0) {
+                  view.subtitle = this._getVisualizationSubtitle(view.filters,visualizationObject.details.userOrganisationUnit);
+                }
 
-              if(view.hasOwnProperty('filters') && view.filters.length > 0) {
-                view.subtitle = this._getVisualizationSubtitle(view.filters,visualizationObject.details.userOrganisationUnit)
-              }
-
-              visualizationObject.layers.push({settings: view, analytics: {}})
-            })
+                visualizationObject.layers.push({settings: view, analytics: {}})
+              })
+            }
           }
           observer.next(visualizationObject);
           observer.complete();
@@ -165,7 +166,6 @@ export class VisualizationObjectService {
           }, geoFeatureError => observer.error(this.validateVisualization(visualizationObject,geoFeatureError)));
         }
 
-
       } else if (visualizationObject.details.currentVisualization == 'CHART') {
 
         if(visualizationObject.layers.length == 0) {
@@ -174,8 +174,10 @@ export class VisualizationObjectService {
           /**
            * Get chart subtitle
            */
-          if(favoriteObject.hasOwnProperty('filters') && favoriteObject.filters.length > 0) {
-            settings.subtitle = this._getVisualizationSubtitle(favoriteObject.filters, visualizationObject.details.userOrganisationUnit)
+          if(favoriteObject.hasOwnProperty('filters')) {
+            if(favoriteObject.filters.length > 0) {
+              settings.subtitle = this._getVisualizationSubtitle(favoriteObject.filters, visualizationObject.details.userOrganisationUnit)
+            }
           }
 
           /**
@@ -197,7 +199,7 @@ export class VisualizationObjectService {
           }
 
           visualizationObject.layers.forEach(layer => {
-            if(!layer.settings.hasOwnProperty('chartConfiguration')) {
+            if(!layer.settings.hasOwnProperty('chartConfiguration') || visualizationObject.details.filters.length > 0) {
               layer.settings.chartConfiguration = this.chartService.getChartConfiguration(layer.settings);
             }
           })
@@ -228,7 +230,7 @@ export class VisualizationObjectService {
           }
 
           visualizationObject.layers.forEach(layer => {
-            if(!layer.settings.hasOwnProperty('tableConfiguration')) {
+            if(!layer.settings.hasOwnProperty('tableConfiguration') || visualizationObject.details.filters.length > 0) {
               layer.settings.tableConfiguration = this.tableService.getTableConfiguration(layer.settings, visualizationObject.type, visualizationObject.details.layout);
             }
           });
@@ -386,6 +388,18 @@ export class VisualizationObjectService {
 
   updateVisualizationObjectsWithFilters(visualizationObject: Visualization, filterValues: any): Visualization {
     const filterArray = _.isPlainObject(filterValues) ? [filterValues] : filterValues;
+
+
+    /**
+     * Update subtitle
+     */
+    if(visualizationObject.layers.length > 0) {
+      const newTitle: string = filterArray.map(filter => {return filter.title}).join('-');
+      visualizationObject.layers.forEach((layer: any) => {
+        layer.settings.subtitle = newTitle;
+      })
+    }
+
     if(visualizationObject.details.filters.length > 0) {
       filterArray.forEach(filter => {
         const existingFilter = _.find(visualizationObject.details.filters, ['name', filter.name]);
