@@ -2,12 +2,13 @@ import { Injectable } from '@angular/core';
 import {Http, Response} from "@angular/http";
 import {Observable} from "rxjs";
 import {Constants} from "../../providers/constants";
+import {HttpClientService} from "../../providers/http-client.service";
 
 @Injectable()
 export class FavoriteService {
 
   constructor(
-    private http: Http,
+    private http: HttpClientService,
     private constant: Constants
   ) { }
 
@@ -20,8 +21,6 @@ export class FavoriteService {
       return Observable.create(observer => observer.error('Failed to construct call for favorite'))
     }
     return this.http.get(url)
-      .map((res: Response) => res.json())
-      .catch(error => Observable.throw(new Error(error)))
   }
 
   private _getFavoriteUrl(favoriteType: string, favoriteId: string): string {

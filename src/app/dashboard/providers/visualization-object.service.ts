@@ -120,13 +120,15 @@ export class VisualizationObjectService {
   }
 
   public updateVisualizationConfigurationAndSettings(initialVisualization: Visualization, favoriteObject: any): Observable<Visualization> {
-    let visualizationObject = _.clone(initialVisualization);
+    let visualizationObject: Visualization = _.clone(initialVisualization);
     return Observable.create(observer => {
+
       /**
        * Get visualization object name if any
        */
       if(visualizationObject.layers.length == 0) {
         visualizationObject.name = favoriteObject.hasOwnProperty('displayName') ? favoriteObject.displayName : favoriteObject.hasOwnProperty('name') ? favoriteObject.name : null;
+        visualizationObject.details.description = favoriteObject.hasOwnProperty('displayDescription') ? favoriteObject.displayDescription : null
       }
 
       if (visualizationObject.details.currentVisualization == 'MAP') {
