@@ -179,6 +179,12 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
       } else if (selectedVisualization != 'MAP' && visualizationObjectFromStore.type == 'MAP') {
         visualizationObjectFromStore.details.analyticsStrategy = 'merge';
+        const settings = visualizationObjectFromStore.layers.map(layer => {return layer.settings});
+        const eventLayer = _.find(settings,['layer', 'event']);
+        if(eventLayer) {
+          visualizationObjectFromStore.details.rowMergingStrategy = 'event'
+        }
+
       }
 
       this.visualizationObjectService.updateVisualizationConfigurationAndSettings(visualizationObjectFromStore, {})

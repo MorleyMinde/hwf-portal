@@ -106,6 +106,7 @@ export class DashboardComponent implements OnInit {
         filters: [],
         layout: {},
         analyticsStrategy: 'normal',
+        rowMergingStrategy: 'normal',
         userOrganisationUnit: this.getUserOrganisationUnit(currentUser),
         description: null
       },

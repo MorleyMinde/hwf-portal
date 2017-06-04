@@ -117,6 +117,7 @@ export class LegendSetService {
 
     }
 
+    console.log(metaDataObject.names[eventId]);
     return [metaDataObject.names[eventId], metaDataObject[eventId]];
   }
 

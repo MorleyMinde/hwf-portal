@@ -51,6 +51,7 @@ export class AnalyticsService {
   }
 
   getSplitedAnalytics(visualization): Visualization {
+
     let newSettings: any[] = [];
     let newAnalytics: any[] = [];
     let newLayers: any[] = [];
@@ -96,11 +97,14 @@ export class AnalyticsService {
   }
 
   getMergedAnalytics(visualizationObject: Visualization) {
-    let newSettings: any = this.mergeFavorite(visualizationObject.layers);
-    let newAnalytics: any = this.mergeAnalytics(visualizationObject.layers);
+    let favourite: any = this.mergeFavorite(visualizationObject.layers);
+    let analytics: any = this.mergeAnalytics(visualizationObject.layers);
+    if (visualizationObject.details.rowMergingStrategy == 'event') {
+      this._deduceAggregateAnalyticsFromEventAnalytics(visualizationObject.layers);
+    }
     const newLayer = {
-      settings: this.mergeFavorite(visualizationObject.layers),
-      analytics: this.mergeAnalytics(visualizationObject.layers)
+      settings: favourite,
+      analytics: analytics
     };
 
     visualizationObject.layers = [newLayer];
@@ -118,12 +122,12 @@ export class AnalyticsService {
     let favoriteArray: any[] = [];
 
     if (favorite.hasOwnProperty('columns')) {
-      if(favorite.columns.length > 0) {
+      if (favorite.columns.length > 0) {
         favorite.columns.forEach(column => {
           const items: any[] = column.items;
-          if(items.length > 0) {
+          if (items.length > 0) {
             column.items.forEach(item => {
-              if(column.dimension) {
+              if (column.dimension) {
                 dimensionArray[column.dimension].type = 'columns';
                 dimensionArray[column.dimension].items.push(item);
               }
@@ -134,12 +138,12 @@ export class AnalyticsService {
     }
 
     if (favorite.hasOwnProperty('rows')) {
-      if(favorite.rows.length > 0) {
+      if (favorite.rows.length > 0) {
         favorite.rows.forEach(row => {
           const items: any[] = row.items;
-          if(items.length > 0) {
+          if (items.length > 0) {
             row.items.forEach(item => {
-              if(row.dimension) {
+              if (row.dimension) {
                 dimensionArray[row.dimension].type = 'rows';
                 dimensionArray[row.dimension].items.push(item);
               }
@@ -150,12 +154,12 @@ export class AnalyticsService {
     }
 
     if (favorite.hasOwnProperty('filters')) {
-      if(favorite.filters.length > 0) {
+      if (favorite.filters.length > 0) {
         favorite.filters.forEach(filter => {
           const items: any[] = filter.items;
-          if(items.length > 0) {
+          if (items.length > 0) {
             filter.items.forEach(item => {
-              if(filter.dimension) {
+              if (filter.dimension) {
                 dimensionArray[filter.dimension].type = 'filters';
                 dimensionArray[filter.dimension].items.push(item);
               }
@@ -173,9 +177,9 @@ export class AnalyticsService {
      * create favorite copy
      */
 
-    if(dimensionArray.dx.items) {
+    if (dimensionArray.dx.items) {
       dimensionArray.dx.items.forEach(dxItem => {
-        if(dimensionArray.pe.items) {
+        if (dimensionArray.pe.items) {
           dimensionArray.pe.items.forEach(peItem => {
             let newFavorite = favorite;
             const currentDate = new Date();
@@ -430,6 +434,23 @@ export class AnalyticsService {
     })
 
     return splitAnalytics;
+  }
+
+  private _deduceAggregateAnalyticsFromEventAnalytics(layers) {
+    if (layers) {
+      let eventLayer = _.find(layers, ['settings.layer', 'event']);
+
+      const headers = eventLayer.analytics.headers;
+      const ou = eventLayer.analytics.metaData.ou;
+      const names = eventLayer.analytics.metaData.names;
+      const rows = eventLayer.analytics.rows;
+
+      const ouNameIndex = _.find(headers,['name','ouname']);
+      const ouIndex = _.find(headers,['name','ou']);
+
+      console.log(JSON.stringify(headers));
+    }
+
   }
 
   private _sanitizeLayerSetting(settings, analytics) {

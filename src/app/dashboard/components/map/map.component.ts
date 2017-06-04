@@ -66,6 +66,7 @@ export class MapComponent implements OnInit {
             if (this.mapData.details.loaded) {
               if (!this.mapData.details.hasError) {
                 setTimeout(() => {
+                  this.mapData = this.getSubtitle(this.mapData);
                   this.drawMap(this.mapData, prioritizeFilter);
                 }, 10);
                 this.hasError = false;
@@ -93,7 +94,15 @@ export class MapComponent implements OnInit {
 
 
   recenterMap(map, layer) {
-    map.fitBounds(layer.getBounds());
+
+    let bounds = layer.getBounds();
+    if (this._checkIfValidCoordinate(bounds)) {
+      map.fitBounds(layer.getBounds());
+    } else {
+      this.hasError = true;
+      this.errorMessage = "Invalid coordinates found!";
+    }
+
   }
 
   updateOnLayerLoad(mapObject) {
@@ -104,6 +113,28 @@ export class MapComponent implements OnInit {
         this.recenterMap(this.map, mapObject.centeringLayer);
       }, 10);
 
+    }
+  }
+
+  getSubtitle(mapData) {
+    let subtible
+    let layers = mapData.layers;
+    layers.forEach(layer => {
+      if (layer.settings.subtitle) {
+        mapData['subtitle'] = layer.settings.subtitle;
+      }
+    })
+    return mapData;
+  }
+
+  private _checkIfValidCoordinate(bounds) {
+
+    let boundLength = Object.getOwnPropertyNames(bounds).length;
+    if (boundLength > 0) {
+      return true;
+    }
+    else {
+      return false;
     }
   }
 
