@@ -11,6 +11,7 @@ import {FuseSearchPipe} from "./pipes/fuse-search.pipe";
 import {ReadableNamePipe} from "./pipes/readable-name.pipe";
 import {DndModule} from "ng2-dnd";
 import {ErrorNotifierComponent} from "./components/error-notifier/error-notifier.component";
+import {HttpClientService} from "./providers/http-client.service";
 
 @NgModule({
   imports: [
@@ -29,7 +30,7 @@ import {ErrorNotifierComponent} from "./components/error-notifier/error-notifier
     ErrorNotifierComponent
   ],
   providers: [
-    OrgUnitService
+    OrgUnitService,HttpClientService
   ],
   exports: [
     LoaderComponent,

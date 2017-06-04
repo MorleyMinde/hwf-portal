@@ -60,7 +60,7 @@
           <label>Available Levels</label>
           <select [disabled]="orgunit_tree_config.loading" id="levelSelection" [(ngModel)]="orgunit_model.selected_level" class="form-control" style="height: 30px ">
             <option value="">Select Level</option>
-            <option *ngFor="let single_level of orgunit_model.orgunit_levels | filterLevel:organisationunits[0]:selected_orgunits"  value="LEVEL-{{single_level.level}}">{{ single_level.name }}</option>
+            <option *ngFor="let single_level of orgunit_model.orgunit_levels | filterLevel:organisationunits[0]:orgunit_model.selected_orgunits"  value="LEVEL-{{single_level.level}}">{{ single_level.name }}</option>
           </select>
         </div>
         <!--<div class="search-area">
