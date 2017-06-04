@@ -110,7 +110,6 @@ export class MapVisualizationService {
     let layersObjectList = [];
     visualizationLayers.forEach((layer, layerIndex) => {
       if (layer.settings.hasOwnProperty('layer')) {
-
         if (layer.settings.layer == 'boundary' || layer.settings.layer.indexOf('thematic') != -1 || layer.settings.layer == 'facility') {
           let centerLayer = this._prepareGeoJSON(L, layer.settings, layer.analytics);
           mapLayers.push(centerLayer);
@@ -177,7 +176,7 @@ export class MapVisualizationService {
       return this._prepareFeatureStyle(feature, visualizationLayerSettings, mapLegend);
     }
     const layer = this._getGEOJSONLayer(L, visualizationLayerSettings, visualizationAnalytics, options);
-    // this._prepareDataCatchedValues(visualizationLayerSettings, visualizationAnalytics);
+
     return layer;
   }
 
@@ -194,8 +193,6 @@ export class MapVisualizationService {
         click: (event) => {
           const hoveredFeature: any = event.layer.feature;
           const featureName = hoveredFeature.properties.name;
-
-          console.log(hoveredFeature);
           let dataValue: any = "";
           dataValue = this._getFeatureDataFromAnalytics(hoveredFeature, visualizationLayerSettings);
 
@@ -208,9 +205,7 @@ export class MapVisualizationService {
             "</div>";
 
 
-            layer.bindPopup(toolTipContent);
-
-
+          layer.bindPopup(toolTipContent);
 
 
         },
@@ -239,7 +234,7 @@ export class MapVisualizationService {
 
           let popUp = layer.getPopup();
           if (popUp && popUp.isOpen()) {
-              layer.closePopup();
+            layer.closePopup();
           }
 
 
