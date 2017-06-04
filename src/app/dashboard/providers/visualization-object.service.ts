@@ -389,6 +389,11 @@ export class VisualizationObjectService {
   updateVisualizationObjectsWithFilters(visualizationObject: Visualization, filterValues: any): Visualization {
     const filterArray = _.isPlainObject(filterValues) ? [filterValues] : filterValues;
 
+    /**
+     * Update loading attributes
+     */
+    visualizationObject.details.loaded = false;
+    visualizationObject.details.hasError = false;
 
     /**
      * Update subtitle

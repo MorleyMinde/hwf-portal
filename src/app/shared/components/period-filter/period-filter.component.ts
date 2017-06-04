@@ -204,7 +204,6 @@ export class PeriodFilterComponent implements OnInit, AfterViewInit {
 
   // action to be called when a tree item is deselected(Remove item in array of selected items
   deactivateOnSelect ( $event ) {
-    console.log("Deactivate Data:",$event.node.data,JSON.stringify(this.selected_periods),this.selected_periods.indexOf($event.node.data));
     this.selected_periods.forEach((p,index)=>{
       if(p.id == $event.node.data.id){
         this.selected_periods.splice(index,1);

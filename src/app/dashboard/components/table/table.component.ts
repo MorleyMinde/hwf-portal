@@ -47,7 +47,6 @@ export class TableComponent implements OnInit {
       this.tableData = initialTableData;
       this.visualizationObjectService.getSanitizedVisualizationObject(initialTableData).subscribe(sanitizedTableData => {
         if(sanitizedTableData) {
-          console.log(sanitizedTableData)
           this.tableData = sanitizedTableData;
           if(sanitizedTableData.details.loaded) {
             this.loading = false;
