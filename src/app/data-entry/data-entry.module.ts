@@ -19,17 +19,20 @@ import {PeriodPickerComponent} from "./components/period-picker/period-picker.co
 import {WaterPointComponent} from "./components/water-point/water-point.component";
 import {InputComponent} from "./components/input/input.component";
 import {CoordinateComponent} from "./components/coordinate/coordinate.component";
+import { MyDatePickerModule } from 'mydatepicker';
 import { FilterOrgUnitAttributesPipe } from './pipes/filter-org-unit-attributes.pipe';
 import { HintsComponent } from './components/hints/hints.component';
 import {ChangeService} from "./providers/change.service";
+//import {BsDropdownModule} from "ng2-bootstrap";
 import { ErrorPipe } from './pipes/error.pipe';
 import { MessageComponent } from './components/message/message.component';
 import {UserService} from "./providers/user.service";
 import { HideOptionsPipe } from './pipes/hide-options.pipe';
 import { SelectComponent } from './components/select/select.component';
+import {FuseSearchPipe} from "../shared/pipes/fuse-search.pipe";
 import { YearPickerComponent } from './components/year-picker/year-picker.component';
-import {PaginationModule, CollapseModule, ModalModule, BsDropdownModule, TooltipModule} from "ngx-bootstrap";
-import {MyDatePickerModule} from "mydatepicker";
+import {TooltipModule,CollapseModule,ModalModule,PaginationModule} from "ngx-bootstrap/index";
+import {BsDropdownModule} from "ngx-bootstrap/index";
 
 @NgModule({
   imports: [
@@ -66,6 +69,7 @@ import {MyDatePickerModule} from "mydatepicker";
     MessageComponent,
     HideOptionsPipe,
     SelectComponent,
+    //FuseSearchPipe,
     YearPickerComponent
   ],
   providers:[ChangeService,UserService]

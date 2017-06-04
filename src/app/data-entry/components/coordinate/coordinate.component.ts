@@ -1,6 +1,5 @@
 import { Component, OnInit, Input,ViewChild } from '@angular/core';
 import {timeout} from "rxjs/operator/timeout";
-import {ModalDirective} from "ngx-bootstrap";
 declare var L:any;
 
 @Component({
@@ -14,8 +13,6 @@ export class CoordinateComponent implements OnInit {
   lat:number;
   lng:number;
   @Input() editing = false;
-
-  @ViewChild('staticModal') public bsModal:ModalDirective;
 
   showMapBool = false;
   showCoordinateBool = false;
@@ -73,7 +70,6 @@ export class CoordinateComponent implements OnInit {
   }
 
   showMap() {
-    //this.bsModal.show();
     this.isCollapsed = !this.isCollapsed;
     if (this.isCollapsed) {
       setTimeout(()=> {

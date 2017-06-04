@@ -9,6 +9,7 @@ export class SelectComponent implements OnInit {
 
   @Input() selected:any;
   @Input() options;
+  @Input() isOpen;
   @Input() settings:any = {
     valueField:"value",
     textField:"text",
@@ -18,7 +19,6 @@ export class SelectComponent implements OnInit {
 
   searchOptions;
   @Output() valueSelected = new EventEmitter();
-  isOpen: boolean = false;
   constructor() { }
 
   ngOnInit() {
