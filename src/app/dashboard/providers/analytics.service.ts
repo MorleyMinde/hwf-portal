@@ -56,9 +56,9 @@ export class AnalyticsService {
     let newLayers: any[] = [];
     let settings: any = visualization.layers[0].settings;
     visualization.layers.forEach(layer => {
-      // this.splitFavorite(layer.settings).forEach(settings => {
-      //   newSettings.push(settings);
-      // });
+      this.splitFavorite(layer.settings).forEach(settings => {
+        newSettings.push(settings);
+      });
 
       if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
         if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
@@ -82,14 +82,15 @@ export class AnalyticsService {
 
     });
 
-    // newSettings.forEach((settingsItem, settingsIndex) => {
-    //   newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
-    // });
-    //
 
-    newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
-      newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
+    newSettings.forEach((settingsItem, settingsIndex) => {
+      newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
     });
+
+
+    // newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
+    //   newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
+    // });
     visualization.layers = newLayers;
     return visualization;
   }
@@ -157,6 +158,15 @@ export class AnalyticsService {
     dimensionArray.dx.items.forEach(dxItem => {
       dimensionArray.pe.items.forEach(peItem => {
         let newFavorite = favorite;
+        const currentDate = new Date();
+        const year: number = currentDate.getFullYear();
+        const month: number = currentDate.getMonth();
+        const monthArray = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const readableNames = {
+          LAST_MONTH: year + ' ' + monthArray[month > 0 ? month - 1 : 11]
+        };
+
+        newFavorite.name = dxItem.displayName + " " + readableNames[peItem.id];
         newFavorite[dimensionArray.dx.type] = [{dimension: 'dx', items: dxItem}];
         newFavorite[dimensionArray.pe.type] = [{dimension: 'pe', items: peItem}];
         newFavorite[dimensionArray.ou.type] = [{dimension: 'ou', items: dimensionArray.ou.items}];
@@ -312,10 +322,8 @@ export class AnalyticsService {
     const indexOfOrgUnit = _.findIndex(reportTableAnalytics.headers, ['name', 'ou']);
     const indexOfData = _.findIndex(reportTableAnalytics.headers, ['name', 'dx']);
 
-    // console.log(dataIdentifiers);
 
     dataIdentifiers.forEach((dataIdentifier) => {
-      // console.log(dataIdentifier);
       periodIdentifiers.forEach((periodIdentifier) => {
         let analyticsTemplate = {
           headers: reportTableAnalytics.headers,
@@ -350,7 +358,6 @@ export class AnalyticsService {
     const periodIdentifiers = reportTableAnalytics.metaData.pe;
     const rows = reportTableAnalytics.rows;
     const names = reportTableAnalytics.metaData.names;
-    console.log(JSON.stringify(names));
     const dataGroups = this._getAnalyticsDataGroups(reportTableAnalytics.headers);
     let verticalDataGroups = this._getAnalyticsDataArrayGroups(reportTableAnalytics)[0];
     let horizontalDataGroups = this._getAnalyticsDataArrayGroups(reportTableAnalytics)[1];
