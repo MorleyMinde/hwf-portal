@@ -221,4 +221,12 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
     }
   }
 
+  getMouseAction(event) {
+    if(this.currentVisualization == 'CHART') {
+      if(this.chartComponent) {
+        this.chartComponent.toggleChartOptions(event);
+      }
+    }
+  }
+
 }

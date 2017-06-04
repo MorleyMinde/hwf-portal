@@ -159,5 +159,13 @@ export class ChartComponent implements OnInit {
     }
   }
 
+  toggleChartOptions(mouseEvent) {
+    if(mouseEvent == 'mouseenter') {
+      this.showChartOptions();
+    } else if (mouseEvent == 'mouseleave') {
+      this.hideChartOptions();
+    }
+  }
+
 
 }

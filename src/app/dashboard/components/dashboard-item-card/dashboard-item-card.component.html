@@ -1,4 +1,4 @@
-<div [ngClass]="getDashboardShapeClasses(visualizationObject.shape, dashboardShapes)" class="{{showFullScreen ? 'full-screen' : ''}}">
+<div [ngClass]="getDashboardShapeClasses(visualizationObject.shape, dashboardShapes)" class="{{showFullScreen ? 'full-screen' : ''}}" (mouseenter)="getMouseAction('mouseenter')" (mouseleave)="getMouseAction('mouseleave')">
   <div [ngClass]="['panel', 'panel-default', 'dashboard-block', cardConfiguration.hideCardBorders ? 'no-borders': '']">
     <div [ngClass]="['panel-heading', 'dashboard-card-heading']" *ngIf="cardConfiguration.showCardHeader">
       <div class="row">
