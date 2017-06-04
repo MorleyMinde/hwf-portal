@@ -315,7 +315,7 @@ export class OrgUnitFilterComponent implements OnInit {
   }
   changeUserOrgUnit(event){
     this.selected_orgunits = [this.organisationunits[0].id];
-    this.orgunit_model.selected_orgunits = [this.organisationunits[0].id];
+    //this.orgunit_model.selected_orgunits = [this.organisationunits[0].id];
   }
   changeSelectionMode(event){
     if(event == "USER_ORGUNIT"){
@@ -369,11 +369,11 @@ export class OrgUnitFilterComponent implements OnInit {
     // if the selected orgunit is user org unit
     if(orgunit_model.selection_mode == "Usr_orgUnit"){
       if(this.orgunit_model.selected_user_orgunit == "USER_ORGUNIT"){
-        orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 1));
+        orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level));
       }else if(this.orgunit_model.selected_user_orgunit == "USER_ORGUNIT_CHILDREN"){
-        orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 2));
+        orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 1));
       }else if(this.orgunit_model.selected_user_orgunit == "USER_ORGUNIT_GRANDCHILDREN"){
-        orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 3));
+        orgUnits.push("LEVEL-" + (orgunit_model.user_orgunits[0].level + 2));
       }
       if(orgunit_model.user_orgunits.length == 1){
         this.organisationunits.forEach((orgUnit)=>{

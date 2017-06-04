@@ -1,11 +1,13 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({
-  name: 'filterLevel'
+  name: 'filterLevel',
+  pure: false
 })
 export class FilterLevelPipe implements PipeTransform {
 
   transform(input: any, orgUnitTree?,selectedOrganisatioUnit?): any {
+    console.log(input,orgUnitTree,selectedOrganisatioUnit);
     let output = [];
     input.forEach((orgUnit)=>{
       if(selectedOrganisatioUnit.length > 0){

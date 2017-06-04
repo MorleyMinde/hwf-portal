@@ -58,8 +58,10 @@
         <!--org_unit_levels-->
         <div class="col-sm-6" style="padding-right: 0px; margin-bottom: 5px" *ngIf="orgunit_model.selection_mode == 'Level'">
           <label>Available Levels</label>
+
           <select [disabled]="orgunit_tree_config.loading" id="levelSelection" [(ngModel)]="orgunit_model.selected_level" class="form-control" style="height: 30px ">
             <option value="">Select Level</option>
+            <option *ngIf="orgunit_model.selected_level == ('LEVEL-' + orgunit_model.selected_orgunits[0].level)" value="{{orgunit_model.selected_level}}">Select Level</option>
             <option *ngFor="let single_level of orgunit_model.orgunit_levels | filterLevel:organisationunits[0]:orgunit_model.selected_orgunits"  value="LEVEL-{{single_level.level}}">{{ single_level.name }}</option>
           </select>
         </div>
@@ -92,7 +94,7 @@
           <button class="btn btn-default pull-right" style="height: 30px"  (click)="displayOrgTree()">
             <span class="glyphicon glyphicon-remove"></span> Close
           </button>
-          <button [disabled]="orgunit_tree_config.loading" *ngIf="orgunit_model.show_update_button" type="button" class="btn btn-default pull-right"  style="height: 30px" (click)="updateOrgUnitModel()">
+          <button [disabled]="orgunit_tree_config.loading || orgunit_model.selected_orgunits.length==0" *ngIf="orgunit_model.show_update_button" type="button" class="btn btn-default pull-right"  style="height: 30px" (click)="updateOrgUnitModel()">
             <span class="glyphicon glyphicon-refresh"></span>  Update
           </button>
         </div>
