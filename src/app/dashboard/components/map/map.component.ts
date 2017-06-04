@@ -29,6 +29,7 @@ export class MapComponent implements OnInit {
   legendMarginRight = '25px';
   legendMarginLeft = '200px';
   subtitle: string = "";
+  pinned:false;
 
   constructor(private mapVisualizationService: MapVisualizationService,
               private visualizationObjectService: VisualizationObjectService) {
@@ -138,7 +139,12 @@ export class MapComponent implements OnInit {
 
 
   toggleLegendContainerView() {
-    this.legendIsOpen = !this.legendIsOpen;
+    if (this.pinned){
+      this.legendIsOpen = this.pinned;
+    } else{
+      this.legendIsOpen = !this.legendIsOpen;
+    }
+
   }
 
   changeMapTileLayer(event) {
@@ -148,6 +154,9 @@ export class MapComponent implements OnInit {
     }
 
 
+  }
+  stickyMapLegend(event) {
+    this.pinned = event;
   }
 
 }

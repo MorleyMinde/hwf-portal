@@ -30,8 +30,10 @@
             </div>
           </div>
         </div>
-        <div class="col-lg-1 col-md-1 col-xs-1 eye-container" (click)="toggleTileLegendView()">
-          <a style="color:#ffffff;"><i class="fa fa-eye"></i></a>
+        <div class="col-lg-1 col-md-1 col-xs-1 eye-container">
+          <a style="cursor: pointer" title="Pin legend" (click)="stickLegendContainer()"
+          ><i
+            class="fa fa-thumb-tack" [ngClass]="{pinned:!sticky}"></i></a>
         </div>
       </div>
     </div>
