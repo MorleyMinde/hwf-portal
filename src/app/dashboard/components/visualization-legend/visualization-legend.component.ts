@@ -32,7 +32,6 @@ export class VisualizationLegendComponent implements OnInit {
       const mapLayers = this.visualizationObject.layers;
 
       this.visualizationTileLayersLegends = this.legend.prepareTileLayers(TILE_LAYERS);
-
       mapLayers.forEach((mapLayer, mapLayerIndex) => {
           const mapVisualizationSettings = mapLayer.settings;
           const mapVisualizationAnalytics = mapLayer.analytics;

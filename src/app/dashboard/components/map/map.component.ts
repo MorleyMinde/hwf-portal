@@ -58,6 +58,7 @@ export class MapComponent implements OnInit {
   loadMap(initialMapData, prioritizeFilter?: boolean) {
     this.loading = true;
     if (initialMapData) {
+      console.log(this.mapData);
       this.mapData = initialMapData;
       this.visualizationObjectService.getSanitizedVisualizationObject(initialMapData)
         .subscribe(sanitizedMapData => {
