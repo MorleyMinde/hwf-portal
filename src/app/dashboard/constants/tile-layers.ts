@@ -3,7 +3,7 @@ export const TILE_LAYERS = {
   osmLight: {
     name: 'osmLight',
     label: 'OSM Light',
-    url: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+    url: 'http://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
     maxZoom: 18,
     attribution: '&copy;<a href="https://carto.com/attribution">cartoDB</a>',
     image:'assets/img/map-tiles/esri_osm_light.png'
@@ -13,7 +13,7 @@ export const TILE_LAYERS = {
     name: 'googleStreetsBaseMap',
     label: 'Esri WorldStreetMap',
     maxZoom: 18,
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
+    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}',
     attribution: '&copy; Esri',
     image:'assets/img/map-tiles/esri_street_map.png'
   },
@@ -22,7 +22,7 @@ export const TILE_LAYERS = {
     name: 'googleHybrid',
     label: 'Earth Imagery',
     maxZoom: 18,
-    url: 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    url: 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     attribution: '&copy; Esri',
     image:'assets/img/map-tiles/esri_world_imagery.png'
   }
