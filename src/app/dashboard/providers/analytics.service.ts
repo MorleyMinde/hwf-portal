@@ -61,7 +61,7 @@ export class AnalyticsService {
       //   newSettings.push(settings);
       // });
 
-      if (layer.hasOwnProperty('analytics') && layer.analytics != undefined) {
+      if (layer.hasOwnProperty('analytics')) {
         if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
             newAnalytics.push(analytics)
