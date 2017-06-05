@@ -190,7 +190,7 @@ export class MapComponent implements OnInit {
 
     if (dimension && dimensionType) {
       if (dimensionType == "fullscreen") {
-        container.style.height = '80vh';
+        container.style.height = '75vh';
         container.style.width = "100%";
         this.mapWidth = "100%";
       } else {
