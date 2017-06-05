@@ -154,30 +154,6 @@ export class MapComponent implements OnInit {
     }
   }
 
-  //
-  // resizeMap(size) {
-  //   console.log(size);
-  //   if (this.map) {
-  //     let container = document.getElementById(this.mapData.id);
-  //
-  //     container.style.width = '0%';
-  //     this.mapWidth = '0%';
-  //
-  //     if (size == true) {
-  //       container.style.height = '75vh';
-  //       container.style.width = '100%';
-  //       this.mapWidth = '100%';
-  //     } else if (size == "FULL_WIDTH"){
-  //       container.style.height = '350px';
-  //       container.style.width = '100%';
-  //       this.mapWidth = '100%';
-  //     }
-  //     setTimeout(() => {
-  //       this.map.invalidateSize({pan: true});
-  //     }, 10);
-  //   }
-  // }
-
 
   resizeMap(dimension, dimensionType) {
     let container = document.getElementById(this.mapData.id);
