@@ -210,7 +210,13 @@ export class DashboardItemCardComponent implements OnInit, OnChanges {
 
     } else if(this.currentVisualization == 'CHART') {
       if(this.chartComponent) {
-        this.chartComponent.resizeChart(visualizationObject)
+        let screensize = ""
+        if (size==true){
+          screensize = 'fullscreen';
+        }else{
+          screensize = "shape";
+        }
+        this.chartComponent.resizeChart(visualizationObject,size,screensize)
       }
     }
   }

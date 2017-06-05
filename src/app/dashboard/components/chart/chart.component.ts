@@ -153,12 +153,13 @@ export class ChartComponent implements OnInit {
     }
   }
 
-  resizeChart(visualizationObject) {
-    let docWidth = document.getElementById(this.chartData.id).offsetWidth;
-    console.log(docWidth)
+  resizeChart(visualizationObject,dimension, dimensionType) {
+    // console.log(this.chartData.id);
+    // let docWidth = document.getElementById(this.chartData.id).offsetWidth;
+    // console.log(docWidth)
     this.chartData = visualizationObject;
     if(this.chartBlock) {
-      this.chartBlock.resize(visualizationObject.details.itemHeight)
+      this.chartBlock.resize(visualizationObject.details.itemHeight,dimension, dimensionType)
     }
   }
 
