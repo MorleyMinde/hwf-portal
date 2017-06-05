@@ -21,9 +21,15 @@ export class WaterPointComponent implements OnInit {
   @Output() addOrgUnit = new EventEmitter();
   //lat: number = -6.3690;
   //lng: number = 34.8888;
+  readonly = true;
   constructor(private http:HttpClientService, private route:ActivatedRoute, private router:Router, private changeService:ChangeService,private userService:UserService) {
     this.route.params.subscribe((params)=> {
       route.parent.params.forEach((params2:Params) => {
+        if(params2['readonly']){
+          this.readonly = true;
+        }else{
+          this.readonly = false;
+        }
         this.parentId = params2['id'];
       })
       this.id = params['waterPointId'];
@@ -42,7 +48,7 @@ export class WaterPointComponent implements OnInit {
   cancel() {
     this.editing = false;
     if (this.id == 'new')
-      this.router.navigate(['data-entry', 'orgUnit', this.parentId])
+      this.router.navigate(['orgUnit', this.parentId], {relativeTo: this.route})
   }
 
   authorities;

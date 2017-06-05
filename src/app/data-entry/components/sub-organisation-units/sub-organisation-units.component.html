@@ -44,8 +44,7 @@
           </div>
           <div class="col-lg-2 col-sm-4">
             <div class="btn-group pull-right" role="group">
-
-              <button tooltip="Create New Water Point" *ngIf="organisationUnit.level == waterPointParentLevel - 1 && (authorities.indexOf('ALL') > -1 || authorities.indexOf('F_ORGANISATIONUNIT_ADD') > -1)"
+              <button tooltip="Create New Water Point" *ngIf="!readonly && organisationUnit.level == waterPointParentLevel - 1 && (authorities.indexOf('ALL') > -1 || authorities.indexOf('F_ORGANISATIONUNIT_ADD') > -1)"
                       [routerLink]="['/data-entry','orgUnit',id,'waterPoint','new']" class="btn btn-primary btn-lg">
                 <i class="fa fa-plus" aria-hidden="true"> </i></button>
               <button tooltip="Download CSV" class="btn btn-primary btn-lg" (click)="download()"><i class="fa fa-download" aria-hidden="true"> </i></button>

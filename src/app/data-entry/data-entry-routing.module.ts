@@ -6,28 +6,45 @@ import {SubOrganisationUnitsComponent} from "./components/sub-organisation-units
 import {WaterPointComponent} from "./components/water-point/water-point.component";
 import {HintsComponent} from "./components/hints/hints.component";
 
+let children = [
+  {path: '', component: HomeComponent},
+  {
+    path: 'orgUnit/:id',
+    component: SubOrganisationUnitsComponent,
+    children:[
+      {path: '', component: HintsComponent},
+      {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
+    ]
+  },{
+    path: 'orgUnit/:id/level/:level',
+    component: SubOrganisationUnitsComponent,
+    children:[
+      {path: '', component: HintsComponent},
+      {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
+    ]
+  },
+  {path: ':readonly', component: HomeComponent},
+  {
+    path: ':readonly/orgUnit/:id',
+    component: SubOrganisationUnitsComponent,
+    children:[
+      {path: '', component: HintsComponent},
+      {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
+    ]
+  },{
+    path: ':readonly/orgUnit/:id/level/:level',
+    component: SubOrganisationUnitsComponent,
+    children:[
+      {path: '', component: HintsComponent},
+      {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
+    ]
+  }
+]
 const routes: Routes = [
   {
     path: '', component: DataEntryComponent,
-    children:[
-      {path: '', component: HomeComponent},
-      {
-        path: 'orgUnit/:id',
-        component: SubOrganisationUnitsComponent,
-        children:[
-          {path: '', component: HintsComponent},
-          {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
-        ]
-      },{
-        path: 'orgUnit/:id/level/:level',
-        component: SubOrganisationUnitsComponent,
-        children:[
-          {path: '', component: HintsComponent},
-          {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
-        ]
-      }
-    ]
-  },
+    children:children
+  }
 ];
 
 @NgModule({

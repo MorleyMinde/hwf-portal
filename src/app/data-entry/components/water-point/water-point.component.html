@@ -8,13 +8,13 @@
     <div *ngIf="!loading && !loadingError">
       <form #form="ngForm" (ngSubmit)="save()">
         <div *ngIf="!loading">
-          <button *ngIf="!editing && (authorities.indexOf('ALL') > -1 || authorities.indexOf('F_DATAVALUE_ADD') > -1)" (click)="editing = true " class="btn btn-primary pull-right"><i
+          <button *ngIf="!readonly && !editing && (authorities.indexOf('ALL') > -1 || authorities.indexOf('F_DATAVALUE_ADD') > -1)" (click)="editing = true " class="btn btn-primary pull-right"><i
             class="fa fa-pencil"
             aria-hidden="true"></i>
             Edit
           </button>
 
-          <div *ngIf="editing" class="btn-group pull-right" role="group" aria-label="...">
+          <div *ngIf="!readonly && editing" class="btn-group pull-right" role="group" aria-label="...">
             <button *ngIf="saveLoading" class="btn btn-success">
               Saving ...
             </button>
@@ -92,7 +92,7 @@
   <div *ngIf="!loading && !loadingError" class="panel-body">
     <div *ngIf="organisationUnit.dataSets && (programs.indexOf('Water Points') > -1 || authorities.indexOf('ALL') > -1)" class="row">
       <div class="col-sm-12" *ngFor="let dataSet of organisationUnit.dataSets">
-        <app-dataset [dataSet]="dataSet" [organisationUnit]="organisationUnit"></app-dataset>
+        <app-dataset [dataSet]="dataSet" [readonly]="readonly" [organisationUnit]="organisationUnit"></app-dataset>
       </div>
     </div>
   </div>

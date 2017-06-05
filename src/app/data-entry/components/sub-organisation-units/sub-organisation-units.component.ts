@@ -41,9 +41,9 @@ export class SubOrganisationUnitsComponent implements OnInit {
 
   openWaterPoint(selectedOrganisationUnit) {
     if (this.router.url.indexOf("level") > -1) {
-      this.router.navigate(['data-entry', 'orgUnit', this.id, 'level', this.level, 'waterPoint', selectedOrganisationUnit.id]);
+      this.router.navigate(['level', this.level, 'waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     } else {
-      this.router.navigate(['data-entry', 'orgUnit', this.id, 'waterPoint', selectedOrganisationUnit.id]);
+      this.router.navigate(['waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     }
   }
 
@@ -66,10 +66,16 @@ export class SubOrganisationUnitsComponent implements OnInit {
   setLevel;
   nextLevel
   authorities
+  readonly = true;
   init() {
     this.searchText = "";
 
     this.route.params.forEach((params:Params) => {
+      if(params['readonly']){
+        this.readonly = true;
+      }else{
+        this.readonly = false;
+      }
       if (this.id != params['id'] || this.level != params['level']) {
         this.id = params['id'];
         this.setLevel = params['level'];
@@ -118,7 +124,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
                 })
               })
               if (this.waterPointParentLevel == this.organisationUnit.level) {
-                this.router.navigate(['data-entry', 'orgUnit', this.organisationUnit.parent.id, "waterPoint", this.organisationUnit.id]);
+                this.router.navigate(['orgUnit', this.organisationUnit.parent.id, "waterPoint", this.organisationUnit.id], {relativeTo: this.route});
               } else {
                 let url = "organisationUnits.json?paging=false&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=level:eq:" + this.level;
                 if (this.level.indexOf)

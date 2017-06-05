@@ -59,9 +59,10 @@ export class DataEntryComponent implements OnInit {
       orgUnitId = orgUnits[orgUnits.length - 1];
     }
     if (orgUnits.length == 1) {
-      this.router.navigate(['data-entry', 'orgUnit', orgUnits[0]]);
+      console.log("Hereshd");
+      this.router.navigate(['orgUnit', orgUnits[0]], {relativeTo: this.route});
     }else{
-      this.router.navigate(['data-entry', 'orgUnit', orgUnits[1],"level",orgUnits[0].replace("LEVEL-","")]);
+      this.router.navigate(['orgUnit', orgUnits[1],"level",orgUnits[0].replace("LEVEL-","")], {relativeTo: this.route});
     }
   }
 

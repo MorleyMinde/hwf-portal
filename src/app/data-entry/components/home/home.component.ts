@@ -1,5 +1,5 @@
 import { Component, OnInit} from '@angular/core';
-import {Router } from '@angular/router';
+import {Router,ActivatedRoute} from '@angular/router';
 import {HttpClientService} from "../../../shared/providers/http-client.service";
 
 @Component({
@@ -9,7 +9,7 @@ import {HttpClientService} from "../../../shared/providers/http-client.service";
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private http:HttpClientService, private router:Router) { }
+  constructor(private http:HttpClientService, private router:Router, private route:ActivatedRoute) { }
 
   loading;
   loadingError
@@ -17,7 +17,7 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.loadingError = false;
     this.http.get("me.json?fields=organisationUnits").subscribe((data:any) => {
-      this.router.navigate(['data-entry','orgUnit', data.organisationUnits[0].id]);
+      this.router.navigate(['orgUnit', data.organisationUnits[0].id], {relativeTo: this.route});
     })
   }
 

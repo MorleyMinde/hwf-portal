@@ -18,6 +18,7 @@ export class DatasetComponent implements OnInit {
 
   @Input() dataSet:any;
   @Input() organisationUnit:any;
+  @Input() readonly:boolean;
   period;
   dataValues = {};
   edit = false;
