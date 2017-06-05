@@ -1,7 +1,7 @@
 {
     "version": "2.0",
-    "name": "Water Point System v2",
-    "description": "Water Point System version 2",
+    "name": "Water Point System v3",
+    "description": "Water Point System version 3",
     "launch_path": "index.html",
     "icons": {
         "16": "assets/logo.png",

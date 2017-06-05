@@ -895,6 +895,7 @@ export class MapService {
     return {
       id: favoriteObject.hasOwnProperty('id') ? favoriteObject.id : null,
       name: favoriteObject.hasOwnProperty('name') ? favoriteObject.name : null,
+      subtitle: favoriteObject.hasOwnProperty('subtitle') ? favoriteObject.subtitle : null,
       basemap: favoriteObject.hasOwnProperty('basemap') ? favoriteObject.basemap : 'osmlight',
       zoom: favoriteObject.hasOwnProperty('zoom') ? favoriteObject.zoom : 0,
       latitude: favoriteObject.hasOwnProperty('latitude') ? favoriteObject.latitude : 0,

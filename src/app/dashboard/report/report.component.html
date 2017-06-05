@@ -4,6 +4,7 @@
     <button *ngIf="!show_warning_message && !show_sending_message && !show_other_sending_message && !show_other_warning_message && user_email != ''" class="btn btn-info pull-right btn-sm" title="Manual send emails now" (click)="show_warning_message=true"><span class="glyphicon glyphicon-envelope"> Email All</span> </button>
     <div class="pull-right" *ngIf="show_warning_message">
       This will send emails of Last month to all subscribed users, Send Now? <br>
+      <small>You will get an email after 15 minutes</small>
       <button class="pull-right" (click)="enableSendEmail()"><span class="glyphicon glyphicon-check"></span> Yes </button>
       <button class="pull-right" (click)="show_warning_message = false"><span class="glyphicon glyphicon-remove"></span> No</button>
     </div>
@@ -17,6 +18,7 @@
     <button *ngIf="!show_warning_message && !show_sending_message  && !show_other_warning_message && user_email != '' && !show_other_sending_message" class="btn btn-info pull-right btn-sm" title="Manual send emails now" (click)="show_other_warning_message=true"><span class="glyphicon glyphicon-envelope"> Email Me </span> </button>
     <div class="pull-right" *ngIf="show_other_warning_message">
       This will send email of last month report to {{ user_email }}, Send Now? <br>
+      <small>You will get an email after 15 minutes</small>
       <button class="pull-right" (click)="enableSendUserEmail()"><span class="glyphicon glyphicon-check"></span> Yes </button>
       <button class="pull-right" (click)="show_other_warning_message = false"><span class="glyphicon glyphicon-remove"></span> No</button>
     </div>
