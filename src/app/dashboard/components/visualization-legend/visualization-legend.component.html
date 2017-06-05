@@ -20,6 +20,7 @@
                   <td>
                     <a class="map-tile-icons">
                       <img [src]="tileLegend.image"
+
                            style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
@@ -68,7 +69,8 @@
             <span title="{{legend.name}} {{legend.description}}">{{shortenTitle(legend.name)}}</span>
           </div>
           <div class="body" [ngClass]="{hideLegend:!legend.opened}">
-            <div>&nbsp;</div>
+            <br/>
+            <p>&nbsp;{{legend.description}}</p>
             <div *ngFor="let class of legend.classes">
               <table class="legend-table">
                 <tr>

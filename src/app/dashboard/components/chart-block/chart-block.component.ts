@@ -11,6 +11,7 @@ export class ChartBlockComponent implements OnInit {
   @Input() chartObject: any;
   @Input() renderId: string;
   @Input() chartHeight: string;
+  chartWidth:string = "100%";
   chart: any;
   constructor() { }
 
@@ -26,13 +27,42 @@ export class ChartBlockComponent implements OnInit {
     this.chart = Highcharts.chart(chartObject);
   }
 
-  resize(height) {
-    this.chartHeight = height;
-    setTimeout(() => {
-      if(this.chart) {
-        this.chart.reflow()
+  // resize(height) {
+  //   this.chartHeight = height;
+  //   setTimeout(() => {
+  //     if(this.chart) {
+  //       this.chart.reflow()
+  //     }
+  //   }, 5)
+  // }
+  //
+  resize(height,dimension, dimensionType){
+    // let container = document.getElementById(this.mapData.id);
+    // this.mapHeight = '0px';
+    // this.mapWidth = "0%";
+    console.log(dimension, dimensionType);
+    this.chartHeight = '0%';
+    this.chartWidth = "0%";
+
+    if (dimension && dimensionType) {
+      if (dimensionType == "fullscreen") {
+        this.chartHeight = '75vh';
+        this.chartWidth = "100%";
+      } else {
+        this.chartHeight = '340px';
+        this.chartWidth = "100%";
       }
-    }, 5)
+
+    } else {
+      this.chartHeight = '340px';
+      this.chartWidth = "100%";
+  }
+
+    setTimeout(() => {
+          if(this.chart) {
+            this.chart.reflow()
+          }
+        }, 800)
   }
 
 }

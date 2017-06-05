@@ -51,6 +51,7 @@ export class AnalyticsService {
   }
 
   getSplitedAnalytics(visualization): Visualization {
+
     let newSettings: any[] = [];
     let newAnalytics: any[] = [];
     let newLayers: any[] = [];
@@ -89,18 +90,38 @@ export class AnalyticsService {
 
 
     newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
-      newLayers.push({settings: this._sanitizeLayerSetting(settings, newAnalytic), analytics: newAnalytic});
+      if (newAnalytic && newAnalytic.metaData) {
+        let dx = newAnalytic.metaData.dx[0];
+        let ou = newAnalytic.metaData.ou[0];
+        let pe = newAnalytic.metaData.pe[0];
+
+
+        let names = {
+          dx: "Data",
+          ou: "Organisation unit",
+          pe: "Period"
+        }
+
+        names[dx] = newAnalytic.metaData.names[dx];
+        names[ou] = newAnalytic.metaData.names[ou];
+        names[pe] = newAnalytic.metaData.names[pe];
+        newAnalytic.metaData.names = names;
+        settings.name = names[dx];
+        newLayers.push({settings: settings, analytics: newAnalytic});
+      }
     });
+
     visualization.layers = newLayers;
     return visualization;
   }
 
   getMergedAnalytics(visualizationObject: Visualization) {
-    let newSettings: any = this.mergeFavorite(visualizationObject.layers);
-    let newAnalytics: any = this.mergeAnalytics(visualizationObject.layers);
+    let favourite: any = this.mergeFavorite(visualizationObject.layers);
+    let analytics: any = this.mergeAnalytics(visualizationObject.layers);
+
     const newLayer = {
-      settings: this.mergeFavorite(visualizationObject.layers),
-      analytics: this.mergeAnalytics(visualizationObject.layers)
+      settings: favourite,
+      analytics: analytics
     };
 
     visualizationObject.layers = [newLayer];
@@ -118,12 +139,12 @@ export class AnalyticsService {
     let favoriteArray: any[] = [];
 
     if (favorite.hasOwnProperty('columns')) {
-      if(favorite.columns.length > 0) {
+      if (favorite.columns.length > 0) {
         favorite.columns.forEach(column => {
           const items: any[] = column.items;
-          if(items.length > 0) {
+          if (items.length > 0) {
             column.items.forEach(item => {
-              if(column.dimension) {
+              if (column.dimension) {
                 dimensionArray[column.dimension].type = 'columns';
                 dimensionArray[column.dimension].items.push(item);
               }
@@ -134,12 +155,12 @@ export class AnalyticsService {
     }
 
     if (favorite.hasOwnProperty('rows')) {
-      if(favorite.rows.length > 0) {
+      if (favorite.rows.length > 0) {
         favorite.rows.forEach(row => {
           const items: any[] = row.items;
-          if(items.length > 0) {
+          if (items.length > 0) {
             row.items.forEach(item => {
-              if(row.dimension) {
+              if (row.dimension) {
                 dimensionArray[row.dimension].type = 'rows';
                 dimensionArray[row.dimension].items.push(item);
               }
@@ -150,12 +171,12 @@ export class AnalyticsService {
     }
 
     if (favorite.hasOwnProperty('filters')) {
-      if(favorite.filters.length > 0) {
+      if (favorite.filters.length > 0) {
         favorite.filters.forEach(filter => {
           const items: any[] = filter.items;
-          if(items.length > 0) {
+          if (items.length > 0) {
             filter.items.forEach(item => {
-              if(filter.dimension) {
+              if (filter.dimension) {
                 dimensionArray[filter.dimension].type = 'filters';
                 dimensionArray[filter.dimension].items.push(item);
               }
@@ -173,9 +194,9 @@ export class AnalyticsService {
      * create favorite copy
      */
 
-    if(dimensionArray.dx.items) {
+    if (dimensionArray.dx.items) {
       dimensionArray.dx.items.forEach(dxItem => {
-        if(dimensionArray.pe.items) {
+        if (dimensionArray.pe.items) {
           dimensionArray.pe.items.forEach(peItem => {
             let newFavorite = favorite;
             const currentDate = new Date();
@@ -432,11 +453,6 @@ export class AnalyticsService {
     return splitAnalytics;
   }
 
-  private _sanitizeLayerSetting(settings, analytics) {
-    let layerName = analytics.metaData.names[analytics.metaData.dx[0]] + " " + analytics.metaData.names[analytics.metaData.pe[0]];
-    settings.name = layerName;
-    return settings;
-  }
 
   private _getAnalyticsDataGroups(analyticsHeaders: any): Array<any> {
     let headers: any[] = [];

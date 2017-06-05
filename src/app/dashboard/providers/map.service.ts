@@ -457,7 +457,7 @@ export class MapService {
 
   }
 
-  public getEventLegend(features,rows, settings,){
+  public getEventLegend(features, rows, settings,) {
     let legendSet = settings.legendSet;
     let radiusHigh = settings.radiusHigh;
     let radiusLow = settings.radiusLow;
@@ -537,7 +537,6 @@ export class MapService {
   }
 
 
-  // _generateClassLimits({dataArray:[],classes,method,colors:[],icons:[],labels:[]})
   private _generateClassLimits(dataArray: Array<any>, settings, method = "equalInterval") {
 
     let legend: Legend = {htmlLegend: {}, scriptLegend: []};
@@ -670,19 +669,19 @@ export class MapService {
 
   private _getGeoFeatures(geoFeatureUrl: string, canSave: boolean = true): Observable<any> {
     return Observable.create(observer => {
-      if(geoFeatureUrl == null) {
+      if (geoFeatureUrl == null) {
         observer.next(null);
         observer.complete();
       } else {
-        const geoFeature: any = canSave ?  _.find(this.geoFeatures, ['url', geoFeatureUrl]) : undefined;
-        if(geoFeature) {
+        const geoFeature: any = canSave ? _.find(this.geoFeatures, ['url', geoFeatureUrl]) : undefined;
+        if (geoFeature) {
           observer.next(geoFeature.content);
           observer.complete();
         } else {
           this.http.get(this._getGeoFeatureUrl(geoFeatureUrl))
             .subscribe(geoFeatureResponse => {
               const availableGeoFeature: any = _.find(this.geoFeatures, ['url', geoFeatureUrl]);
-              if(!availableGeoFeature) {
+              if (!availableGeoFeature) {
                 this.geoFeatures.push({url: geoFeatureUrl, content: geoFeatureResponse})
               }
               observer.next(geoFeatureResponse);
@@ -703,11 +702,11 @@ export class MapService {
       visualizationObject.layers.forEach(layer => {
         const geoFeatureParams = this._getGeoFeatureParameters(layer.settings, visualizationObject.details.filters);
         this._getGeoFeatures(geoFeatureParams, saveGeoFeature).subscribe(geoFeature => {
-          if(geoFeature != null) {
+          if (geoFeature != null) {
             layer.settings.geoFeature = geoFeature;
           }
           count++;
-          if(count == visualizationObject.layers.length) {
+          if (count == visualizationObject.layers.length) {
             observer.next(visualizationObject);
             observer.complete();
           }
@@ -721,7 +720,7 @@ export class MapService {
         let index: number = 0;
         visualizationObject.layers.forEach(layer => {
           const geoFeature: any[] = geoFeatures[0];
-          if(geoFeature.length > 0) {
+          if (geoFeature.length > 0) {
             layer.settings.geoFeature = geoFeature;
             index++;
           } else {
@@ -821,7 +820,7 @@ export class MapService {
     let dimensionItems: any;
     let params: string = 'ou=ou:';
     let customFilter = _.find(filters, ['name', 'ou']);
-    if(!mapView.hasOwnProperty('layer') || (mapView.layer == 'boundary' ||  mapView.layer.indexOf('thematic') != -1 || mapView.layer == 'facility')) {
+    if (!mapView.hasOwnProperty('layer') || (mapView.layer == 'boundary' || mapView.layer.indexOf('thematic') != -1 || mapView.layer == 'facility')) {
       if (customFilter) {
         params += customFilter.value + ";";
       } else {
@@ -896,6 +895,7 @@ export class MapService {
     return {
       id: favoriteObject.hasOwnProperty('id') ? favoriteObject.id : null,
       name: favoriteObject.hasOwnProperty('name') ? favoriteObject.name : null,
+      subtitle: favoriteObject.hasOwnProperty('subtitle') ? favoriteObject.subtitle : null,
       basemap: favoriteObject.hasOwnProperty('basemap') ? favoriteObject.basemap : 'osmlight',
       zoom: favoriteObject.hasOwnProperty('zoom') ? favoriteObject.zoom : 0,
       latitude: favoriteObject.hasOwnProperty('latitude') ? favoriteObject.latitude : 0,

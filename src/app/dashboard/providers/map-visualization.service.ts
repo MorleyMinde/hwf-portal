@@ -5,6 +5,7 @@ import {TileLayers} from "../constants/tile-layers";
 import * as _ from 'lodash';
 import {Color} from "./color";
 import {ColorInterpolationService} from "./color-interpolation.service";
+import {Feature, GeometryObject} from "geojson";
 
 
 module colorModule {
@@ -73,7 +74,6 @@ export class MapVisualizationService {
 
   drawMap(L, visualizationObject: Visualization, prioritizeFilter?: boolean): MapObject {
     let mapObject: MapObject = this._getInitialMapObject(visualizationObject);
-
     const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap, mapObject.id, prioritizeFilter);
     mapObject.options.layers = layers[0];
     mapObject.centeringLayer = layers[1];
@@ -192,9 +192,31 @@ export class MapVisualizationService {
 
   private _getGEOJSONLayer(L, visualizationLayerSettings, visualizationAnalytics, options) {
 
-    options.onEachFeature = (feature) => {
-      if (feature.properties.dataElement) {
-      }
+    options.onEachFeature = (feature: any, layer: any) => {
+
+      setTimeout(() => {
+        let featureName = feature.properties.name;
+        let dataValue = 0;
+        let dataName = "";
+
+        let toolTipContent: string =
+          "<div style='color:#333!important;font-size: 10px'>" +
+          "<table>";
+        toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'><b></b></td><td style='color:#333!important;' > " + featureName + "</td>";
+        if (feature.properties.dataElement) {
+
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'>Data Name: </td><td style='color:#333!important;' > " + feature.properties.dataElement.name + "</td>" +
+            "<tr><td style='color:#333!important;font-weight:bold;'>Value: </td><td style='color:#333!important;' > " + feature.properties.dataElement.name + "</td>";
+
+        }
+        toolTipContent += "</tr>" +
+          "</table>" +
+          "</div>";
+
+        layer.bindPopup(toolTipContent);
+      }, 10)
+
+
     }
 
     options.pointToLayer = (feature, latlng) => {
@@ -216,25 +238,13 @@ export class MapVisualizationService {
     layer.on(
       {
         click: (event) => {
-          const hoveredFeature: any = event.layer.feature;
-          const featureName = hoveredFeature.properties.name;
-          let dataValue: any = "";
-          dataValue = this._getFeatureDataFromAnalytics(hoveredFeature, visualizationLayerSettings);
-
-          let toolTipContent: string =
-            "<div style='color:#333!important;font-size: 10px'>" +
-            "<table>" +
-            "<tr><td style='color:#333!important;font-weight:bold;'>" + featureName + "</td><td style='color:#333!important;' > " + dataValue + "</td>" +
-            "</tr>" +
-            "</table>" +
-            "</div>";
-
-
-          layer.bindPopup(toolTipContent);
-
 
         },
         mouseover: (event) => {
+
+          let feature: Feature<GeometryObject> = event.layer.feature;
+          console.log(feature);
+
           const hoveredFeature: any = event.layer.feature;
           const featureName = hoveredFeature.properties.name;
           let dataValue: any = "";
@@ -247,7 +257,6 @@ export class MapVisualizationService {
             "</tr>" +
             "</table>" +
             "</div>";
-
 
           layer.bindTooltip(toolTipContent, {
             direction: 'auto',

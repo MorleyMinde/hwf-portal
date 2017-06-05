@@ -105,9 +105,9 @@ export class ChartComponent implements OnInit {
     if(initialChartData) {
       this.chartData = initialChartData;
       this.chartHeight = initialChartData.details.itemHeight;
+      this.chartConfiguration.showOptions = initialChartData.details.showChartOptions;
       this.visualizationObjectService.getSanitizedVisualizationObject(initialChartData)
         .subscribe(sanitizedChartData => {
-          //todo quick fix lebel and legends
           if(sanitizedChartData) {
             this.chartData = sanitizedChartData;
             if(this.chartData) {
@@ -153,12 +153,13 @@ export class ChartComponent implements OnInit {
     }
   }
 
-  resizeChart(visualizationObject) {
-    let docWidth = document.getElementById(this.chartData.id).offsetWidth;
-    console.log(docWidth)
+  resizeChart(visualizationObject,dimension, dimensionType) {
+    // console.log(this.chartData.id);
+    // let docWidth = document.getElementById(this.chartData.id).offsetWidth;
+    // console.log(docWidth)
     this.chartData = visualizationObject;
     if(this.chartBlock) {
-      this.chartBlock.resize(visualizationObject.details.itemHeight)
+      this.chartBlock.resize(visualizationObject.details.itemHeight,dimension, dimensionType)
     }
   }
 

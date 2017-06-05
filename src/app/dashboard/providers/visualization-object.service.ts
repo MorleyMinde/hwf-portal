@@ -39,7 +39,8 @@ export class VisualizationObjectService {
                       this.mapService.getPredefinedLegend(visualizationWithGeoFeature).subscribe(visualizationWithLegendSet => {
                         this.mapService.getGroupSet(visualizationWithLegendSet).subscribe(visualizationWithGroupSet => {
                           const validatedVisualization = this.validateVisualization(visualizationWithGroupSet,'');
-                          this.dashboardService.saveVisualizationObject(validatedVisualization);
+                          // this.dashboardService.saveVisualizationObject(validatedVisualization);
+                          this.saveToStore(validatedVisualization);
                           observer.next(validatedVisualization);
                           observer.complete();
                         })
@@ -47,7 +48,8 @@ export class VisualizationObjectService {
                     })
                   } else {
                     const validatedVisualization = this.validateVisualization(visualizationWithAnalytics,'');
-                    this.dashboardService.saveVisualizationObject(validatedVisualization);
+                    // this.dashboardService.saveVisualizationObject(validatedVisualization);
+                    this.saveToStore(validatedVisualization);
                     observer.next(validatedVisualization);
                     observer.complete();
                   }
@@ -61,6 +63,15 @@ export class VisualizationObjectService {
       }
 
     });
+  }
+
+  saveToStore(visualizationObject) {
+    const visualizationObjectInStore = this.dashboardService.findVisualizationObject(visualizationObject);
+
+    if(!visualizationObjectInStore) {
+      this.dashboardService.saveVisualizationObject(visualizationObject);
+    }
+
   }
 
   validateVisualization(visualizationObject: Visualization, errorMessage: string): Visualization {
