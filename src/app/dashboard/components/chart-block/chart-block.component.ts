@@ -37,9 +37,6 @@ export class ChartBlockComponent implements OnInit {
   // }
   //
   resize(height,dimension, dimensionType){
-    // let container = document.getElementById(this.mapData.id);
-    // this.mapHeight = '0px';
-    // this.mapWidth = "0%";
     console.log(dimension, dimensionType);
     this.chartHeight = '0%';
     this.chartWidth = "0%";
@@ -51,6 +48,8 @@ export class ChartBlockComponent implements OnInit {
       } else {
         this.chartHeight = '340px';
         this.chartWidth = "100%";
+
+
       }
 
     } else {
@@ -60,7 +59,7 @@ export class ChartBlockComponent implements OnInit {
 
     setTimeout(() => {
           if(this.chart) {
-            this.chart.reflow()
+            this.chart.reflow();
           }
         }, 800)
   }

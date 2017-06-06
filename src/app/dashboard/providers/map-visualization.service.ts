@@ -104,7 +104,11 @@ export class MapVisualizationService {
     /**
      * Get tile layer from basemap configuration
      */
-    mapLayers.push(this._prepareTileLayer(L, this.tileLayers.getTileLayer(basemap)));
+    let baseMap = this._prepareTileLayer(L, this.tileLayers.getTileLayer(basemap));
+    if (baseMap != null) {
+      mapLayers.push(baseMap);
+    }
+
 
     /**
      * Get other layers as received from visualization Object
@@ -243,8 +247,6 @@ export class MapVisualizationService {
         mouseover: (event) => {
 
           let feature: Feature<GeometryObject> = event.layer.feature;
-          console.log(feature);
-
           const hoveredFeature: any = event.layer.feature;
           const featureName = hoveredFeature.properties.name;
           let dataValue: any = "";

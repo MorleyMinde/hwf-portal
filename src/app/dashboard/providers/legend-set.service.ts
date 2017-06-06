@@ -16,6 +16,7 @@ export class LegendSetService {
       let tileLayer: any = {
         name: tileLayers[layer].name,
         label: tileLayers[layer].label,
+        active: tileLayers[layer].active,
         aliasName: tileLayers[layer].aliasName,
         url: tileLayers[layer].url,
         image: tileLayers[layer].image,

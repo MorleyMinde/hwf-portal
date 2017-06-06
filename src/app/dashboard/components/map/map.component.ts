@@ -197,16 +197,23 @@ export class MapComponent implements OnInit {
   }
 
   changeMapTileLayer(event) {
-    if (this.mapData.details.mapConfiguration.basemap != event.name) {
-      this.mapData.details.mapConfiguration.basemap = event.name;
+      if (event.active) {
+        this.mapData.details.mapConfiguration.basemap = event.name;
+      } else {
+        this.mapData.details.mapConfiguration.basemap = null;
+      }
       this.drawMap(this.mapData);
-    }
 
 
   }
 
   stickyMapLegend(event) {
     this.pinned = event;
+  }
+
+  closeMapLegend() {
+    this.legendIsOpen = false;
+    this.pinned = false;
   }
 
 }

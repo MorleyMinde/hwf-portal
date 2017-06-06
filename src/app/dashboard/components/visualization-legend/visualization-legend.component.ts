@@ -12,12 +12,14 @@ import {TILE_LAYERS} from "../../constants/tile-layers";
 export class VisualizationLegendComponent implements OnInit {
   @Input() visualizationObject: any;
   @Output() changeMapTileLayer: EventEmitter<any> = new EventEmitter();
+  @Output() closeLegend: EventEmitter<any> = new EventEmitter();
   @Output() changeMapDataLayer: EventEmitter<any> = new EventEmitter();
   @Output() stickyLegend: EventEmitter<any> = new EventEmitter();
   visualizationLegends: LegendSet[] = [];
   visualizationTileLayersLegends: any[];
   openTileLegend: boolean = false;
-  sticky:boolean = false;
+  sticky: boolean = false;
+  isRemovable: boolean = false;
 
 
   constructor(private legend: LegendSetService) {
@@ -68,9 +70,10 @@ export class VisualizationLegendComponent implements OnInit {
       name: mapVisualizationSettings.layer == 'event' ? this.legend.getEventName(mapVisualizationAnalytics)[0] : mapVisualizationSettings.name,
       description: mapVisualizationSettings.subtitle,
       pinned: false,
+      hidden: false,
       opened: false,
       useIcons: false,
-      isEvent:mapVisualizationSettings.layer == 'event'?true:false,
+      isEvent: mapVisualizationSettings.layer == 'event' ? true : false,
       opacity: mapVisualizationSettings.opacity,
       classes: legendClasses,
       change: []
@@ -80,24 +83,53 @@ export class VisualizationLegendComponent implements OnInit {
   }
 
   changeTileLayer(tileLegend) {
-    this.changeMapTileLayer.emit(tileLegend);
+    let checked = 0;
+    this.visualizationTileLayersLegends.forEach(tileLegendLoop => {
+
+      if (tileLegendLoop.active && tileLegend.name == tileLegendLoop.name) {
+        tileLegendLoop.active = false;
+        this.changeMapTileLayer.emit(tileLegendLoop);
+        checked++;
+      } else if (!tileLegendLoop.active && tileLegend.name == tileLegendLoop.name && checked < 1) {
+        tileLegendLoop.active = true;
+        this.changeMapTileLayer.emit(tileLegendLoop);
+      }
+      else {
+        tileLegendLoop.active = false;
+      }
+
+
+    })
+
+
   }
 
-  toggleLegendView(legendToggled,index) {
+  toggleLegendView(legendToggled, index) {
 
     this.visualizationLegends.forEach((legend, legendIndex) => {
       index == legendIndex ? legend.opened = !legend.opened : legend.opened = false;
     })
   }
 
+  toggleRemoveButton() {
+    this.isRemovable = !this.isRemovable;
+  }
+
+  removeLegendContainer() {
+    this.closeLegend.emit(null);
+  }
 
   toggleTileLegendView() {
     this.openTileLegend = !this.openTileLegend;
   }
 
-  stickLegendContainer(){
-    this.sticky =!this.sticky;
+  stickLegendContainer() {
+    this.sticky = !this.sticky;
     this.stickyLegend.emit(this.sticky)
+  }
+
+  toggleLayerView(layer,layerType){
+    _.find(this.visualizationLegends,['id',layer.id]).hidden = !_.find(this.visualizationLegends,['id',layer.id]).hidden;
   }
 
   shortenTitle(longTitle) {

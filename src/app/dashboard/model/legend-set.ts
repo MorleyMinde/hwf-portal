@@ -3,6 +3,7 @@ export interface LegendSet {
   id: string;
   name: string;
   description: string;
+  hidden: boolean;
   opened: boolean;
   pinned: boolean;
   isEvent:boolean;

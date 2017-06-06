@@ -14,7 +14,9 @@
          (mouseleave)="toggleLegendContainerView()"
     >
       <app-visualization-legend [visualizationObject]="mapData" (changeMapTileLayer)="changeMapTileLayer($event)"
-                                (stickyLegend)="stickyMapLegend($event)"></app-visualization-legend>
+                                (stickyLegend)="stickyMapLegend($event)"
+                                (closeLegend)="closeMapLegend()"
+      ></app-visualization-legend>
     </div>
 
 
