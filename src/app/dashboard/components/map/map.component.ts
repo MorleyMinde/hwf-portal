@@ -30,6 +30,7 @@ export class MapComponent implements OnInit {
   legendMarginLeft = '200px';
   subtitle: string = "";
   pinned: boolean = false;
+  operatingLayers: Array<any> = [];
 
   constructor(private mapVisualizationService: MapVisualizationService,
               private visualizationObjectService: VisualizationObjectService) {
@@ -83,11 +84,14 @@ export class MapComponent implements OnInit {
   }
 
   drawMap(mapData: Visualization, prioritizeFilter?: boolean) {
+
     const mapObject = this.mapVisualizationService.drawMap(L, mapData, prioritizeFilter);
     this.prepareMapContainer(mapObject.id, this.mapHeight, this.mapWidth);
     this.map = L.map(mapObject.id, mapObject.options);
     this.centeringLayer = mapObject.centeringLayer;
     this.mapLegend = mapObject.mapLegend;
+    this.operatingLayers = mapObject.operatingLayers;
+
 
     L.control.zoom({position: "topright"}).addTo(this.map);
     this.updateOnLayerLoad(mapObject);
@@ -197,16 +201,45 @@ export class MapComponent implements OnInit {
   }
 
   changeMapTileLayer(event) {
-    if (this.mapData.details.mapConfiguration.basemap != event.name) {
+    if (event.active) {
       this.mapData.details.mapConfiguration.basemap = event.name;
-      this.drawMap(this.mapData);
+    } else {
+      this.mapData.details.mapConfiguration.basemap = null;
     }
+    this.drawMap(this.mapData);
 
+
+  }
+
+  updateMapLayers(event) {
+    let layerActedUpon: any = null;
+    this.operatingLayers.forEach(layer => {
+      if (layer.hasOwnProperty(event.layer.name)) {
+        layerActedUpon = layer[event.layer.name];
+      }
+
+    })
+
+    if (layerActedUpon) {
+      if (event.action == "HIDE") {
+        this.map.removeLayer(layerActedUpon);
+      }
+
+      if (event.action == "SHOW") {
+        this.map.addLayer(layerActedUpon);
+      }
+
+    }
 
   }
 
   stickyMapLegend(event) {
     this.pinned = event;
+  }
+
+  closeMapLegend() {
+    this.legendIsOpen = false;
+    this.pinned = false;
   }
 
 }

@@ -2,6 +2,7 @@ import {LegendSet} from "./legend-set";
 export interface MapObject {
   id: string;
   centeringLayer:any;
+  operatingLayers:any[];
   mapLegend: any;
   options: {
     center: any;

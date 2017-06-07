@@ -135,7 +135,9 @@ export class ChartComponent implements OnInit {
      */
     this.chartObjects = this.chartService.getChartObjects(this.chartData, type);
     this.loading = false;
-
+    if(this.chartBlock) {
+      this.chartBlock.resize(this.chartData.details.itemHeight,true, '');
+    }
   }
 
   showChartOptions() {

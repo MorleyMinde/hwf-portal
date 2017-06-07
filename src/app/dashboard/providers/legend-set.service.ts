@@ -1,10 +1,13 @@
 import {Injectable} from '@angular/core';
 import {ColorInterpolationService} from "./color-interpolation.service";
 import * as _ from 'lodash';
+import {OrgUnitService} from "../../shared/components/org-unit-filter/org-unit.service";
+import {Observable} from "rxjs";
+import {MapLayerEvent} from "../constants/layer-event";
 @Injectable()
 export class LegendSetService {
 
-  constructor(private colorInterpolation: ColorInterpolationService) {
+  constructor(private colorInterpolation: ColorInterpolationService, private orgUnitService: OrgUnitService) {
   }
 
   public prepareTileLayers(tileLayers) {
@@ -16,6 +19,7 @@ export class LegendSetService {
       let tileLayer: any = {
         name: tileLayers[layer].name,
         label: tileLayers[layer].label,
+        active: tileLayers[layer].active,
         aliasName: tileLayers[layer].aliasName,
         url: tileLayers[layer].url,
         image: tileLayers[layer].image,
@@ -46,6 +50,67 @@ export class LegendSetService {
       boundary: false
     });
     return legend;
+  }
+
+  public boundaryLayerLegendClasses(mapVisualizationSettings, mapVisualizationAnalytics?): Observable<any> {
+    const features = mapVisualizationSettings.geoFeature;
+    let Levels = this._getBoundaryLevels(features);
+    let totalFeatures = features.length;
+    let boundaryLevels = [];
+    let legend: any[] = [];
+
+
+    return Observable.create((observable) => {
+      this.orgUnitService.getOrgunitLevelsInformation().subscribe((organisationUnitLevelsData: any) => {
+        organisationUnitLevelsData.organisationUnitLevels.forEach((organisationUnitLevel) => {
+          let indexLevel = _.findIndex(Levels, ['id', organisationUnitLevel.level]);
+          if (_.find(Levels, ['id', organisationUnitLevel.level])) {
+            Levels[indexLevel].name = organisationUnitLevel.name;
+          }
+        })
+
+        Levels.forEach(level => {
+          legend.push({
+            name: level.name,
+            label: level.name,
+            description: "",
+            relativeFrequency: "",
+            min: 0,
+            max: 0,
+            percentage:((level.count/totalFeatures)*100).toFixed(0)+"%",
+            color: this._getLevelColor(Levels, level),
+            count: level.count,
+            radius: "",
+            boundary: true
+          });
+        })
+        observable.next(legend);
+        observable.complete();
+      })
+    })
+  }
+
+  public boundaryLayerClasses(mapVisualizationSettings) {
+    const features = mapVisualizationSettings.geoFeature;
+    let Levels = this._getBoundaryLevels(features);
+    let legend: any[] = [];
+
+    Levels.forEach(level => {
+      legend.push({
+        name: level.id,
+        label: level.id,
+        description: "",
+        relativeFrequency: "",
+        min: 0,
+        max: 0,
+        color: this._getLevelColor(Levels, level),
+        count: level.count,
+        radius: "",
+        boundary: true
+      });
+    });
+    return legend;
+
   }
 
   public prepareThematicLayerLegendClasses(visualizationLayerSettings, visualizationAnalytics) {
@@ -101,7 +166,6 @@ export class LegendSetService {
 
     }
 
-
     return obtainedDataLegend;
   }
 
@@ -119,6 +183,25 @@ export class LegendSetService {
 
     console.log(metaDataObject.names[eventId]);
     return [metaDataObject.names[eventId], metaDataObject[eventId]];
+  }
+
+  public prepareLayerEvent(layer, action): MapLayerEvent {
+    let event: MapLayerEvent = {
+      action: action,
+      layer: layer
+    }
+
+    return event;
+  }
+
+  private _getLevelColor(Levels, level) {
+    console.log(Levels);
+    let colorByIndex = ["#000000", "#0101DF", "#2F2FFD", "#FF0000", "#008000"];
+    if (Levels.length == 1) {
+      return "#000000";
+    } else {
+      return colorByIndex[Levels.indexOf(level)];
+    }
   }
 
   private _generateLegendClassLimits(visualizationLayerSettings, visualizationAnalytics) {
@@ -187,7 +270,7 @@ export class LegendSetService {
             name: "",
             label: "",
             description: "",
-            relativeFrequency: "",
+            percentage: 0,
             min: +min.toFixed(1),
             max: +max.toFixed(1),
             color: legendSetColorArray[classIndex],
@@ -200,7 +283,7 @@ export class LegendSetService {
 
     }
 
-    this._getLegendCounts(dataArray, legend);
+    console.log(this._getLegendCounts(dataArray, legend));
     return legend;
   }
 
@@ -225,12 +308,16 @@ export class LegendSetService {
 
     legendsFromLegendSet.sets.forEach((set, setIndex) => {
       legend.scriptLegend.push({
+        name: set.name,
+        label: "",
+        description: "",
+        percentage: 0,
         min: set.min,
         max: set.max,
         count: 0,
         color: set.color,
-        name: set.name,
-        radius: radiusArray[setIndex]
+        radius: radiusArray[setIndex],
+        boundary: false
       });
     })
 
@@ -268,17 +355,23 @@ export class LegendSetService {
   }
 
   private _getLegendCounts(dataArray, legend) {
-
+      let totalCounts = 0;
     dataArray.forEach(data => {
       legend.forEach((legendItem, legendIndex) => {
         if (legendItem.min <= data && data < legendItem.max) {
           legendItem.count += 1;
+          totalCounts+=1;
         }
 
         if (legendIndex == legend.length - 1 && legendItem.min < data && data == legendItem.max) {
           legendItem.count += 1;
+          totalCounts+=1;
         }
       });
+    });
+
+    legend.forEach(leg=>{
+      leg.percentage = ((leg.count/totalCounts)*100).toFixed(0)+"%";
     })
     return legend;
   }
@@ -286,6 +379,20 @@ export class LegendSetService {
   private _strimMoreHashFromColor(color) {
     let colorArray = color.split("#");
     return "#" + colorArray[colorArray.length - 1];
+  }
+
+  private _getBoundaryLevels(features) {
+    let levels: any[] = [];
+    features.forEach(feature => {
+      if (_.find(levels, ['id', feature.le])) {
+
+        _.find(levels, ['id', feature.le]).count += 1;
+      }
+      else {
+        levels.push({id: feature.le, name: null, count: 1})
+      }
+    })
+    return levels;
   }
 
 }

@@ -264,7 +264,6 @@ export class OrgUnitService {
           .map((response:Response) => response.json())
           .catch(this.handleError)
           .subscribe(nodes => {
-            alert("Her");
             this.nodes = nodes.organisationUnits;
             observer.next(this.nodes);
             observer.complete();

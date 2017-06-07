@@ -7,14 +7,61 @@
 
     <app-error-notifier *ngIf="hasError && !loading" [errorMessage]="errorMessage"></app-error-notifier>
 
-    <div class="layers-button" [ngClass]="{hide: loading||hasError}" (mouseover)="toggleLegendContainerView()">
+    <div class="layers-button" [ngClass]="{hide: loading||hasError}" (mouseenter)="toggleLegendContainerView()">
       <img src="assets/img/layers-icon.png" style="width:24px;height:24px;">
     </div>
     <div *ngIf="!loading&&legendIsOpen" class="legendContainer" [ngStyle]="{'right':'26px'}"
-         (mouseleave)="toggleLegendContainerView()"
+
     >
-      <app-visualization-legend [visualizationObject]="mapData" (changeMapTileLayer)="changeMapTileLayer($event)"
-                                (stickyLegend)="stickyMapLegend($event)"></app-visualization-legend>
+      <app-visualization-legend [visualizationObject]="mapData"
+                                (updateMapLayers)="updateMapLayers($event)"
+                                (changeMapTileLayer)="changeMapTileLayer($event)"
+                                (stickyLegend)="stickyMapLegend($event)"
+                                (closeLegend)="closeMapLegend()"
+      ></app-visualization-legend>
+      <div class="row" dnd-sortable-container [sortableData]="visualizationLegends">
+        <div class="col-lg-12 col-md-12 col-xs-12 legend-header"
+             *ngFor="let legend of visualizationLegends;let i = index;"
+             style="border-bottom: 1px solid #cccccc;" dnd-sortable [sortableIndex]="i">
+          <div class="col-lg-1 col-md-1 col-xs-1 legend-draggable-icon" style="padding-right: 20px;padding-left: 5px;
+">
+            <a><i class="fa fa-th" style="color:#000000;"></i></a>
+          </div>
+          <div class="col-lg-9 col-md-9 col-xs-9 class-container">
+            <div class="header parent-inner-header" (click)="toggleLegendView(legend,i)">
+              <span title="{{legend.name}} {{legend.description}}">{{shortenTitle(legend.name)}}</span>
+            </div>
+            <div class="body" [ngClass]="{hideLegend:!legend.opened}">
+              <br/>
+              <p>&nbsp;{{legend.description}}</p>
+              <div *ngFor="let class of legend.classes">
+                <table class="legend-table">
+                  <tr>
+                    <td rowspan="2" *ngIf="!legend.isEvent"
+                        [ngStyle]="{backgroundColor:class.color,width:'50px',height:'20px'}">&nbsp;</td>
+                    <td rowspan="2" *ngIf="legend.isEvent"
+                        [ngStyle]="{backgroundColor:class.color,width:(class.radius*5)+'px',height:(class.radius*5)+'px',borderRadius:(class.radius*5)+'px'}">
+                      &nbsp;</td>
+                    <td [ngStyle]="{fontSize:'12px',fontWeight:'bold'}">{{class.label}}</td>
+                    <td></td>
+                  </tr>
+                  <tr>
+                    <td [ngStyle]="{fontSize:'12px'}"><span *ngIf="class.min!=0 && class.max!=0">{{class.min}} - {{class.max}}</span><span>({{class.count}})</span>
+                    </td>
+                    <td></td>
+                  </tr>
+                </table>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-1 col-md-1 col-xs-1 eye-container">
+            <a (click)="toggleLayerView(legend,'normal')" *ngIf="!legend.hidden" style="margin-left:-6px!important;"><i
+              class="fa fa-eye"></i></a>
+            <a (click)="toggleLayerView(legend,'normal')" *ngIf="legend.hidden" [ngClass]="{pinned: legend.hidden}"
+               style="margin-left:-6px!important;"><i class="fa fa-eye-slash"></i></a>
+          </div>
+        </div>
+      </div>
     </div>
 
 

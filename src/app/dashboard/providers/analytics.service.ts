@@ -52,49 +52,29 @@ export class AnalyticsService {
 
   getSplitedAnalytics(visualization): Visualization {
 
-    let newSettings: any[] = [];
     let newAnalytics: any[] = [];
     let newLayers: any[] = [];
     let settings: any = visualization.layers[0].settings;
     visualization.layers.forEach(layer => {
-      // this.splitFavorite(layer.settings).forEach(settings => {
-      //   newSettings.push(settings);
-      // });
-
       if (layer.hasOwnProperty('analytics')) {
         if (visualization.type == "REPORT_TABLE" || visualization.type == "CHART") {
           this.splitReportTableAnalytics(layer.analytics).forEach(analytics => {
             newAnalytics.push(analytics)
           });
-
         }
-
         if (visualization.type == "EVENT_REPORT" || visualization.type == "EVENT_CHART") {
-
           this.splitEventReportAnalytics(layer.analytics).forEach(analytics => {
-
-            newAnalytics.push(analytics)
+            newAnalytics.push(analytics);
           });
         }
-
-
       }
-
-
     });
-
-
-    // newSettings.forEach((settingsItem, settingsIndex) => {
-    //   newLayers.push({settings: settingsItem, analytics: newAnalytics[settingsIndex]});
-    // });
-
 
     newAnalytics.forEach((newAnalytic, newAnalyticIndex) => {
       if (newAnalytic && newAnalytic.metaData) {
         let dx = newAnalytic.metaData.dx[0];
         let ou = newAnalytic.metaData.ou[0];
         let pe = newAnalytic.metaData.pe[0];
-
 
         let names = {
           dx: "Data",
@@ -106,11 +86,13 @@ export class AnalyticsService {
         names[ou] = newAnalytic.metaData.names[ou];
         names[pe] = newAnalytic.metaData.names[pe];
         newAnalytic.metaData.names = names;
-        settings.name = names[dx];
-        newLayers.push({settings: settings, analytics: newAnalytic});
+        let layerSetting = visualization.layers[0].settings;
+        layerSetting.name = names[dx];
+        layerSetting.id = dx;
+        let layer = {settings: layerSetting, analytics: newAnalytic};
+        newLayers.push(layer);
       }
     });
-
     visualization.layers = newLayers;
     return visualization;
   }
@@ -123,9 +105,7 @@ export class AnalyticsService {
       settings: favourite,
       analytics: analytics
     };
-
     visualizationObject.layers = [newLayer];
-
     return visualizationObject;
   }
 
