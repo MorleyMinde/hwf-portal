@@ -4,6 +4,7 @@ import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
 export const routes: Routes = [
   { path: '', redirectTo: '/dashboard/home', pathMatch: 'full' },
   {path: 'data-entry', loadChildren: 'app/data-entry/data-entry.module#DataEntryModule'},
+  {path: 'data-entry-readonly', loadChildren: 'app/data-entry/data-entry.module#DataEntryModule'},
   {path: 'dashboard/:pageId', loadChildren: 'app/dashboard/dashboard.module#DashboardModule'}
 ];
 

@@ -1,7 +1,41 @@
-<!--
-<div class="jumbotron">
-  <h3>Some Hints</h3>
-  <app-loader *ngIf="loading" [loadingMessage]="'Loading Charts into view...'"></app-loader>
-  <div *ngIf="!loading" [ng2-highcharts]="chartData"></div>
+<div *ngIf="readonly">
+  <app-loader *ngIf="loading" [loadingMessage]="'Loading Download Links...'"></app-loader>
+  <div *ngIf="!loading" class="panel panel-default">
+    <div class="panel-heading">Download</div>
+    <div class="panel-body">
+      <iframe name="downloadFrame" id="downloadFrame" height="0" width="0"></iframe>
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>File</th>
+          <th>Download</th>
+        </tr>
+        </thead>
+        <tr>
+          <td style="vertical-align: middle;"><a href="/api/sqlViews/SM8ExBY51Ph/data.csv{{urlAddition}}" target="downloadFrame">Download Water Points in Selected Organisation Unit</a></td>
+          <td><a *ngIf="readonly" tooltip="Download" class="btn btn-primary btn-md" href="/api/sqlViews/SM8ExBY51Ph/data.csv{{urlAddition}}"><i class="fa fa-download" aria-hidden="true"> </i></a></td>
+        </tr>
+        <tr>
+          <td style="vertical-align: middle;"><a href="/api/sqlViews/dJ2fSKGrlOS/data.csv?filter=path:like:{{id}}" target="downloadFrame">Download Villages with No Water Points</a></td>
+          <td><a *ngIf="readonly" tooltip="Download" class="btn btn-primary btn-md" href="/api/sqlViews/dJ2fSKGrlOS/data.csv"><i class="fa fa-download" aria-hidden="true"> </i></a></td>
+        </tr>
+      </table>
+      <table class="table table-bordered">
+        <thead>
+        <tr>
+          <th>File</th>
+          <th>Download</th>
+        </tr>
+        </thead>
+        <tr>
+          <td style="vertical-align: middle;"><a href="/api/sqlViews/SM8ExBY51Ph/data.csv" target="downloadFrame">Download All Water Points</a></td>
+          <td><a *ngIf="readonly" tooltip="Download" class="btn btn-primary btn-md" href="/api/sqlViews/SM8ExBY51Ph/data.csv"><i class="fa fa-download" aria-hidden="true"> </i></a></td>
+        </tr>
+        <tr>
+          <td style="vertical-align: middle;"><a href="/api/sqlViews/dJ2fSKGrlOS/data.csv" target="downloadFrame">Download Villages with No Water Points</a></td>
+          <td><a *ngIf="readonly" tooltip="Download" class="btn btn-primary btn-md" href="/api/sqlViews/dJ2fSKGrlOS/data.csv"><i class="fa fa-download" aria-hidden="true"> </i></a></td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </div>
--->

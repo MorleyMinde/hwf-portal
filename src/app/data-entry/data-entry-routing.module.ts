@@ -29,14 +29,14 @@ let children = [
     component: SubOrganisationUnitsComponent,
     children:[
       {path: '', component: HintsComponent},
-      {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
+      {path: 'waterPoint/:waterPointId', component: HintsComponent}
     ]
   },{
     path: ':readonly/orgUnit/:id/level/:level',
     component: SubOrganisationUnitsComponent,
     children:[
       {path: '', component: HintsComponent},
-      {path: 'waterPoint/:waterPointId', component: WaterPointComponent}
+      {path: 'waterPoint/:waterPointId', component: HintsComponent}
     ]
   }
 ]

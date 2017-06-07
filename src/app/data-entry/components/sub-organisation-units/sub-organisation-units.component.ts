@@ -46,6 +46,9 @@ export class SubOrganisationUnitsComponent implements OnInit {
       this.router.navigate(['waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     }
   }
+  open(routeArray) {
+    this.router.navigate(routeArray, {relativeTo: this.route});
+  }
 
   addOrganisationUnit(orgUnit) {
     this.totalWaterPoints++;
@@ -92,7 +95,8 @@ export class SubOrganisationUnitsComponent implements OnInit {
           this.waterPointParentLevel = data.constants[0].value;
           this.http.get("organisationUnits.json?filter=level:eq:" + this.waterPointParentLevel + "&filter=path:like:" + this.id + "&pageSize=1").subscribe((data:any) => {
             this.totalWaterPoints = data.pager.total;
-            this.http.get("organisationUnits/" + this.id + ".json?fields=id,name,level,ancestors[id,name],parent[id],dataSets[id,categoryCombo[*,categoryOptionCombos[*]],name,periodType,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]]],attributeValues[value,attribute[id,name]]],dataSets[id,name,periodType,openFuturePeriods,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]],optionSet[id,name,options[id,name,code]]]]").subscribe((data:any) => {
+            //this.http.get("organisationUnits/" + this.id + ".json?fields=id,name,level,ancestors[id,name],parent[id],dataSets[id,categoryCombo[*,categoryOptionCombos[*]],name,periodType,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]]],attributeValues[value,attribute[id,name]]],dataSets[id,name,periodType,openFuturePeriods,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]],optionSet[id,name,options[id,name,code]]]]").subscribe((data:any) => {
+            this.orgUnitService.getOrgunit(this.id).subscribe((data:any) => {
               //let dataJSON = data;
               this.organisationUnit = data;
 

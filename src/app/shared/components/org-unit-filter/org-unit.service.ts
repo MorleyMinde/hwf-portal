@@ -36,6 +36,24 @@ export class OrgUnitService {
       }
     })
   }
+  loadedOrganisationUnits={};
+  // Get current user information
+  getOrgunit(id) {
+    return Observable.create((observable)=>{
+      if(this.loadedOrganisationUnits[id]){
+        observable.next(this.loadedOrganisationUnits[id]);
+        observable.complete();
+      }else{
+        this.http.get('../../../api/organisationUnits/' + id + '.json?fields=id,name,level,ancestors[id,name],parent[id],dataSets[id,categoryCombo[*,categoryOptionCombos[*]],name,periodType,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]]],attributeValues[value,attribute[id,name]]],dataSets[id,name,periodType,openFuturePeriods,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]],optionSet[id,name,options[id,name,code]]]]')
+          .map((response:Response) => response.json())
+          .subscribe((data)=>{
+            this.loadedOrganisationUnits[id] = data;
+            observable.next(this.loadedOrganisationUnits[id]);
+            observable.complete();
+          })
+      }
+    })
+  }
   waterPointConstant
   getWaterPointConstant() {
     return Observable.create((observable)=>{
@@ -268,9 +286,7 @@ export class OrgUnitService {
           let objectStore = evt.currentTarget.result.createObjectStore(
             'organisationUnits', {keyPath: "id", autoIncrement: true});
         }).then((results)=> {
-          console.log("Results:", results, orgunits);
           this.db.getAll('organisationUnits').then((organisationUnits) => {
-            console.log("Orgs:", organisationUnits);
             if (this.areOrganisationUnitsSaveLocally(orgunits,organisationUnits)) {
               observer.next(organisationUnits);
               observer.complete();

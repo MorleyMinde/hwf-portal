@@ -47,7 +47,7 @@
               <button tooltip="Create New Water Point" *ngIf="!readonly && organisationUnit.level == waterPointParentLevel - 1 && (authorities.indexOf('ALL') > -1 || authorities.indexOf('F_ORGANISATIONUNIT_ADD') > -1)"
                       [routerLink]="['/data-entry','orgUnit',id,'waterPoint','new']" class="btn btn-primary btn-lg">
                 <i class="fa fa-plus" aria-hidden="true"> </i></button>
-              <button tooltip="Download CSV" class="btn btn-primary btn-lg" (click)="download()"><i class="fa fa-download" aria-hidden="true"> </i></button>
+              <button *ngIf="readonly" tooltip="Download CSV" class="btn btn-primary btn-lg" (click)="download()"><i class="fa fa-download" aria-hidden="true"> </i></button>
             </div>
           </div>
         </div>
@@ -111,7 +111,7 @@
           <tbody>
           <tr tooltip="Click to see details of {{child.name}}"
               *ngFor="let child of organisationUnit.children | search:searchText:['name','code'] | orderBy: selectedOrder | paginate: {currentPage: p, itemsPerPage: pageSize};let i = index"
-              [routerLink]="['/data-entry','orgUnit',child.id]">
+              (click)="open(['../../orgUnit',child.id])">
             <th scope="row">{{((((p?p:1)-1) * pageSize) + 1) + i}}</th>
             <td>{{child.name}}</td>
             <td>{{child.code}}</td>
