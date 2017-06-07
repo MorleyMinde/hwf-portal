@@ -23,7 +23,7 @@
 
                       <img [src]="visualizationTileLayersLegends[0].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[0].active}"
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                   <td *ngIf="visualizationTileLayersLegends[1]">
@@ -32,7 +32,7 @@
                       <img [src]="visualizationTileLayersLegends[1].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[1].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                   <td *ngIf="visualizationTileLayersLegends[2]">
@@ -41,7 +41,7 @@
                       <img [src]="visualizationTileLayersLegends[2].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[2].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                 </tr>
@@ -52,7 +52,7 @@
                       <img [src]="visualizationTileLayersLegends[3].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[3].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                   <td *ngIf="visualizationTileLayersLegends[4]">
@@ -61,7 +61,7 @@
                       <img [src]="visualizationTileLayersLegends[4].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[4].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                   <td *ngIf="visualizationTileLayersLegends[5]">
@@ -70,7 +70,7 @@
                       <img [src]="visualizationTileLayersLegends[5].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[5].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                 </tr>
@@ -81,7 +81,7 @@
                       <img [src]="visualizationTileLayersLegends[6].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[6].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                   <td *ngIf="visualizationTileLayersLegends[7]">
@@ -90,7 +90,7 @@
                       <img [src]="visualizationTileLayersLegends[7].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[7].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                   <td *ngIf="visualizationTileLayersLegends[8]">
@@ -99,7 +99,7 @@
                       <img [src]="visualizationTileLayersLegends[8].image"
                            [ngClass]="{rowActive:visualizationTileLayersLegends[8].active}"
 
-                           style="width:50px;height:20px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
+                           style="width:30px;height:30px;border: 1px solid #CDD2D4;margin-bottom: 5px;"/>
                     </a>
                   </td>
                 </tr>
@@ -108,35 +108,60 @@
             </div>
           </div>
         </div>
+        <!--(mouseleave)="toggleLegendContainerView()"-->
+        <div class="col-lg-1 col-md-1 col-xs-1 eye-container" style="padding-right: 25px!important;">
+          <a style="cursor: pointer" title="Pin Legend" (click)="stickLegendContainer()"
+          ><i style="color: #ffffff;"
+              class="fa fa-thumb-tack"></i></a>
+        </div>
         <div class="col-lg-1 col-md-1 col-xs-1 eye-container" style="padding-right: 26px!important;">
           <a style="cursor: pointer" title="Remove Legend" (click)="removeLegendContainer()"
           ><i
             class="fa fa-remove" [ngClass]="{hide:!isRemovable}"></i></a>
           <a [ngClass]="{hide:isRemovable}">&nbsp;</a>
         </div>
-        <div class="col-lg-1 col-md-1 col-xs-1 eye-container" style="padding-right: 25px!important;">
-          <a style="cursor: pointer" title="Pin Legend" (click)="stickLegendContainer()"
-          ><i
-            class="fa fa-thumb-tack" [ngClass]="{pinned:!sticky}"></i></a>
-        </div>
       </div>
     </div>
-    <div class="row" style="border-bottom: 1px solid #cccccc">
+    <div class="row" style="border-bottom: 1px solid #cccccc" *ngIf="boundaryLegend.length>0">
       <div class="col-lg-12 col-md-12 col-xs-12 legend-header">
-        <div class="col-lg-1 col-md-1 col-xs-1 legend-draggable-icon" style="padding-right: 20px;padding-left: 5px;
-    ">
+        <div class="col-lg-1 col-md-1 col-xs-1 legend-draggable-icon" style="padding-right: 20px;padding-left: 5px;"
+             (click)="toggleBoundaryLayer()">
           <a><i class="fa fa-connectdevelop" style="color:#000000;"></i></a>
         </div>
         <div class="col-lg-9 col-md-9 col-xs-9 class-container" style="cursor: pointer">
-          <div class="header parent-inner-header">
-            <span>Boundaries </span>
+          <div class="header parent-inner-header" (click)="toggleBoundaryLayer()">
+            <span>Boundaries</span>
           </div>
-          <div class="body">
+          <div class="body" *ngIf="toggleBoundary">
+            <br/>
+            <div *ngFor="let class of boundaryLegend[0].classes">
+              <table class="legend-table">
+                <tr>
+                  <td rowspan="2" *ngIf="!boundaryLegend[0].isEvent"
+                      [ngStyle]="{width:'50px',height:'20px'}">
+                    <div [ngStyle]="{backgroundColor:class.color,width:'50px'}" style="height:2px!important;">
+                      &nbsp;</div>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td [ngStyle]="{fontSize:'12px'}"><span *ngIf="class.name">{{class.name}}</span><span>({{class.count}})</span>
+                  </td>
+                  <td></td>
+                </tr>
+                <tr>
+                  <td></td>
+                </tr>
+              </table>
+            </div>
           </div>
         </div>
         <div class="col-lg-1 col-md-1 col-xs-1 eye-container">
-          <a (click)="toggleLayerView('boundary','boundary')"  style="margin-left:-6px!important;"><i class="fa fa-eye"></i></a>
-          <!--<a (click)="toggleLayerView('boundary','boundary')" style="margin-left:-6px!important;"><i class="fa fa-eye-slash"></i></a>-->
+          <a (click)="toggleLayerView(boundaryLegend[0],'boundary')" *ngIf="!boundaryLegend[0].hidden"
+             style="margin-left:-6px!important;"><i
+            class="fa fa-eye"></i></a>
+          <a (click)="toggleLayerView(boundaryLegend[0],'boundary')" *ngIf="boundaryLegend[0].hidden"
+             style="margin-left:-6px!important;color:#000000;"><i class="fa fa-eye-slash"></i></a>
         </div>
       </div>
     </div>
@@ -167,7 +192,7 @@
                   <td></td>
                 </tr>
                 <tr>
-                  <td [ngStyle]="{fontSize:'12px'}"><span *ngIf="class.min!=0 && class.max!=0">{{class.min}} - {{class.max}}</span><span>({{class.count}})</span>
+                  <td [ngStyle]="{fontSize:'12px'}"><span *ngIf="class.min!=0 && class.max!=0">{{class.min}} - {{class.max}}</span><span>({{class.count}}) ({{class.percentage}})</span>
                   </td>
                   <td></td>
                 </tr>
@@ -176,12 +201,13 @@
           </div>
         </div>
         <div class="col-lg-1 col-md-1 col-xs-1 eye-container">
-          <a (click)="toggleLayerView(legend,'normal')"  *ngIf="!legend.hidden"  style="margin-left:-6px!important;"><i class="fa fa-eye"></i></a>
-          <a (click)="toggleLayerView(legend,'normal')" *ngIf="legend.hidden" style="margin-left:-6px!important;"><i class="fa fa-eye-slash"></i></a>
+          <a (click)="toggleLayerView(legend,'normal')" *ngIf="!legend.hidden" style="margin-left:-6px!important;"><i
+            class="fa fa-eye"></i></a>
+          <a (click)="toggleLayerView(legend,'normal')" *ngIf="legend.hidden" [ngClass]="{pinned: legend.hidden}"
+             style="margin-left:-6px!important;"><i class="fa fa-eye-slash"></i></a>
         </div>
       </div>
     </div>
     <div class="row"></div>
   </div>
-
 </div>

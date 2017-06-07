@@ -246,7 +246,6 @@ export class OrgUnitService {
           .map((response:Response) => response.json())
           .catch(this.handleError)
           .subscribe(nodes => {
-            alert("Her");
             this.nodes = nodes.organisationUnits;
             observer.next(this.nodes);
             observer.complete();
@@ -268,9 +267,7 @@ export class OrgUnitService {
           let objectStore = evt.currentTarget.result.createObjectStore(
             'organisationUnits', {keyPath: "id", autoIncrement: true});
         }).then((results)=> {
-          console.log("Results:", results, orgunits);
           this.db.getAll('organisationUnits').then((organisationUnits) => {
-            console.log("Orgs:", organisationUnits);
             if (this.areOrganisationUnitsSaveLocally(orgunits,organisationUnits)) {
               observer.next(organisationUnits);
               observer.complete();

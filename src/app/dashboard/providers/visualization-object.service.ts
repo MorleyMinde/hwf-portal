@@ -87,16 +87,6 @@ export class VisualizationObjectService {
     return visualizationObject;
   }
 
-  // getDrawableObjects(visualizationObject: Visualization): Visualization {
-  //   if(visualizationObject.details.currentVisualization == 'CHART') {
-  //     visualizationObject = this.chartService.getChartObjects(visualizationObject);
-  //   }else if(visualizationObject.details.currentVisualization == 'MAP') {
-  //
-  //   } else if(visualizationObject.details.currentVisualization == 'TABLE') {
-  //     visualizationObject = this.tableService.getTableObjects(visualizationObject)
-  //   }
-  //   return visualizationObject;
-  // }
 
   private _getVisualizationSubtitle(filterArray: any, userOrganisationUnit) {
     let subtitleArray: any = {};
@@ -165,6 +155,7 @@ export class VisualizationObjectService {
         } else {
           if(visualizationObject.details.analyticsStrategy == 'split') {
             visualizationObject = this.analyticsService.getSplitedAnalytics(visualizationObject);
+            // console.log(JSON.stringify(visualizationObject));
           }
 
           this.mapService.getGeoFeatures(visualizationObject).subscribe(visualizationWithGeoFeature => {
@@ -175,6 +166,7 @@ export class VisualizationObjectService {
               }, groupSetError => observer.error(this.validateVisualization(visualizationObject,groupSetError)))
             }, legendError => observer.error(this.validateVisualization(visualizationObject,legendError)))
           }, geoFeatureError => observer.error(this.validateVisualization(visualizationObject,geoFeatureError)));
+
         }
 
       } else if (visualizationObject.details.currentVisualization == 'CHART') {

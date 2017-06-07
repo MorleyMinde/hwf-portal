@@ -6,55 +6,7 @@ import * as _ from 'lodash';
 import {Color} from "./color";
 import {ColorInterpolationService} from "./color-interpolation.service";
 import {Feature, GeometryObject} from "geojson";
-
-
-module colorModule {
-  export class Color {
-    constructor(public red: number, public green: number, public blue: number) {
-    }
-
-    private coll: Array<any> = [this.red, this.green, this.blue];
-    private valid = this.colorIsVerid(this.coll);
-    private text = this.colorText(this.coll, 'hex');
-    private bg = this.colorText(this.coll, 'hex');
-
-
-    colorIsVerid(colorSectionList) {
-      let isValid = 'n';
-      if ((!isNaN(colorSectionList[0])) && (!isNaN(colorSectionList[1])) && (!isNaN(colorSectionList[2]))) {
-        isValid = 'y'
-      }
-      return isValid;
-    }
-
-    colorText(colorSectionList: Array<any>, colorFormat: String) {
-      let base: number = 0;
-      let denominator: number = 1;
-      let result: String = '';
-
-      if (colorFormat == 'hex') {
-        base = 16;
-      }
-
-      colorSectionList.forEach((colorSection, colorSectionIndex) => {
-        let colorSectionSegment = Math.round(colorSection / denominator);
-        let colorSegmentString = colorSectionSegment.toString(base);
-
-        if (colorFormat == 'hex' && colorSegmentString.length < 2) {
-          colorSegmentString = '0' + colorSegmentString;
-        }
-        result = result + colorSegmentString;
-      })
-
-      if (colorFormat == 'hex') {
-        result = '#' + result.toUpperCase();
-      }
-      return result;
-    }
-
-  }
-}
-
+import {LegendSetService} from "./legend-set.service";
 
 @Injectable()
 export class MapVisualizationService {
@@ -67,16 +19,22 @@ export class MapVisualizationService {
   private step: Array<any> = [];
   public centeringLayer: null;
   private mapObjects: any[] = [];
+  private operatingLayers: any[] = [];
+
+  private visualizationObject: any = null;
 
   constructor(private tileLayers: TileLayers,
-              private colorInterpolation: ColorInterpolationService) {
+              private colorInterpolation: ColorInterpolationService,
+              private legendSet: LegendSetService) {
   }
 
   drawMap(L, visualizationObject: Visualization, prioritizeFilter?: boolean): MapObject {
+    this.visualizationObject = visualizationObject;
     let mapObject: MapObject = this._getInitialMapObject(visualizationObject);
     const layers = this._getMapLayers(L, visualizationObject.layers, visualizationObject.details.mapConfiguration.basemap, mapObject.id, prioritizeFilter);
     mapObject.options.layers = layers[0];
-    mapObject.centeringLayer = layers[1];
+    mapObject.operatingLayers = layers[1];
+    mapObject.centeringLayer = layers[2];
 
     return mapObject;
   }
@@ -86,6 +44,7 @@ export class MapVisualizationService {
       id: visualizationObject.id,
       mapLegend: null,
       centeringLayer: null,
+      operatingLayers: null,
       options: {
         center: [visualizationObject.details.mapConfiguration.latitude, visualizationObject.details.mapConfiguration.longitude],
         zoom: visualizationObject.details.mapConfiguration.zoom,
@@ -100,6 +59,7 @@ export class MapVisualizationService {
 
   private _getMapLayers(L, visualizationLayers, basemap, mapObjectId, prioritizeFilter): any {
     let mapLayers: any[] = [];
+    let mapLayersWithNames: any[] = [];
     let centeringLayer: any = null;
     /**
      * Get tile layer from basemap configuration
@@ -107,6 +67,9 @@ export class MapVisualizationService {
     let baseMap = this._prepareTileLayer(L, this.tileLayers.getTileLayer(basemap));
     if (baseMap != null) {
       mapLayers.push(baseMap);
+      let layerObject = {};
+      layerObject[basemap] = baseMap;
+      mapLayersWithNames.push(layerObject);
     }
 
 
@@ -119,7 +82,9 @@ export class MapVisualizationService {
         if (layer.settings.layer == 'boundary' || layer.settings.layer.indexOf('thematic') != -1 || layer.settings.layer == 'facility') {
           let centerLayer = this._prepareGeoJSON(L, layer.settings, layer.analytics);
           mapLayers.push(centerLayer);
-
+          let layerObject = {};
+          layerObject[layer.settings.name] = centerLayer;
+          mapLayersWithNames.push(layerObject);
           /**
            * Also add centering
            * @type {L.GeoJSON}
@@ -138,21 +103,38 @@ export class MapVisualizationService {
             }
 
             mapLayers.push(centerLayer);
+
+            let layerObject = {};
+            layerObject[layer.settings.name] = centerLayer;
+            mapLayersWithNames.push(layerObject);
           } else {
             let centerLayer = this._prepareMarkersLayerGroup();
             mapLayers.push(centerLayer);
-          }
 
+            let layerObject = {};
+            layerObject[layer.settings.name] = centerLayer;
+            mapLayersWithNames.push(layerObject);
+          }
         } else if (layer.settings.layer == 'external') {
-          mapLayers.push(this._prepareTileLayer(L, this._prepareExternalTileLayer(layer.settings.config)));
+          let external = this._prepareTileLayer(L, this._prepareExternalTileLayer(layer.settings.config));
+          mapLayers.push(external);
+
+          let layerObject = {};
+          layerObject[layer.settings.name] = external;
+          mapLayersWithNames.push(layerObject);
         } else if (layer.settings.layer == 'earthEngine') {
-          mapLayers.push(this._prepareEarthEngineLayer());
+          let earthEngine = this._prepareEarthEngineLayer();
+          mapLayers.push(earthEngine);
+
+          let layerObject = {};
+          layerObject[layer.settings.name] = earthEngine;
+          mapLayersWithNames.push(layerObject);
         }
 
       }
     });
 
-    return [mapLayers, centeringLayer];
+    return [mapLayers, mapLayersWithNames, centeringLayer];
   }
 
   private _prepareTileLayer(L, tileLayer): any {
@@ -184,20 +166,221 @@ export class MapVisualizationService {
   }
 
   private _prepareGeoJSON(L, visualizationLayerSettings, visualizationAnalytics) {
-    const options: any = {};
-    const mapLegend = this._prepareMapLegend(visualizationLayerSettings, visualizationAnalytics);
-    options.style = (feature) => {
-      return this._prepareFeatureStyle(feature, visualizationLayerSettings, mapLegend);
+    let options: any = {};
+    let mapLegend = this._prepareMapLegend(visualizationLayerSettings, visualizationAnalytics);
+    let LayerEvents = null;
+
+    if (visualizationLayerSettings.layer == "boundary") {
+      mapLegend = this.legendSet.boundaryLayerClasses(visualizationLayerSettings);
+      options = this._prepareBoundaryLayerOptions(L, options, visualizationLayerSettings, mapLegend);
     }
+
+    if (visualizationLayerSettings.layer.indexOf("thematic") > -1) {
+      options = this._prepareThematicLayerOptions(L, options, visualizationLayerSettings,visualizationAnalytics, mapLegend);
+    }
+
     const layer = this._getGEOJSONLayer(L, visualizationLayerSettings, visualizationAnalytics, options);
+
+    if (visualizationLayerSettings.layer == "boundary") {
+      LayerEvents = this._bindBoundaryLayerEvents(L, layer, this.visualizationObject);
+    }
+
+    if (visualizationLayerSettings.layer.indexOf("thematic") > -1) {
+      LayerEvents = this._bindThematicLayerEvents(L, layer,visualizationAnalytics);
+    }
+
+    if (LayerEvents) {
+      layer.on({
+          click: LayerEvents.click,
+          mouseover: LayerEvents.mouseover,
+          mouseout: LayerEvents.mouseout
+        }
+      )
+    }
 
     return layer;
   }
 
   private _getGEOJSONLayer(L, visualizationLayerSettings, visualizationAnalytics, options) {
 
-    options.onEachFeature = (feature: any, layer: any) => {
+    let layer: any = L.geoJSON(this._getGeoJSONObject(visualizationLayerSettings.geoFeature, visualizationAnalytics), options);
 
+    return layer;
+  }
+
+  private _bindBoundaryLayerEvents(L, layer, visualizationObject) {
+
+    let dataArrayByOrgUnitUid = this._prepareDataByArrayByOrgUnitUid(visualizationObject.layers);
+    return {
+      click: (event) => {
+      }, mouseover: (event) => {
+        let hoveredFeature: any = event.layer.feature;
+        let data = _.find(dataArrayByOrgUnitUid, ['orgId', hoveredFeature.properties.id]);
+        let toolTipContent: string = "<div style='color:#333!important;font-size: 10px'>" +
+          "<table>";
+
+        if (data) {
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'> " + hoveredFeature.properties.name + " </td><td style='color:#333!important;' > ( " + data.value + " ) </td></tr>";
+        } else {
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;' > " + hoveredFeature.properties.name + " </td></tr>";
+
+        }
+
+        toolTipContent += "</table></div>";
+
+        layer.bindTooltip(toolTipContent, {
+          direction: 'auto',
+          permanent: false,
+          sticky: true,
+          interactive: true,
+          opacity: 1
+        });
+
+        let popUp = layer.getPopup();
+        if (popUp && popUp.isOpen()) {
+          layer.closePopup();
+        }
+        layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => {
+          let properties: any = feature.properties;
+          let featureStyle: any =
+            {
+              "stroke": true,
+              "weight": 1
+            }
+          if (hoveredFeature.properties.id == properties.id) {
+            featureStyle.weight = 3;
+          }
+
+
+          return featureStyle;
+        });
+      }, mouseout: (event) => {
+
+        const hoveredFeature: any = event.layer.feature;
+        layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => {
+          let properties: any = feature.properties;
+          let featureStyle: any =
+            {
+              "stroke": true,
+              "weight": 1
+            }
+          let hov: any = hoveredFeature.properties;
+          if (hov.id == properties.id) {
+            featureStyle.weight = 1;
+          }
+          return featureStyle;
+        });
+      }
+    }
+  }
+
+  private _bindThematicLayerEvents(L, layer,visualizationAnalytics) {
+    let totalValues:number = 0;
+    let valueIndex = _.findIndex(visualizationAnalytics.headers,["name","value"]);
+    visualizationAnalytics.rows.forEach(row=>{
+      totalValues+=+(row[valueIndex]);
+    });
+
+    return {
+      click: (event) => {
+
+      }, mouseover: (event) => {
+        let hoveredFeature: any = event.layer.feature;
+        let properties = hoveredFeature.properties;
+        let toolTipContent: string = "<div style='color:#333!important;font-size: 10px'>" +
+          "<table>";
+
+        if (properties.dataElement) {
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'> " + properties.name + " </td><td style='color:#333!important;' > ( " + properties.dataElement.value + " ) "+((properties.dataElement.value/totalValues)*100).toFixed(0)+"% </td></tr>";
+        } else {
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;' > " + properties.name + " </td></tr>";
+
+        }
+
+        toolTipContent += "</table></div>";
+
+        layer.bindTooltip(toolTipContent, {
+          direction: 'auto',
+          permanent: false,
+          sticky: true,
+          interactive: true,
+          opacity: 1
+        });
+
+        let popUp = layer.getPopup();
+        if (popUp && popUp.isOpen()) {
+          layer.closePopup();
+        }
+        layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => {
+          let properties: any = feature.properties;
+          let featureStyle: any =
+            {
+              "stroke": true,
+              "weight": 1
+            }
+          if (hoveredFeature.properties.id == properties.id) {
+            featureStyle.weight = 3;
+          }
+
+
+          return featureStyle;
+        })
+      }, mouseout: (event) => {
+
+        const hoveredFeature: any = event.layer.feature;
+        layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => {
+          let properties: any = feature.properties;
+          let featureStyle: any =
+            {
+              "stroke": true,
+              "weight": 1
+            }
+          let hov: any = hoveredFeature.properties;
+          if (hov.id == properties.id) {
+            featureStyle.weight = 1;
+          }
+          return featureStyle;
+        });
+      }
+    }
+  }
+
+  private _prepareDataByArrayByOrgUnitUid(layers) {
+    //TODO: this function has to be checked again for further improvement
+    let thematicLayers = [];
+    let thematicValues = [];
+    layers.forEach(layer => {
+      if (layer.settings.layer.indexOf("thematic") >= 0) {
+        thematicLayers.push(layer.analytics);
+      }
+    })
+
+    thematicLayers.forEach(layerValues => {
+      let valueIndex = _.findIndex(layerValues.headers, ['name', 'value']);
+      let orgIndex = _.findIndex(layerValues.headers, ['name', 'ou']);
+      let dxIndex = _.findIndex(layerValues.headers, ['name', 'dx']);
+      layerValues.rows.forEach(row => {
+        thematicValues.push({
+          data: layerValues.metaData.names[row[dxIndex]],
+          orgId: row[orgIndex],
+          value: row[valueIndex]
+        });
+      })
+    });
+    return thematicValues;
+  }
+
+  private _prepareThematicLayerOptions(L, options, visualizationLayerSettings,visualizationAnalytics, mapLegend) {
+    let totalValues:number = 0;
+    let valueIndex = _.findIndex(visualizationAnalytics.headers,["name","value"]);
+    visualizationAnalytics.rows.forEach(row=>{
+      totalValues+=+(row[valueIndex]);
+    });
+    options.style = (feature) => {
+      return this._prepareFeatureStyle(feature, visualizationLayerSettings, mapLegend);
+    }
+
+    options.onEachFeature = (feature: any, layer: any) => {
       setTimeout(() => {
         let featureName = feature.properties.name;
         let dataValue = 0;
@@ -206,21 +389,19 @@ export class MapVisualizationService {
         let toolTipContent: string =
           "<div style='color:#333!important;font-size: 10px'>" +
           "<table>";
-        toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'><b></b></td><td style='color:#333!important;' > " + featureName + "</td>";
+        toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'><b>Organisation Unit: </b></td><td style='color:#333!important;' > " + featureName + "</td>";
         if (feature.properties.dataElement) {
 
-          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'>Data Name: </td><td style='color:#333!important;' > " + feature.properties.dataElement.name + "</td>" +
-            "<tr><td style='color:#333!important;font-weight:bold;'>Value: </td><td style='color:#333!important;' > " + feature.properties.dataElement.name + "</td>";
-
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;'>Data: </td><td style='color:#333!important;' > " + feature.properties.dataElement.name + "</td>" +
+            "<tr><td style='color:#333!important;font-weight:bold;'>Value: </td><td style='color:#333!important;' > " + feature.properties.dataElement.value + "  ("+((feature.properties.dataElement.value/totalValues)*100).toFixed(0)+"%)</td>";
+          toolTipContent += "<tr><td style='color:#333!important;font-weight:bold;' ></td></tr>";
         }
         toolTipContent += "</tr>" +
           "</table>" +
           "</div>";
 
         layer.bindPopup(toolTipContent);
-      }, 10)
-
-
+      }, 10);
     }
 
     options.pointToLayer = (feature, latlng) => {
@@ -237,83 +418,37 @@ export class MapVisualizationService {
       return circleMarker
     }
 
-    let layer: any = L.geoJSON(this._getGeoJSONObject(visualizationLayerSettings.geoFeature, visualizationAnalytics), options);
 
-    layer.on(
-      {
-        click: (event) => {
+    return options;
 
-        },
-        mouseover: (event) => {
+  }
 
-          let feature: Feature<GeometryObject> = event.layer.feature;
-          const hoveredFeature: any = event.layer.feature;
-          const featureName = hoveredFeature.properties.name;
-          let dataValue: any = "";
-          dataValue = this._getFeatureDataFromAnalytics(hoveredFeature, visualizationLayerSettings);
+  private _loadMoreInformation(feature) {
+  }
 
-          let toolTipContent: string =
-            "<div style='color:#333!important;font-size: 10px'>" +
-            "<table>" +
-            "<tr><td style='color:#333!important;font-weight:bold;'>" + featureName + "</td><td style='color:#333!important;' > " + dataValue + "</td>" +
-            "</tr>" +
-            "</table>" +
-            "</div>";
+  private _prepareBoundaryLayerOptions(L, options, visualizationLayerSettings, mapLegend) {
+    options.style = (feature) => {
+      return this._prepareBoundaryFeatureStyle(feature, visualizationLayerSettings, mapLegend);
+    }
 
-          layer.bindTooltip(toolTipContent, {
-            direction: 'auto',
-            permanent: false,
-            sticky: true,
-            interactive: true,
-            opacity: 1
-          });
+    options.onEachFeature = (feature: any, layer: any) => {
 
-          let popUp = layer.getPopup();
-          if (popUp && popUp.isOpen()) {
-            layer.closePopup();
-          }
+    }
 
+    options.pointToLayer = (feature, latlng) => {
+      var geojsonMarkerOptions = {
+        radius: visualizationLayerSettings.radiusLow,
+        weight: 0.5,
+        opacity: visualizationLayerSettings.opacity,
+        fillOpacity: visualizationLayerSettings.opacity
+      };
 
-          layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => {
-            let properties: any = feature.properties;
+      let circleMarker = L.circleMarker(latlng, geojsonMarkerOptions);
+      return circleMarker
+    }
 
-            let featureStyle: any =
-              {
-                "stroke": true,
-                "weight": 1
-              }
-            let hov: any = hoveredFeature.properties;
-            if (hov.id == properties.id) {
-              featureStyle.weight = 3;
-            }
+    return options;
 
-
-            return featureStyle;
-          });
-
-
-        },
-        mouseout: (event) => {
-          const hoveredFeature: any = event.layer.feature;
-          layer.setStyle((feature: GeoJSON.Feature<GeoJSON.GeometryObject>) => {
-            let properties: any = feature.properties;
-
-            let featureStyle: any =
-              {
-                "stroke": true,
-                "weight": 1
-              }
-            let hov: any = hoveredFeature.properties;
-            if (hov.id == properties.id) {
-              featureStyle.weight = 1;
-            }
-            return featureStyle;
-          });
-        }
-      }
-    );
-
-    return layer;
   }
 
   private _prepareDataCatchedValues(visualizationLayerSettings, visualizationAnalytics) {
@@ -367,7 +502,7 @@ export class MapVisualizationService {
           }
         }
 
-        //TODO FIND BEST WAY TO DETERMINE FEATURE TYPE
+        //TODO:: FIND BEST WAY TO DETERMINE FEATURE TYPE
         if (geoFeature.le >= 4) {
           sampleGeometry.geometry.type = 'Point';
         } else if (geoFeature.le >= 1) {
@@ -395,6 +530,21 @@ export class MapVisualizationService {
     });
 
     return data != {} ? data : undefined;
+  }
+
+  private _prepareBoundaryFeatureStyle(feature, visualizationLayerSettings, legendSet) {
+    let opacity = visualizationLayerSettings.opacity;
+    let featureStyle: any = {
+      "color": _.find(legendSet, ['name', feature.le]).color,
+      "fillColor": "#ffffff",
+      "fillOpacity": 0,
+      "weight": 1,
+      "opacity": opacity,
+      "stroke": true
+    }
+
+
+    return featureStyle;
   }
 
   private _prepareFeatureStyle(feature, visualizationLayerSettings, legendSet) {
@@ -678,7 +828,6 @@ export class MapVisualizationService {
 
     return markers;
   }
-
 
   private _iconCreateFunction(L: any, cluster: any, layerSettings: any) {
     const children = cluster.getAllChildMarkers();
