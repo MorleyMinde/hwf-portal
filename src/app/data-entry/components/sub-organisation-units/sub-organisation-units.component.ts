@@ -21,6 +21,10 @@ export class SubOrganisationUnitsComponent implements OnInit {
   loadingError;
   id;
   waterPointId;
+  pager:any = {
+    page: 1,
+    pageSize: 10
+  };
   pageSize = 10;
   selectedOrder = "name";
   searchText = "";
@@ -41,7 +45,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
 
   openWaterPoint(selectedOrganisationUnit) {
     if (this.router.url.indexOf("level") > -1) {
-      this.router.navigate(['level', this.level, 'waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
+      this.router.navigate(['../../level', this.level, 'waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     } else {
       this.router.navigate(['waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     }
@@ -132,29 +136,8 @@ export class SubOrganisationUnitsComponent implements OnInit {
               if (this.waterPointParentLevel == this.organisationUnit.level) {
                 this.router.navigate(['orgUnit', this.organisationUnit.parent.id, "waterPoint", this.organisationUnit.id], {relativeTo: this.route});
               } else {
-                let url = "organisationUnits.json?paging=false&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=level:eq:" + this.level;
-                if (this.level.indexOf)
-                  if (this.level.indexOf("OU_GROUP-") > -1) {
-                    url = "organisationUnits.json?paging=false&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=organisationUnitGroups.id:eq:" + this.level.replace("OU_GROUP-", "");
-                    this.level = (this.organisationUnit.level + 1);
-                  }
-                this.http.get(url).subscribe((data:any) => {
-                  this.organisationUnit.children = data.organisationUnits;
-                  this.calculateCompletenessStatus();
-                  this.loading = false;
-                  let possibleValues = [5, 10, 20, 30, 50, 100];
-                  this.pageClustering = [];
-                  for (let i = 0; i < possibleValues.length; i++) {
-                    if (this.organisationUnit.children.length > possibleValues[i]) {
-                      this.pageClustering.push({name: possibleValues[i], value: possibleValues[i]})
-                    }
-                  }
-                  this.pageClustering.push({name: "All", value: this.organisationUnit.children.length});
-
-                }, (error) => {
-                  this.loading = false;
-                  this.loadingError = error;
-                });
+                this.loadOrganisationUnits();
+                this.loading = false;
               }
               //if(this.organisationUnit.level == this.waterPointParentLevel -1)
 
@@ -225,7 +208,6 @@ export class SubOrganisationUnitsComponent implements OnInit {
       })
     }, (error) => {
       this.organisationUnit.children.forEach((child:any) => {
-        console.log(error.message);
         child.status = "error";
         if (error.message.indexOf("is not allowed to view org unit") > -1) {
           child.statusMessage = "Not allowed to view this. Contact Administrator";
@@ -268,7 +250,6 @@ export class SubOrganisationUnitsComponent implements OnInit {
   }
 
   ConvertToCSV(objArray):any {
-    console.log(this.setLevel);
     return new Observable(observer => {
       let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
       let str = '';
@@ -363,8 +344,50 @@ export class SubOrganisationUnitsComponent implements OnInit {
     return value;
   }
 
+  fetchRequest:any;
+  search(event){
+    if(this.fetchRequest){
+      this.fetchRequest.unsubscribe();
+    }
+    this.loadOrganisationUnits()
+  }
+  loadPaging = true;
+  loadOrganisationUnits(){
+    var addSearchFilter = "";
+    if(this.searchText != ""){
+      addSearchFilter = "&filter=name:ilike:" + this.searchText;
+    }
+    this.loadPaging = true;
+    let url = "organisationUnits.json?page=" + this.pager.page + "&pageSize=" + this.pager.pageSize + "&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=level:eq:" + this.level + addSearchFilter;
+    if (this.level.indexOf)
+      if (this.level.indexOf("OU_GROUP-") > -1) {
+        url = "organisationUnits.json?page=" + this.pager.page + "&pageSize=" + this.pager.pageSize + "&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=organisationUnitGroups.id:eq:" + this.level.replace("OU_GROUP-", "") + addSearchFilter;
+        this.level = (this.organisationUnit.level + 1);
+      }
+    this.fetchRequest = this.http.get(url).subscribe((data:any) => {
+      this.pager.pageCount = data.pager.pageCount;
+      this.pager.total = data.pager.total;
+      this.organisationUnit.children = data.organisationUnits;
+      this.calculateCompletenessStatus();
+      let possibleValues = [5, 10, 20, 30, 50, 100];
+      this.pageClustering = [];
+      for (let i = 0; i < possibleValues.length; i++) {
+        if (this.organisationUnit.children.length > possibleValues[i]) {
+          this.pageClustering.push({name: possibleValues[i], value: possibleValues[i]})
+        }
+      }
+      this.pageClustering.push({name: "All", value: this.organisationUnit.children.length});
+      this.loadPaging = false;
+    }, (error) => {
+      this.loading = false;
+      this.loadingError = error;
+    });
+  }
+  pageChanged(event){
+    this.pager.page = event.page;
+    this.loadOrganisationUnits();
+  }
   setPageSize(size) {
-    // console.log(size);
     this.pageSize = size;
   }
 }
