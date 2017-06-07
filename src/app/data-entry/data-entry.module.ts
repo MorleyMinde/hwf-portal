@@ -33,6 +33,7 @@ import {FuseSearchPipe} from "../shared/pipes/fuse-search.pipe";
 import { YearPickerComponent } from './components/year-picker/year-picker.component';
 import {TooltipModule,CollapseModule,ModalModule,PaginationModule} from "ngx-bootstrap/index";
 import {BsDropdownModule} from "ngx-bootstrap/index";
+import {DataTableModule} from "angular2-datatable";
 
 @NgModule({
   imports: [
@@ -47,7 +48,8 @@ import {BsDropdownModule} from "ngx-bootstrap/index";
     PaginationModule.forRoot(),
     MyDatePickerModule,
     BsDropdownModule.forRoot(),
-    TooltipModule.forRoot()
+    TooltipModule.forRoot(),
+    DataTableModule
   ],
   declarations: [
     WaterPointComponent,

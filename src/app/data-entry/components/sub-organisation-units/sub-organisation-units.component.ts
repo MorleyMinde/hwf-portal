@@ -70,6 +70,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
   nextLevel
   authorities
   readonly = true;
+  links = [];
   init() {
     this.searchText = "";
 
@@ -93,8 +94,9 @@ export class SubOrganisationUnitsComponent implements OnInit {
         })
         this.orgUnitService.getWaterPointConstant().subscribe((data:any) => {
           this.waterPointParentLevel = data.constants[0].value;
-          this.http.get("organisationUnits.json?filter=level:eq:" + this.waterPointParentLevel + "&filter=path:like:" + this.id + "&pageSize=1").subscribe((data:any) => {
-            this.totalWaterPoints = data.pager.total;
+          //this.http.get("organisationUnits.json?filter=level:eq:" + this.waterPointParentLevel + "&filter=path:like:" + this.id + "&pageSize=1").subscribe((data:any) => {
+          this.http.get("sqlViews/gwSo7Ohajpr/data.json?var=ou:" + this.id ).subscribe((data:any) => {
+            this.totalWaterPoints = data.rows[0][0];
             //this.http.get("organisationUnits/" + this.id + ".json?fields=id,name,level,ancestors[id,name],parent[id],dataSets[id,categoryCombo[*,categoryOptionCombos[*]],name,periodType,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]]],attributeValues[value,attribute[id,name]]],dataSets[id,name,periodType,openFuturePeriods,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]],optionSet[id,name,options[id,name,code]]]]").subscribe((data:any) => {
             this.orgUnitService.getOrgunit(this.id).subscribe((data:any) => {
               //let dataJSON = data;

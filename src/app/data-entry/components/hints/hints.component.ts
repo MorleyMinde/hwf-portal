@@ -44,7 +44,6 @@ export class HintsComponent implements OnInit {
       this.orgUnitService.getOrgunitLevelsInformation().subscribe((levelInfo)=>{
         this.orgUnitService.getOrgunit(this.id).subscribe((organisationUnit)=>{
           levelInfo.organisationUnitLevels.forEach((organsationUnitLevel)=>{
-            console.log("Level:",organsationUnitLevel);
             if(organsationUnitLevel.level == organisationUnit.level && organisationUnit.level != 1){
               this.urlAddition = "?criteria=" + this.fieldMap[organsationUnitLevel.name]+ ":" + organisationUnit.name;
             }

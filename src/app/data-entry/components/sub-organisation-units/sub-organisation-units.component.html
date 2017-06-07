@@ -47,7 +47,18 @@
               <button tooltip="Create New Water Point" *ngIf="!readonly && organisationUnit.level == waterPointParentLevel - 1 && (authorities.indexOf('ALL') > -1 || authorities.indexOf('F_ORGANISATIONUNIT_ADD') > -1)"
                       [routerLink]="['/data-entry','orgUnit',id,'waterPoint','new']" class="btn btn-primary btn-lg">
                 <i class="fa fa-plus" aria-hidden="true"> </i></button>
-              <button *ngIf="readonly" tooltip="Download CSV" class="btn btn-primary btn-lg" (click)="download()"><i class="fa fa-download" aria-hidden="true"> </i></button>
+              <!--<button *ngIf="readonly" tooltip="Download CSV" class="btn btn-primary btn-lg" (click)="download()"><i class="fa fa-download" aria-hidden="true"> </i></button>-->
+              <div *ngIf="readonly" class="btn-group" dropdown>
+                <button dropdownToggle type="button" class="btn btn-primary btn-lg dropdown-toggle">
+                  <i class="fa fa-download" aria-hidden="true"> </i>
+                </button>
+                <ul *dropdownMenu class="dropdown-menu" role="menu">
+                  <li *ngFor="let link of links" role="menuitem"><a class="dropdown-item" href="{{link.url}}">{{link.name}}</a></li>
+                  <li class="divider dropdown-divider"></li>
+                  <li role="menuitem"><a class="dropdown-item"  (click)="download()">Original Download</a>
+                  </li>
+                </ul>
+              </div>
             </div>
           </div>
         </div>
