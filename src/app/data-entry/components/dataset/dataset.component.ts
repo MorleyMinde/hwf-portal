@@ -172,6 +172,7 @@ export class DatasetComponent implements OnInit {
   }
   eventDate
   periodSelected(period) {
+    this.event = null;
     this.period = period;
     this.eventDate = this.period.substr(0,4)+"-"+ this.period.substr(4) + "-01";
     this.init();
@@ -218,7 +219,7 @@ export class DatasetComponent implements OnInit {
           })
         }
       });
-      dataValues.push({"dataElement":dataElementID,"value":value,"providedElsewhere":false})
+      dataValues.push({"dataElement":dataElementID,"value":this.dataValues[dataElementID].value,"providedElsewhere":false})
       let payload = {
         "program": this.organisationUnit.programs[0].id,
         "eventDate":this.period.substr(0,4) + "-" + this.period.substr(4) + "-01",
