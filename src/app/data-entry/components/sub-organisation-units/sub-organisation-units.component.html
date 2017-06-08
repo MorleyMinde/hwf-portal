@@ -56,10 +56,14 @@
                   <i class="fa fa-download" aria-hidden="true"> </i>
                 </button>
                 <ul *dropdownMenu class="dropdown-menu" role="menu">
-                  <li *ngFor="let link of links" role="menuitem"><a class="dropdown-item" href="{{link.url}}">{{link.name}}</a>
+                  <li *ngIf="level == waterPointParentLevel"><a class="dropdown-item" href="/api/sqlViews/SM8ExBY51Ph/data.csv{{urlAddition}}">Download Water Points</a>
+                  </li>
+                  <li *ngIf="level != waterPointParentLevel"><a class="dropdown-item" (click)="download()">Download {{nextLevel.name}}</a>
+                  </li>
+                  <li><a class="dropdown-item" href="/api/sqlViews/dJ2fSKGrlOS/data.csv?filter=path:like:{{id}}">Download Villages With No Water Points</a>
                   </li>
                   <li class="divider dropdown-divider"></li>
-                  <li role="menuitem"><a class="dropdown-item" (click)="download()">Original Download</a>
+                  <li role="menuitem"><a class="dropdown-item" href="/api/sqlViews/frQwwuGtELy/data.xls">Download Users</a>
                   </li>
                 </ul>
               </div>

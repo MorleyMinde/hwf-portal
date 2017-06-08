@@ -57,7 +57,11 @@ export class OrgUnitService {
   waterPointConstant
   getWaterPointConstant() {
     return Observable.create((observable)=>{
-      if(this.waterPointConstant){
+      observable.next({
+        constants:[{value:6}]
+      });
+      observable.complete();
+      /*if(this.waterPointConstant){
         observable.next(this.waterPointConstant);
         observable.complete();
       }else{
@@ -68,7 +72,7 @@ export class OrgUnitService {
             observable.next(this.waterPointConstant);
             observable.complete();
           })
-      }
+      }*/
     })
   }
 

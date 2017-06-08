@@ -74,7 +74,14 @@ export class SubOrganisationUnitsComponent implements OnInit {
   nextLevel
   authorities
   readonly = true;
-  links = [];
+  fieldMap ={
+    "Regions":"Region",
+    "LGAs":"Council",
+    "Wards":"Ward",
+    "Villages":"Village",
+    "Tanzania":"Tanzania",
+  }
+  urlAddition
   init() {
     this.searchText = "";
 
@@ -130,6 +137,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
                 organisationUnitLevelsData.organisationUnitLevels.forEach((organisationUnitLevel)=> {
                   if (organisationUnitLevel.level == this.level) {
                     this.nextLevel = organisationUnitLevel;
+                    this.urlAddition = "?criteria=" + this.fieldMap[organisationUnitLevel.name]+ ":" + this.organisationUnit.name;
                   }
                 })
               })
@@ -251,86 +259,97 @@ export class SubOrganisationUnitsComponent implements OnInit {
 
   ConvertToCSV(objArray):any {
     return new Observable(observer => {
-      let array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-      let str = '';
-
-      //append Label row with line break
-
-      this.http.get("organisationUnitLevels.json?fields=name,level").subscribe((organisationUnitLevelsData:any) => {
-        let organisationUnitLevelsDataJSON = organisationUnitLevelsData.organisationUnitLevels;
-        organisationUnitLevelsDataJSON.sort((a, b) => {
-          if (a.level < b.level) {
-            return -1;
-          }
-          if (a.level > b.level) {
-            return 1;
-          }
-          // a must be equal to b
-          return 0;
-        })
-        organisationUnitLevelsDataJSON.forEach((organisationUnitLevel)=> {
-          if (organisationUnitLevel.level != 1 && organisationUnitLevel.level <= this.level) {
-            str += organisationUnitLevel.name + ",";
-          }
-        })
-        str += "Code";
-        let headers = ["Project", "Basin", "Year of Construction", "Source", "Technology", "Old Code", "Extraction System", "Village Population", "Water Point Management"];
-        if (this.level == (this.waterPointParentLevel)) {
-          str += "," + headers.join(",");
+      let url = "organisationUnits.json?paging=false&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=level:eq:" + this.level;
+      if (this.level.indexOf)
+        if (this.level.indexOf("OU_GROUP-") > -1) {
+          url = "organisationUnits.json?paging=false&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=organisationUnitGroups.id:eq:" + this.level.replace("OU_GROUP-", "");
+          this.level = (this.organisationUnit.level + 1);
         }
-        str += ",Completeness Status";
-        let dx = ["DIC1UYnqUf7", "OXHW0r8lrdk", "WteCqFCRv7H", "d8MNkGPyADo", "kMeKnrbm9UV", "yFLFPloToNW"];
-        this.http.get("analytics.json?dimension=dx:" + dx.join(";") + "&filter=pe:" + this.periodStatus + "&dimension=ou:LEVEL-" + this.level + ";" + this.organisationUnit.id + "&displayProperty=NAME&skipMeta=false").subscribe((analyticsData:any) => {
-          let analyticsDataJSON = (analyticsData);
-          let orgUnitsObject = {};
-          analyticsDataJSON.rows.forEach((row)=> {
-            if (!orgUnitsObject[row[1]]) {
-              orgUnitsObject[row[1]] = {};
-            }
-            orgUnitsObject[row[1]][row[0]] = row[2];
-          })
-          dx.forEach((d)=> {
-            str += "," + analyticsDataJSON.metaData.items[d].name;
-          })
-          str += "\r\n";
+      this.http.get(url).subscribe((data:any) => {
+        let array = typeof data.organisationUnits != 'object' ? JSON.parse(data.organisationUnits) : data.organisationUnits;
+        let str = '';
 
-          array.forEach((orgUnit) => {
-            let line = "";
-            orgUnit.ancestors.forEach((ancestor, index) => {
-              if (index != 0) {
-                line += ancestor.name;
-                if(this.setLevel.indexOf("OU_GROUP") > -1){
-                  line += "/";
-                }else{
-                  line += ",";
-                }
-              }
-            })
-            line += orgUnit.name + "," + (orgUnit.code ? orgUnit.code : "");
-            if (this.level == (this.waterPointParentLevel)) {
-              headers.forEach((key)=> {
-                if (key)
-                  line += "," + this.getAttribute(key, orgUnit);
-              })
+        //append Label row with line break
+
+        this.http.get("organisationUnitLevels.json?fields=name,level").subscribe((organisationUnitLevelsData:any) => {
+          let organisationUnitLevelsDataJSON = organisationUnitLevelsData.organisationUnitLevels;
+          organisationUnitLevelsDataJSON.sort((a, b) => {
+            if (a.level < b.level) {
+              return -1;
             }
-            line += "," + orgUnit.completeness;
+            if (a.level > b.level) {
+              return 1;
+            }
+            // a must be equal to b
+            return 0;
+          })
+          organisationUnitLevelsDataJSON.forEach((organisationUnitLevel)=> {
+            if (organisationUnitLevel.level != 1 && organisationUnitLevel.level <= this.level) {
+              str += organisationUnitLevel.name + ",";
+            }
+          })
+          str += "Code";
+          let headers = ["Project", "Basin", "Year of Construction", "Source", "Technology", "Old Code", "Extraction System", "Village Population", "Water Point Management"];
+          if (this.level == (this.waterPointParentLevel)) {
+            str += "," + headers.join(",");
+          }
+          str += ",Completeness Status";
+          let dx = ["MTAVidYwh6V.REPORTING_RATE","DIC1UYnqUf7", "OXHW0r8lrdk", "WteCqFCRv7H", "d8MNkGPyADo", "kMeKnrbm9UV", "yFLFPloToNW"];
+          this.http.get("analytics.json?dimension=dx:" + dx.join(";") + "&filter=pe:" + this.periodStatus + "&dimension=ou:LEVEL-" + this.level + ";" + this.organisationUnit.id + "&displayProperty=NAME&skipMeta=false").subscribe((analyticsData:any) => {
+            let analyticsDataJSON = (analyticsData);
+            let orgUnitsObject = {};
+            analyticsDataJSON.rows.forEach((row)=> {
+              if (!orgUnitsObject[row[1]]) {
+                orgUnitsObject[row[1]] = {};
+              }
+              orgUnitsObject[row[1]][row[0]] = row[2];
+            })
             dx.forEach((d)=> {
-              if (orgUnitsObject[orgUnit.id]) {
-                if (orgUnitsObject[orgUnit.id][d]) {
-                  line += "," + orgUnitsObject[orgUnit.id][d];
+              str += "," + analyticsDataJSON.metaData.items[d].name;
+            })
+            str += "\r\n";
+
+            array.forEach((orgUnit) => {
+              let line = "";
+              orgUnit.ancestors.forEach((ancestor, index) => {
+                if (index != 0) {
+                  line += ancestor.name;
+                  if(this.setLevel.indexOf("OU_GROUP") > -1){
+                    line += "/";
+                  }else{
+                    line += ",";
+                  }
+                }
+              })
+              line += orgUnit.name + "," + (orgUnit.code ? orgUnit.code : "");
+              if (this.level == (this.waterPointParentLevel)) {
+                headers.forEach((key)=> {
+                  if (key)
+                    line += "," + this.getAttribute(key, orgUnit);
+                })
+              }
+              //line += "," + orgUnit.completeness;
+              dx.forEach((d)=> {
+                if (orgUnitsObject[orgUnit.id]) {
+                  if (orgUnitsObject[orgUnit.id][d]) {
+                    line += "," + orgUnitsObject[orgUnit.id][d];
+                  } else {
+                    line += ",";
+                  }
                 } else {
                   line += ",";
                 }
-              } else {
-                line += ",";
-              }
+              })
+              str += line + '\r\n';
             })
-            str += line + '\r\n';
-          })
-          observer.next(str);
-          observer.complete();
+            observer.next(str);
+            observer.complete();
+          });
         });
+      }, (error) => {
+        observer.error(error);
       });
+
     });
   }
 
@@ -358,10 +377,10 @@ export class SubOrganisationUnitsComponent implements OnInit {
       addSearchFilter = "&filter=name:ilike:" + this.searchText;
     }
     this.loadPaging = true;
-    let url = "organisationUnits.json?page=" + this.pager.page + "&pageSize=" + this.pager.pageSize + "&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=level:eq:" + this.level + addSearchFilter;
+    let url = "organisationUnits.json?page=" + this.pager.page + "&pageSize=" + this.pager.pageSize + "&fields=id,name,code,attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=level:eq:" + this.level + addSearchFilter;
     if (this.level.indexOf)
       if (this.level.indexOf("OU_GROUP-") > -1) {
-        url = "organisationUnits.json?page=" + this.pager.page + "&pageSize=" + this.pager.pageSize + "&fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=organisationUnitGroups.id:eq:" + this.level.replace("OU_GROUP-", "") + addSearchFilter;
+        url = "organisationUnits.json?page=" + this.pager.page + "&pageSize=" + this.pager.pageSize + "&fields=id,name,code,attributeValues[value,attribute[id,name]]&filter=path:like:" + this.id + "&filter=organisationUnitGroups.id:eq:" + this.level.replace("OU_GROUP-", "") + addSearchFilter;
         this.level = (this.organisationUnit.level + 1);
       }
     this.fetchRequest = this.http.get(url).subscribe((data:any) => {
