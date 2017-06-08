@@ -53,7 +53,7 @@
       </div>
       <div *ngIf="!attributeValue.attribute.optionSet">
         <div *ngIf="attributeValue.attribute.name.toLowerCase().indexOf('year') > -1">
-          <year-picker [initialValue]="attributeValue.value"></year-picker>
+          <year-picker [initialValue]="attributeValue.value" (yearSelected)="valueSelected($event)"></year-picker>
         </div>
         <div *ngIf="attributeValue.attribute.name.toLowerCase().indexOf('year') == -1">
           <input *ngIf="attributeValue.attribute.name == 'Old Code'" type="text" readonly class="form-control"

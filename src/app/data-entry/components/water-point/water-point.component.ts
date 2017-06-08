@@ -175,6 +175,7 @@ export class WaterPointComponent implements OnInit {
         this.http.put("organisationUnits/" + this.id, this.organisationUnit).subscribe((data:any) => {
           this.editing = false;
           this.loading = false;
+          this.saveTriggered = false;
         }, (error) => {
           this.loading = false;
           this.loadingError = error;

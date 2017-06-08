@@ -106,6 +106,7 @@ export class InputComponent implements OnInit {
   }
 
   valueSelected(event){
+    console.log("Selected:",event);
     this.attributeValue.value = event;
   }
 }

@@ -1,4 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
+import {Response} from '@angular/http';
 
 @Component({
   selector: 'app-message',
@@ -13,6 +14,10 @@ export class MessageComponent implements OnInit {
 
   errorSet
   ngOnInit() {
+    if(this.messageObject instanceof Response){
+      this.messageObject = this.messageObject.json();
+    }
+    console.log(this.messageObject);
     if(this.messageObject.status == 0){
       this.errorSet =  {heading:'Oh Snap!',message:'Failed to load. Please check the your internet connection.'};
     }else if(this.messageObject.status == 403){
@@ -32,17 +37,30 @@ export class MessageComponent implements OnInit {
               message += conflict.value.split("_").join(" ");
             })
             this.errorSet =  {heading:'Oh Snap!',message:message};
+          }else if(dhisMessage.response.errorReports){
+            let message = "";
+            dhisMessage.response.errorReports.forEach((errorReport,index)=>{
+              if(index > 0){
+                message += ", "
+              }
+              message += errorReport.message;
+            })
+            this.errorSet =  {heading:'Oh Snap!',message:message};
           }
         }else{
           this.errorSet =  {heading:'Oh Snap!',message:'There is a system conflict. Please contact administrator to be assigned to this water point.'};
         }
       }
-    }else if(this.messageObject.status == 500){
+    }else if(this.messageObject.status == 500 || this.messageObject.httpStatusCode == 500){
       let dhisMessage = this.messageObject;
       if(dhisMessage.message.indexOf("No row with the given identifier exists")){
         this.errorSet =  {heading:'Oh Snap!',message:'There is a database error. Please contact administrator to be assigned to this water point.'};
       }else{
-        this.errorSet =  {heading:'Oh Snap!',message:'There is a system error. Please contact administrator to be assigned to this water point.'};
+        if(this.messageObject.httpStatusCode){
+          this.errorSet =  {heading:'Oh Snap!',message:this.messageObject.message};
+        }else{
+          this.errorSet =  {heading:'Oh Snap!',message:'There is a system error. Please contact administrator to be assigned to this water point.'};
+        }
       }
     }else{
       this.errorSet = this.messageObject;
