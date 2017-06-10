@@ -120,7 +120,7 @@ export class WaterPointComponent implements OnInit {
 
   loadOrganisationUnit() {
     this.editing = false;
-    this.http.get("organisationUnits/" + this.id + ".json?fields=id,name,shortName,openingDate,code,coordinates,programs[id,programRules[condition,programRuleActions[programRuleActionType,content,dataElement]],programRuleVariables[name,dataElement],name,programStages[programStageDataElements[dataElement[id,name,valueType,attributeValues[value,attribute[name]],optionSet[id,name,options[id,name,code]]]]]],attributeValues[value,attribute[id,name,valueType,optionSet[options[id,name,code]]]],dataSets[id,name,openFuturePeriods,periodType,sections[dataElements[id,name,categoryCombo[*,categoryOptionCombos[*]],attributeValues[value,attribute[id,name]],valueType,optionSet[id,name,options[id,name,code]]]]").subscribe((data:any) => {
+    this.http.get("organisationUnits/" + this.id + ".json?fields=id,name,shortName,openingDate,code,parent,coordinates,programs[id,programRules[condition,programRuleActions[programRuleActionType,content,dataElement]],programRuleVariables[name,dataElement],name,programStages[programStageDataElements[dataElement[id,name,valueType,attributeValues[value,attribute[name]],optionSet[id,name,options[id,name,code]]]]]],attributeValues[value,attribute[id,name,valueType,optionSet[options[id,name,code]]]],dataSets[id,name,openFuturePeriods,periodType,sections[dataElements[id,name,categoryCombo[*,categoryOptionCombos[*]],attributeValues[value,attribute[id,name]],valueType,optionSet[id,name,options[id,name,code]]]]").subscribe((data:any) => {
 
       this.http.get("attributes.json?fields=id,name,valueType,optionSet[options[id,name,code]]&filter=organisationUnitAttribute:eq:true").subscribe((attrdata:any) => {
         this.organisationUnit = data;
@@ -170,60 +170,35 @@ export class WaterPointComponent implements OnInit {
     if (validated) {
       this.organisationUnit.attributeValues = newAttributeValues;
       this.loadingError = false;
-      if (this.organisationUnit.id) {
-        console.log("Update:", this.organisationUnit);
-        this.http.put("25/organisationUnits/" + this.id, this.organisationUnit).subscribe((data:any) => {
+      var attributes = "";
+      this.organisationUnit.attributeValues.forEach((attribute,index)=>{
+        if(index > 0){
+          attributes += "-_"
+        }
+        attributes += attribute.attribute.id + "_-" + attribute.value;
+      })
+      console.log(this.organisationUnit);
+      this.http.get("sqlViews/FRUcnTzKfzm/data.json?var=name:" + this.organisationUnit.name + "&var=parent:" + this.organisationUnit.parent.id + "&var=userid:" + this.organisationUnit.parent.id + "&var=attributes:" + attributes +"&var=waterpointid:" + this.organisationUnit.id).subscribe((data:any) => {
+        if(data.rows[0][0] == 'Error'){
+          this.loading = false;
+          this.loadingError = {message:"Failed to save waterpoint. sqlView Error."};
+        }else{
+          this.saveTriggered = false;
           this.editing = false;
           this.loading = false;
-          this.saveTriggered = false;
-        }, (error) => {
-          this.loading = false;
-          this.loadingError = error;
-        });
-      } else {
-        this.organisationUnit.shortName = this.organisationUnit.name;
-        this.http.post("27/organisationUnits", this.organisationUnit).subscribe((data:any) => {
-          if (data.response.importConflicts) {
-            data.response.importConflicts.forEach((importConflict) => {
-              if (importConflict.value == "Object already exists.") {
-                this.loading = false;
-                alert(importConflict.object + " already exists. Please write another name");
-                return;
-              }
-            })
-          } else {
-            this.organisationUnit.id = data.response.uid;
-            this.id = this.organisationUnit.id;
-            this.http.post("27/organisationUnits/" +  this.organisationUnit.id +"/dataSets/MTAVidYwh6V", {}).subscribe((data:any) => {
-              this.http.post("27/organisationUnits/" +  this.organisationUnit.id +"/programs/lg2nRxyEtiH",{}).subscribe((programData:any) => {
-                this.saveTriggered = false;
-                this.editing = false;
-                this.loading = false;
-                this.addOrganisationUnit(this.organisationUnit);
-                this.loadOrganisationUnit();
-                this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', this.organisationUnit.id]);
-              }, (error) => {
-                alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
-                this.loading = false;
-                this.loadingError = error;
-                this.saveTriggered = false;
-                this.addOrganisationUnit(this.organisationUnit);
-                this.loadOrganisationUnit();
-              });
+          if(!this.organisationUnit.id){
+            this.http.get("organisationUnits/" +  data.rows[0][0]).subscribe((orgUnit:any) => {
+              this.addOrganisationUnit(orgUnit);
             }, (error) => {
-              this.saveTriggered = false;
-              alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
-              this.loading = false;
-              this.loadingError = error;
-              this.addOrganisationUnit(this.organisationUnit);
-              this.loadOrganisationUnit();
+
             });
+            this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', this.organisationUnit.id]);
           }
-        }, (error) => {
-          this.loading = false;
-          this.loadingError = error;
-        });
-      }
+        }
+      }, (error) => {
+        this.loading = false;
+        this.loadingError = error;
+      });
     } else {
       this.loading = false;
     }
