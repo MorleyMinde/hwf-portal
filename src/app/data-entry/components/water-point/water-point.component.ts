@@ -172,7 +172,7 @@ export class WaterPointComponent implements OnInit {
       this.loadingError = false;
       if (this.organisationUnit.id) {
         console.log("Update:", this.organisationUnit);
-        this.http.put("organisationUnits/" + this.id, this.organisationUnit).subscribe((data:any) => {
+        this.http.put("25/organisationUnits/" + this.id, this.organisationUnit).subscribe((data:any) => {
           this.editing = false;
           this.loading = false;
           this.saveTriggered = false;
@@ -182,7 +182,7 @@ export class WaterPointComponent implements OnInit {
         });
       } else {
         this.organisationUnit.shortName = this.organisationUnit.name;
-        this.http.post("organisationUnits", this.organisationUnit).subscribe((data:any) => {
+        this.http.post("27/organisationUnits", this.organisationUnit).subscribe((data:any) => {
           if (data.response.importConflicts) {
             data.response.importConflicts.forEach((importConflict) => {
               if (importConflict.value == "Object already exists.") {
@@ -194,69 +194,27 @@ export class WaterPointComponent implements OnInit {
           } else {
             this.organisationUnit.id = data.response.uid;
             this.id = this.organisationUnit.id;
-            this.http.get("dataSets.json?fields=*&filter=attributeValues.value:eq:5").subscribe((dataSetData:any) => {
-              let dataSets = dataSetData.dataSets;
-              if (dataSets.length > 0) {
-                dataSets.forEach((dataSet:any)=> {
-                  dataSet.organisationUnits.push({id: this.organisationUnit.id})
-                  this.http.put("dataSets/" + dataSet.id, dataSet).subscribe((data:any) => {
-                    this.organisationUnit.dataSets = dataSetData.dataSets;
-                    this.http.get("programs.json?fields=*").subscribe((programData:any) => {
-                      let programs = programData.programs;
-                      if (programs.length > 0) {
-                        programs.forEach((program:any)=> {
-                          program.organisationUnits.push({id: this.organisationUnit.id})
-                          this.http.put("programs/" + program.id, program).subscribe((data:any) => {
-                            this.organisationUnit.programs = programData.programs;
-                            this.saveTriggered = false;
-                            this.editing = false;
-                            this.loading = false;
-                            this.addOrganisationUnit(this.organisationUnit);
-                            this.loadOrganisationUnit();
-                            this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', this.organisationUnit.id])
-                          }, (error) => {
-                            this.saveTriggered = false;
-                            alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
-                            this.loading = false;
-                            this.loadingError = error;
-                            this.addOrganisationUnit(this.organisationUnit);
-                            this.loadOrganisationUnit();
-                          });
-                        })
-                      } else {
-                        this.saveTriggered = false;
-                        this.loading = false;
-                        this.loadingError = {message: "Error getting data Sets."};
-                      }
-
-                    }, (error) => {
-                      alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
-                      this.loading = false;
-                      this.loadingError = error;
-                      this.saveTriggered = false;
-                      this.addOrganisationUnit(this.organisationUnit);
-                      this.loadOrganisationUnit();
-                    });
-                  }, (error) => {
-                    this.saveTriggered = false;
-                    alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
-                    this.loading = false;
-                    this.loadingError = error;
-                    this.addOrganisationUnit(this.organisationUnit);
-                    this.loadOrganisationUnit();
-                  });
-                })
-              } else {
+            this.http.post("27/organisationUnits/" +  this.organisationUnit.id +"/dataSets/MTAVidYwh6V", {}).subscribe((data:any) => {
+              this.http.post("27/organisationUnits/" +  this.organisationUnit.id +"/programs/lg2nRxyEtiH",{}).subscribe((programData:any) => {
                 this.saveTriggered = false;
+                this.editing = false;
                 this.loading = false;
-                this.loadingError = {message: "Error getting data Sets."};
-              }
-
+                this.addOrganisationUnit(this.organisationUnit);
+                this.loadOrganisationUnit();
+                this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', this.organisationUnit.id]);
+              }, (error) => {
+                alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
+                this.loading = false;
+                this.loadingError = error;
+                this.saveTriggered = false;
+                this.addOrganisationUnit(this.organisationUnit);
+                this.loadOrganisationUnit();
+              });
             }, (error) => {
+              this.saveTriggered = false;
               alert("Form Error. Water Point was created but the form was not assigned. Please contact administrator to be manually assigned.")
               this.loading = false;
               this.loadingError = error;
-              this.saveTriggered = false;
               this.addOrganisationUnit(this.organisationUnit);
               this.loadOrganisationUnit();
             });
