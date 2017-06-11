@@ -131,6 +131,6 @@ LANGUAGE plpgsql;
 */
 --SELECT createWaterPoint('New Organisation Unit','DIiS6nXfTtQ','BZB2SLt3ylj','COWSO');
 
-SELECT createWaterPoint('sdkfhskdg','m6UTruihEDP','m6UTruihEDP','vHgnIA6Wcc5_-Internal-_FzlzchJ2J7S_-Gravity-_iLKwCl3Od9c_-Project%201-_YtHLfazAtC1_-Project%201-_ktuyhosn1zt_-Dam-_rqlTarZRu8L_-Other-_MMhip91li8h_-30-_jdVL0UuPB5h_-COWSO-_koixPT9d3Sr_-1917','','-6dot369comma34dot8888');
+--SELECT createWaterPoint('sdkfhskdg','m6UTruihEDP','m6UTruihEDP','vHgnIA6Wcc5_-Internal-_FzlzchJ2J7S_-Gravity-_iLKwCl3Od9c_-Project%201-_YtHLfazAtC1_-Project%201-_ktuyhosn1zt_-Dam-_rqlTarZRu8L_-Other-_MMhip91li8h_-30-_jdVL0UuPB5h_-COWSO-_koixPT9d3Sr_-1917','','-6dot369comma34dot8888');
 
 
