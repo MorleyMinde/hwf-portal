@@ -52,8 +52,8 @@ END;
 $$
 LANGUAGE plpgsql;
 
-DROP FUNCTION createWaterPoint(VARCHAR,VARCHAR,VARCHAR,VARCHAR,VARCHAR);
-CREATE OR REPLACE FUNCTION createWaterPoint(water_point_name VARCHAR, parent VARCHAR,user_id VARCHAR,attributes VARCHAR,waterpoint_uid VARCHAR) RETURNS VARCHAR AS $$
+DROP FUNCTION createWaterPoint(VARCHAR,VARCHAR,VARCHAR,VARCHAR,VARCHAR,VARCHAR);
+CREATE OR REPLACE FUNCTION createWaterPoint(water_point_name VARCHAR, parent VARCHAR,user_id VARCHAR,attributes VARCHAR,waterpoint_uid VARCHAR,orgunit_coordinates VARCHAR) RETURNS VARCHAR AS $$
 DECLARE
 	_c text;
 	parent_code character varying(50);
@@ -75,12 +75,12 @@ BEGIN
         SELECT  count(organisationunit.organisationunitid) INTO number_of_water_points FROM organisationunit WHERE parentid = parent_id;
         number_of_water_points = number_of_water_points + 1;
         --Insert the organisation units;
-        INSERT INTO organisationunit (organisationunitid,uid,code,created,lastupdated,name,shortname,parentid,path,userid,openingdate) VALUES((SELECT MAX(organisationunitid) + 1 FROM organisationunit),org_unit_uid,parent_code || number_of_water_points,now(),now(),water_point_name,water_point_name,parent_id,parent_path||'/'||org_unit_uid,(SELECT userinfoid FROM userinfo WHERE uid = user_id),'2000-01-01');
+        INSERT INTO organisationunit (organisationunitid,uid,code,created,lastupdated,name,shortname,parentid,path,userid,openingdate,coordinates) VALUES((SELECT MAX(organisationunitid) + 1 FROM organisationunit),org_unit_uid,parent_code || number_of_water_points,now(),now(),water_point_name,water_point_name,parent_id,parent_path||'/'||org_unit_uid,(SELECT userinfoid FROM userinfo WHERE uid = user_id),'2000-01-01','[' || replace(replace(orgunit_coordinates,'dot','.'),'comma',',') || ']');
 
         SELECT  organisationunit.organisationunitid INTO org_unit_id FROM organisationunit WHERE uid = org_unit_uid;
       WHEN  char_length(waterpoint_uid) = 11 THEN
         org_unit_uid = waterpoint_uid;
-        UPDATE organisationunit SET lastupdated = now(),name = water_point_name,shortname = water_point_name,parentid = parent_id,path = parent_path||'/'||org_unit_uid WHERE uid = waterpoint_uid;
+        UPDATE organisationunit SET lastupdated = now(),name = water_point_name,shortname = water_point_name,parentid = parent_id,path = parent_path||'/'||org_unit_uid, coordinates = '[' || replace(replace(orgunit_coordinates,'dot','.'),'comma',',') || ']' WHERE uid = waterpoint_uid;
       ELSE
 
     END CASE;
@@ -112,9 +112,13 @@ BEGIN
 
 	EXCEPTION WHEN OTHERS THEN
 		GET STACKED DIAGNOSTICS _c = PG_EXCEPTION_CONTEXT;
-		RAISE NOTICE 'context: >>%<<', _c;
-		raise notice '% %', SQLERRM, SQLSTATE;
-		results := 'Error';
+		CASE
+      WHEN SQLERRM = 'duplicate key value violates unique constraint "organisationunit_code_key"' THEN
+        results := 'Duplicate code. Failed to generated code since it already exists.';
+      ELSE
+        raise notice '% %', SQLERRM, SQLSTATE;
+        results := 'saving_water_point sql view error.';
+      END CASE;
 	END;
 
 	RETURN results;
@@ -127,6 +131,6 @@ LANGUAGE plpgsql;
 */
 --SELECT createWaterPoint('New Organisation Unit','DIiS6nXfTtQ','BZB2SLt3ylj','COWSO');
 
-SELECT createWaterPoint('New Organisation Unit','V6RxJbBQyV2','BZB2SLt3ylj','jdVL0UuPB5h_-COWSO-_YtHLfazAtC1_-Project 1-_vHgnIA6Wcc5_-Lake Nyasa-_ktuyhosn1zt_-Dam-_MMhip91li8h_-10-_iLKwCl3Od9c_-Project 1-_rqlTarZRu8L_-Other-_koixPT9d3Sr_-1917-_FzlzchJ2J7S_-Gravity','jiJ7FhCqMGi');
+SELECT createWaterPoint('sdkfhskdg','m6UTruihEDP','m6UTruihEDP','vHgnIA6Wcc5_-Internal-_FzlzchJ2J7S_-Gravity-_iLKwCl3Od9c_-Project%201-_YtHLfazAtC1_-Project%201-_ktuyhosn1zt_-Dam-_rqlTarZRu8L_-Other-_MMhip91li8h_-30-_jdVL0UuPB5h_-COWSO-_koixPT9d3Sr_-1917','','-6dot369comma34dot8888');
 
 

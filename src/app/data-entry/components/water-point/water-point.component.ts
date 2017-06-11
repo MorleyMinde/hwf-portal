@@ -178,10 +178,12 @@ export class WaterPointComponent implements OnInit {
         attributes += attribute.attribute.id + "_-" + attribute.value;
       })
       console.log(this.organisationUnit);
-      this.http.get("sqlViews/FRUcnTzKfzm/data.json?var=name:" + this.organisationUnit.name + "&var=parent:" + this.organisationUnit.parent.id + "&var=userid:" + this.organisationUnit.parent.id + "&var=attributes:" + attributes +"&var=waterpointid:" + this.organisationUnit.id).subscribe((data:any) => {
-        if(data.rows[0][0] == 'Error'){
+      this.http.get("sqlViews/FRUcnTzKfzm/data.json?var=name:" + this.organisationUnit.name + "&var=parent:" + this.organisationUnit.parent.id + "&var=userid:" +
+        this.organisationUnit.parent.id + "&var=attributes:" + attributes +"&var=waterpointid:" + this.organisationUnit.id +"&var=coordinates:" +
+        this.organisationUnit.coordinates.split(".").join("dot").replace("[","").replace("]","").replace(",","comma")).subscribe((data:any) => {
+        if(data.rows[0][0].length != 11){
           this.loading = false;
-          this.loadingError = {message:"Failed to save waterpoint. sqlView Error."};
+          this.loadingError = {httpStatusCode: 409,message:"SQL Error",response:{errorReports:[{message:data.rows[0][0]}]}};
         }else{
           this.saveTriggered = false;
           this.editing = false;
@@ -192,7 +194,7 @@ export class WaterPointComponent implements OnInit {
             }, (error) => {
 
             });
-            this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', this.organisationUnit.id]);
+            this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', data.rows[0][0]]);
           }
         }
       }, (error) => {

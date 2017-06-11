@@ -8,7 +8,7 @@ export class UserService {
 
   userSubscriber;
   constructor(private http: HttpClientService) {
-    this.userSubscriber = http.get("me.json?fields=userCredentials[userRoles[authorities,programs[id,name]]],organisationUnits");
+    this.userSubscriber = http.get("me.json?fields=id,userCredentials[userRoles[authorities,programs[id,name]]],organisationUnits");
   }
 
   getUser(){
@@ -63,7 +63,6 @@ export class UserService {
   }
   populateProgramNames(){
     let programs = [];
-    console.log(this.user.userCredentials.userRoles);
     this.user.userCredentials.userRoles.forEach((userRole:any)=>{
       userRole.programs.forEach((program:any)=>{
         programs.push(program.name);

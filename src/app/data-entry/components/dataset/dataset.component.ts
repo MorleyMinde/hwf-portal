@@ -2,6 +2,7 @@ import { Component, OnInit,Input } from '@angular/core';
 import {HttpClientService} from "../../../shared/providers/http-client.service";
 import {DataElementFinderPipe} from "../../pipes/data-element-finder.pipe";
 import {UserService} from "../../providers/user.service";
+import {Observable} from "rxjs/Observable";
 
 interface DataElement{
   categoryCombo;
@@ -179,16 +180,15 @@ export class DatasetComponent implements OnInit {
     this.init();
   }
   valueChange(value, dataElementID) {
-    console.log(value,JSON.stringify(this.dataValues[dataElementID]));
-    this.checkDepependecy();
-    //this.calculateSum();
+     this.checkDepependecy();
 
     this.dataValues[dataElementID].status.loading = true;
     this.dataValues[dataElementID].status.loadingError = null;
     if(this.event){
       let payload = {"dataValues":[{"dataElement":dataElementID,"value":this.dataValues[dataElementID].value,"providedElsewhere":false}]}
       this.http.put("events/" + this.event.event+ "/" + dataElementID,payload).subscribe((data:any) => {
-        this.runCompleteness(dataElementID);
+        this.runCompleteness(dataElementID).subscribe(()=>{
+        });
       }, (error) => {
         this.dataValues[dataElementID].status.loading = false;
         this.dataValues[dataElementID].status.loadingError = error.json();
@@ -221,41 +221,52 @@ export class DatasetComponent implements OnInit {
         }
       });
       dataValues.push({"dataElement":dataElementID,"value":this.dataValues[dataElementID].value,"providedElsewhere":false})
-      let payload = {
-        "program": this.organisationUnit.programs[0].id,
-        "eventDate":this.period.substr(0,4) + "-" + this.period.substr(4) + "-01",
-        "orgUnit":this.organisationUnit.id,
-        "dataValues":dataValues}
-      this.http.post("events",payload).subscribe((data:any) => {
-        this.http.get("events/" + data.response.importSummaries["0"].reference +".json").subscribe((data:any) => {
-          this.event = data;
-          this.runCompleteness(dataElementID);
+
+      var coordinates = eval("(" +this.organisationUnit.coordinates+")");
+      this.userService.getUser().subscribe((user)=>{
+        this.http.get("sqlViews/rMxfC7YTmrd/data.json?var=orgunitid:" + this.organisationUnit.id +
+          "&var=eventdate:" + this.period.substr(0,4) + "-" + this.period.substr(4) + "-01" +
+          "&var=userid:" + user.id+ "&var=latitude:" + ("" + coordinates[0]).replace(".",'dot') + "&var=longitude:" + ("" + coordinates[1]).replace(".",'dot')).subscribe((data:any) => {
+          this.http.get("events/" + data.rows[0][0] +".json").subscribe((data:any) => {
+            this.event = data;
+            this.runCompleteness(dataElementID).subscribe(()=>{
+              dataValues.forEach((dataValue)=>{
+                this.valueChange(dataValue.value,dataValue.dataElement);
+              })
+            });
+          }, (error) => {
+            this.dataValues[dataElementID].status.loading = false;
+            this.dataValues[dataElementID].status.loadingError = error.json();
+          });
         }, (error) => {
           this.dataValues[dataElementID].status.loading = false;
           this.dataValues[dataElementID].status.loadingError = error.json();
         });
-      }, (error) => {
-        this.dataValues[dataElementID].status.loading = false;
-        this.dataValues[dataElementID].status.loadingError = error.json();
-      });
+      })
     }
   }
 
   runCompleteness(dataElementID){
-    if(this.completed){
-      this.dataValues[dataElementID].status.loading = false;
-      this.dataValues[dataElementID].status.success = true;
-      this.dataValues[dataElementID].status.loadingError = null;
-    }else{
-      this.http.post("../../api/26/completeDataSetRegistrations",{"completeDataSetRegistrations":[{period:this.period,organisationUnit:this.organisationUnit.id,dataSet:this.dataSet.id}]}).subscribe((data:any) => {
+    return new Observable((observable) =>{
+      if(this.completed){
         this.dataValues[dataElementID].status.loading = false;
         this.dataValues[dataElementID].status.success = true;
-        this.completed = true;
-      }, (error) => {
-        this.dataValues[dataElementID ].status.loading = false;
-        this.dataValues[dataElementID].status.loadingError = error.json();
-      });
-    }
+        this.dataValues[dataElementID].status.loadingError = null;
+        observable.next();
+        observable.complete();
+      }else{
+        this.http.post("../../api/26/completeDataSetRegistrations",{"completeDataSetRegistrations":[{period:this.period,organisationUnit:this.organisationUnit.id,dataSet:this.dataSet.id}]}).subscribe((data:any) => {
+          this.dataValues[dataElementID].status.loading = false;
+          this.dataValues[dataElementID].status.success = true;
+          this.completed = true;
+          observable.next();
+          observable.complete();
+        }, (error) => {
+          this.dataValues[dataElementID ].status.loading = false;
+          this.dataValues[dataElementID].status.loadingError = error.json();
+        });
+      }
+    })
   }
   getStyle(dataElement){
     return {

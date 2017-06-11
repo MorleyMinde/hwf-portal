@@ -49,7 +49,6 @@ export class HttpClientService {
   responseHandler(){
     return (res)=>{
       try{
-        console.log(res);
         return res.json();
       }catch(e){
         location.reload();
