@@ -36,6 +36,6 @@ LANGUAGE plpgsql;
 */
 --SELECT createWaterPoint('New Organisation Unit','DIiS6nXfTtQ','BZB2SLt3ylj','COWSO');
 
-SELECT createEvent('phgxb2SUQwE','2017-06-01','BZB2SLt3ylj','0dot','0');
+--SELECT createEvent('phgxb2SUQwE','2017-06-01','BZB2SLt3ylj','0dot','0');
 
 
