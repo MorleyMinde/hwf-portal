@@ -55,6 +55,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
   }
 
   addOrganisationUnit(orgUnit) {
+    console.log();
     this.totalWaterPoints++;
     orgUnit.status = "loaded";
     orgUnit.completeness = 0;
