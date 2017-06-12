@@ -1,4 +1,4 @@
-import { Component, OnInit, Input,ViewChild } from '@angular/core';
+import { Component, OnInit, Input,ViewChild,Output,EventEmitter } from '@angular/core';
 import {timeout} from "rxjs/operator/timeout";
 declare var L:any;
 
@@ -14,6 +14,7 @@ export class CoordinateComponent implements OnInit {
   lng:number;
   @Input() editing = false;
 
+  @Output() onCoordinateChange = new EventEmitter();
   showMapBool = false;
   showCoordinateBool = false;
   location:any = {}
@@ -46,12 +47,7 @@ export class CoordinateComponent implements OnInit {
   }
 
   onChange() {
-    this.objectRefference.coordinates = "[" + this.lat + "," + this.lng + "]";
-    this.location.lat = this.lat;
-    this.location.lng = this.lng;
-    if (this.marker) {
-      this.marker.setLatLng(new L.LatLng(this.lat, this.lng));
-    }
+    this.onCoordinateChange.emit("[" + this.lat + "," + this.lng + "]");
   }
 
   map;
@@ -101,6 +97,7 @@ export class CoordinateComponent implements OnInit {
           this.marker.setLatLng(new L.LatLng(position.lat, position.lng));
           this.lat = position.lat.toFixed(5);
           this.lng = position.lng.toFixed(5);
+          this.onChange();
         });
       }, 100)
     } else {

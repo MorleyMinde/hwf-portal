@@ -207,7 +207,9 @@ export class WaterPointComponent implements OnInit {
 
 
   }
-
+  onCoordinateChange(event){
+    this.organisationUnit.coordinates = event;
+  }
   showMap;
 
   showModal() {

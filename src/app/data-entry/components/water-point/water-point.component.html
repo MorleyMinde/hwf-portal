@@ -54,7 +54,7 @@
           <tr>
             <th scope="row">Coordinate</th>
             <td>
-              <app-coordinate [editing]="editing" [(objectRefference)]="organisationUnit"></app-coordinate>
+              <app-coordinate [editing]="editing" [(objectRefference)]="organisationUnit" (onCoordinateChange)="onCoordinateChange($event)"></app-coordinate>
             </td>
           </tr>
           <tr *ngFor="let attributeValue of organisationUnit.attributeValues | orderBy:'attribute.name'">
