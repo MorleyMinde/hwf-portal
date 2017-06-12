@@ -61,7 +61,7 @@
           <div *ngIf="attributeValue.attribute.name != 'Old Code'">
             <input [(ngModel)]="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'INTEGER'"
                    type="number" class="form-control"
-                   aria-describedby="emailHelp" value="{{attributeValue.value}}">
+                   aria-describedby="emailHelp" min="0" value="{{attributeValue.value}}">
 
             <input [(ngModel)]linklink__="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'TEXT'" type="text"
                    class="form-control"
