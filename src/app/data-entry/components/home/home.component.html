@@ -1,3 +1,10 @@
 <div class="col-sm-12">
   <app-loader *ngIf="loading" [loadingMessage]="'Loading Water Points into view...'"></app-loader>
+  <div *ngIf="!loading"></div>
+  <div class="alert alert-warning" role="alert">
+    <h3 class="alert-heading">Warning</h3>
+    <h4>You are not assigned any organisation unit. Please contact the administrator to get that access.</h4>
+
+  </div>
+
 </div>

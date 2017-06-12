@@ -17,7 +17,12 @@ export class HomeComponent implements OnInit {
     this.loading = true;
     this.loadingError = false;
     this.http.get("me.json?fields=organisationUnits").subscribe((data:any) => {
-      this.router.navigate(['orgUnit', data.organisationUnits[0].id], {relativeTo: this.route});
+      console.log("DAta:",data);
+      if(data.organisationUnits.length > 0){
+        this.router.navigate(['orgUnit', data.organisationUnits[0].id], {relativeTo: this.route});
+      }else{
+        this.loading = false;
+      }
     })
   }
 

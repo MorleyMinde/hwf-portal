@@ -46,4 +46,9 @@ export class SelectComponent implements OnInit {
     this.selected = option[this.settings.valueField];
     this.valueSelected.emit(option[this.settings.valueField]);
   }
+  public toggleDropdown($event: MouseEvent): void {
+    $event.preventDefault();
+    $event.stopPropagation();
+    this.isOpen = !this.isOpen;
+  }
 }
