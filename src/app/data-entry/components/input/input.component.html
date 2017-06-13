@@ -66,10 +66,17 @@
             <input [(ngModel)]linklink__="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'TEXT'" type="text"
                    class="form-control"
                    aria-describedby="emailHelp" value="{{attributeValue.value}}">
-
-            <input [(ngModel)]="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'INTEGER_ZERO_OR_POSITIVE'"
-                   type="number" class="form-control"
-                   aria-describedby="emailHelp" min="0" value="{{attributeValue.value}}" step="1">
+            <div *ngIf="attributeValue.attribute.valueType == 'INTEGER_ZERO_OR_POSITIVE'">
+              <input [(ngModel)]="attributeValue.value" #text
+                     type="number" class="form-control" (ngModelChange)="positiveIntegerZero($event,text)"
+                     min="0" step="1">
+              <div *ngIf="isInvalid" class="alert alert-danger" role="alert">
+                <div>
+                  <h4 class="alert-heading"></h4>
+                  The value entered is not a positive integer or zero.
+                </div>
+              </div>
+            </div>
 
             <div class="row" *ngIf="attributeValue.attribute.valueType == 'DATE'">
               <div class="col-sm-12">

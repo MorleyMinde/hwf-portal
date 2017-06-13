@@ -106,7 +106,19 @@ export class InputComponent implements OnInit {
   }
 
   valueSelected(event){
-    console.log("Selected:",event);
     this.attributeValue.value = event;
+  }
+  isInvalid = false;
+  positiveIntegerZero(event,text){
+    this.isInvalid = false;
+    if(event < 0){
+      console.log("Whaet YOY");
+      this.attributeValue.value = ("" + event).replace("-","");
+      this.isInvalid = true;
+    }else if(event == null){
+      this.isInvalid = true;
+      this.attributeValue.value = "";
+    }
+    console.log("Event Selected:",event,this.attributeValue.value);
   }
 }

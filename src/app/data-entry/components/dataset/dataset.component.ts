@@ -179,7 +179,7 @@ export class DatasetComponent implements OnInit {
     this.eventDate = this.period.substr(0,4)+"-"+ this.period.substr(4) + "-01";
     this.init();
   }
-  valueChange(value, dataElementID) {
+  valueChange(value, dataElementID,dataElement?) {
      this.checkDepependecy();
 
     this.dataValues[dataElementID].status.loading = true;
@@ -325,5 +325,13 @@ export class DatasetComponent implements OnInit {
       })
       this.dataValues[dataElement.id].value = sum;
     })
+  }
+  positiveIntegerZero(event,text){
+    if(event < 0){
+      text.value = ("" + event).replace("-","")
+    }else if(event == null){
+      text.value = "";
+    }
+    console.log("Event Selected:",event);
   }
 }
