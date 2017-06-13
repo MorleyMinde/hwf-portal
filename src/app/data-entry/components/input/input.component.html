@@ -61,11 +61,15 @@
           <div *ngIf="attributeValue.attribute.name != 'Old Code'">
             <input [(ngModel)]="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'INTEGER'"
                    type="number" class="form-control"
-                   aria-describedby="emailHelp" min="0" value="{{attributeValue.value}}">
+                   aria-describedby="emailHelp" min="0" value="{{attributeValue.value}}" step="1">
 
             <input [(ngModel)]linklink__="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'TEXT'" type="text"
                    class="form-control"
                    aria-describedby="emailHelp" value="{{attributeValue.value}}">
+
+            <input [(ngModel)]="attributeValue.value" *ngIf="attributeValue.attribute.valueType == 'INTEGER_ZERO_OR_POSITIVE'"
+                   type="number" class="form-control"
+                   aria-describedby="emailHelp" min="0" value="{{attributeValue.value}}" step="1">
 
             <div class="row" *ngIf="attributeValue.attribute.valueType == 'DATE'">
               <div class="col-sm-12">

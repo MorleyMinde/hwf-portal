@@ -177,7 +177,7 @@ export class WaterPointComponent implements OnInit {
         }
         attributes += attribute.attribute.id + "_-" + attribute.value;
       })
-      console.log(this.organisationUnit);
+      window.scrollTo(0,0);
       this.http.get("sqlViews/FRUcnTzKfzm/data.json?var=name:" + this.organisationUnit.name + "&var=parent:" + this.organisationUnit.parent.id + "&var=userid:" +
         this.organisationUnit.parent.id + "&var=attributes:" + attributes +"&var=waterpointid:" + this.organisationUnit.id +"&var=coordinates:" +
         this.organisationUnit.coordinates.split(".").join("dot").replace("[","").replace("]","").replace(",","comma")).subscribe((data:any) => {
@@ -185,16 +185,22 @@ export class WaterPointComponent implements OnInit {
           this.loading = false;
           this.loadingError = {httpStatusCode: 409,message:"SQL Error",response:{errorReports:[{message:data.rows[0][0]}]}};
         }else{
-          this.saveTriggered = false;
-          this.editing = false;
-          this.loading = false;
           if(!this.organisationUnit.id){
             this.http.get("organisationUnits/" +  data.rows[0][0]).subscribe((orgUnit:any) => {
               this.addOrganisationUnit(orgUnit);
+              this.saveTriggered = false;
+              this.editing = false;
+              this.loading = false;
+              window.scrollTo(0,0);
             }, (error) => {
 
             });
             this.router.navigate(['/data-entry', 'orgUnit', this.organisationUnit.parent.id, 'waterPoint', data.rows[0][0]]);
+          }else{
+            this.saveTriggered = false;
+            this.editing = false;
+            this.loading = false;
+            window.scrollTo(0,0);
           }
         }
       }, (error) => {

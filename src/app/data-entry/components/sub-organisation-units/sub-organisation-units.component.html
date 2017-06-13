@@ -98,7 +98,7 @@
             <th scope="row">{{((((pager.page?pager.page:1)-1) * pager.pageSize) + 1) + i}}</th>
             <td>{{child.name}}</td>
             <td>{{child.code}}</td>
-            <td>{{child | attribute:"Project"}}</td>
+            <td>{{child | attribute:"Project Name"}}</td>
             <td>{{child | attribute:"Basin"}}</td>
             <td
               [ngClass]="{'red':child.completeness < 40,'yellow':child.completeness >= 40 && child.completeness <= 80,'green':child.completeness > 80,'loadcolor': !child.status}">
