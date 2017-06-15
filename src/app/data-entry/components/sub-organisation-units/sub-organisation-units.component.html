@@ -8,7 +8,9 @@
         <ol class="breadcrumb">
           <li *ngFor="let ancestor of organisationUnit.ancestors" class="breadcrumb-item active"><a
             [routerLink]="['/data-entry','orgUnit',ancestor.id]"
-          >{{ancestor.name}}</a></li>
+          ><!--<li *ngFor="let ancestor of organisationUnit.ancestors" class="breadcrumb-item active"><a
+          [routerLink]="open(['orgUnit',ancestor.id])"
+        >-->{{ancestor.name}}</a></li>
           <li class="breadcrumb-item active">{{organisationUnit.name}}</li>
         </ol>
       </div>

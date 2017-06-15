@@ -44,13 +44,20 @@ export class SubOrganisationUnitsComponent implements OnInit {
   }
 
   openWaterPoint(selectedOrganisationUnit) {
+    var relative = "";
+    if(this.router.url.indexOf("/period/") > -1){
+      relative = "../../"
+    }
     if (this.router.url.indexOf("level") > -1) {
-      this.router.navigate(['../../level', this.level, 'waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
+      this.router.navigate([relative + '../../level', this.level, 'waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     } else {
-      this.router.navigate(['waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
+      this.router.navigate([relative + 'waterPoint', selectedOrganisationUnit.id], {relativeTo: this.route});
     }
   }
   open(routeArray) {
+    if(this.router.url.indexOf("/period/") > -1){
+      routeArray[0] = "../../" + routeArray[0];
+    }
     this.router.navigate(routeArray, {relativeTo: this.route});
   }
 

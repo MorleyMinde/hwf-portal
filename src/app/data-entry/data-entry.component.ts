@@ -59,14 +59,19 @@ export class DataEntryComponent implements OnInit {
       orgUnitId = orgUnits[orgUnits.length - 1];
     }
     var beginning = "";
+    var end = "";
     if(this.router.url.indexOf("/data-entry-readonly") > -1){
       beginning = "readonly/";
     }
+    if(this.router.url.indexOf("/period") > -1){
+      end = this.router.url.substr(this.router.url.indexOf("/period"));
+      console.log("End:",end);
+    }
     if (orgUnits.length == 1) {
       console.log("Here:",this.router.url);
-      this.router.navigate([beginning + 'orgUnit', orgUnits[0]], {relativeTo: this.route});
+      this.router.navigate([beginning + 'orgUnit', orgUnits[0] + end], {relativeTo: this.route});
     }else{
-      this.router.navigate([beginning + 'orgUnit', orgUnits[1],"level",orgUnits[0].replace("LEVEL-","")], {relativeTo: this.route});
+      this.router.navigate([beginning + 'orgUnit', orgUnits[1],"level",orgUnits[0].replace("LEVEL-","") + end], {relativeTo: this.route});
     }
   }
 
