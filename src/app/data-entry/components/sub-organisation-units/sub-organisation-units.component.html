@@ -60,11 +60,11 @@
                   </li>
                   <li *ngIf="level != waterPointParentLevel"><a class="dropdown-item" (click)="download()">Download {{nextLevel.name}}</a>
                   </li>
-                  <li><a class="dropdown-item" href="/api/sqlViews/dJ2fSKGrlOS/data.csv?filter=path:like:{{id}}">Download Villages With No Water Points</a>
+                  <li><a class="dropdown-item" href="/api/sqlViews/ZUl4w8svGeN/data.csv?var=orgunitid:{{id}}">Download Villages With No Water Points</a>
                   </li>
-                  <li class="divider dropdown-divider"></li>
+                  <!--<li class="divider dropdown-divider"></li>
                   <li role="menuitem"><a class="dropdown-item" href="/api/sqlViews/frQwwuGtELy/data.xls">Download Users</a>
-                  </li>
+                  </li>-->
                 </ul>
               </div>
             </div>

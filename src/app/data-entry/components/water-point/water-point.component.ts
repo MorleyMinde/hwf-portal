@@ -186,7 +186,7 @@ export class WaterPointComponent implements OnInit {
           this.loadingError = {httpStatusCode: 409,message:"SQL Error",response:{errorReports:[{message:data.rows[0][0]}]}};
         }else{
           if(!this.organisationUnit.id){
-            this.http.get("organisationUnits/" +  data.rows[0][0]).subscribe((orgUnit:any) => {
+            this.http.get("organisationUnits/" +  data.rows[0][0]+".json?fields=id,name,code,ancestors[name],attributeValues[value,attribute[id,name]]").subscribe((orgUnit:any) => {
               this.addOrganisationUnit(orgUnit);
               this.saveTriggered = false;
               this.editing = false;
