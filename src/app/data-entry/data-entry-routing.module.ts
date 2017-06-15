@@ -38,6 +38,21 @@ let children = [
       {path: '', component: HintsComponent},
       {path: 'waterPoint/:waterPointId', component: HintsComponent}
     ]
+  },
+  {
+    path: ':readonly/orgUnit/:id/period/:pe',
+    component: SubOrganisationUnitsComponent,
+    children:[
+      {path: '', component: HintsComponent},
+      {path: 'waterPoint/:waterPointId', component: HintsComponent}
+    ]
+  },{
+    path: ':readonly/orgUnit/:id/level/:level/period/:pe',
+    component: SubOrganisationUnitsComponent,
+    children:[
+      {path: '', component: HintsComponent},
+      {path: 'waterPoint/:waterPointId', component: HintsComponent}
+    ]
   }
 ]
 const routes: Routes = [

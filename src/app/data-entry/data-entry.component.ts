@@ -70,6 +70,14 @@ export class DataEntryComponent implements OnInit {
     }
   }
 
+  onPeriodUpdate(period){
+    console.log("Yey:",period);
+    let url  = this.router.url;
+    if(url.indexOf('/period/') > -1){
+      url = url.substr(0,url.indexOf('/period/'));
+    }
+    this.router.navigate([url,'period',period.value]);
+  }
   showOrganisationUnitDetails(event) {
     this.selectedOrganisationUnit = event.node.data;
   }

@@ -185,9 +185,10 @@ export class SubOrganisationUnitsComponent implements OnInit {
   calculateCompletenessStatus() {
     this.periodStatus = undefined;
     this.route
-      .queryParams
+      .params
       .subscribe((params:any) => {
-        this.periodStatus = params.period;
+        this.periodStatus = params.pe;
+        console.log("Found Params:",this.periodStatus);
       });
     if (!this.periodStatus) {
       this.date = new Date();
