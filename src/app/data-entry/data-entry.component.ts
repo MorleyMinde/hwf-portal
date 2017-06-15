@@ -63,16 +63,22 @@ export class DataEntryComponent implements OnInit {
     if(this.router.url.indexOf("/data-entry-readonly") > -1){
       beginning = "readonly/";
     }
-    if(this.router.url.indexOf("/period") > -1){
-      end = this.router.url.substr(this.router.url.indexOf("/period"));
-      console.log("End:",end);
-    }
+
+    let url = [];
     if (orgUnits.length == 1) {
       console.log("Here:",this.router.url);
-      this.router.navigate([beginning + 'orgUnit', orgUnits[0] + end], {relativeTo: this.route});
+      url = [beginning + 'orgUnit', orgUnits[0] + end];
     }else{
-      this.router.navigate([beginning + 'orgUnit', orgUnits[1],"level",orgUnits[0].replace("LEVEL-","") + end], {relativeTo: this.route});
+      url = [beginning + 'orgUnit', orgUnits[1],"level",orgUnits[0].replace("LEVEL-","")];
     }
+    if(this.router.url.indexOf("/period") > -1){
+      end = this.router.url.substr(this.router.url.indexOf("/period"));
+      end.substr(1).split("/").forEach((u)=>{
+        url.push(u);
+      });
+      console.log("End:",end);
+    }
+    this.router.navigate(url, {relativeTo: this.route});
   }
 
   onPeriodUpdate(period){
