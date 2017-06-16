@@ -58,6 +58,9 @@ export class SubOrganisationUnitsComponent implements OnInit {
     if(this.router.url.indexOf("/period/") > -1){
       routeArray[0] = "../../" + routeArray[0];
     }
+    if(this.router.url.indexOf("/level/") > -1){
+      routeArray[0] = "../../" + routeArray[0];
+    }
     this.router.navigate(routeArray, {relativeTo: this.route});
   }
 
@@ -145,8 +148,9 @@ export class SubOrganisationUnitsComponent implements OnInit {
               }
               this.orgUnitService.getOrgunitLevelsInformation().subscribe((organisationUnitLevelsData:any) => {
                 organisationUnitLevelsData.organisationUnitLevels.forEach((organisationUnitLevel)=> {
-                  if (organisationUnitLevel.level == this.level) {
+                  if (organisationUnitLevel.level == this.organisationUnit.level) {
                     this.nextLevel = organisationUnitLevel;
+                    console.log("Level:",organisationUnitLevel)
                     this.urlAddition = "?criteria=" + this.fieldMap[organisationUnitLevel.name]+ ":" + this.organisationUnit.name;
                   }
                 })

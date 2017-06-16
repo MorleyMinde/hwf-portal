@@ -3,8 +3,6 @@ import {HttpClientService} from "../shared/providers/http-client.service";
 import { ActivatedRoute,Params,Router,NavigationStart } from '@angular/router';
 import {UserService} from "./providers/user.service";
 
-declare var $:any;
-
 @Component({
   selector: 'app-data-entry',
   templateUrl: './data-entry.component.html',

@@ -56,7 +56,7 @@
                   <i class="fa fa-download" aria-hidden="true"> </i>
                 </button>
                 <ul *dropdownMenu class="dropdown-menu" role="menu">
-                  <li *ngIf="level == waterPointParentLevel"><a class="dropdown-item" href="/api/sqlViews/SM8ExBY51Ph/data.csv{{urlAddition}}">Download Water Points</a>
+                  <li *ngIf="level == waterPointParentLevel"><a  target="downloadIframe" class="dropdown-item" href="/api/sqlViews/SM8ExBY51Ph/data.csv{{urlAddition}}">Download Water Points</a>
                   </li>
                   <li *ngIf="level != waterPointParentLevel"><a class="dropdown-item" (click)="download()">Download {{nextLevel.name}}</a>
                   </li>

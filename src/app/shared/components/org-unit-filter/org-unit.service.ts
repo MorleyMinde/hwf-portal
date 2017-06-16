@@ -285,6 +285,7 @@ export class OrgUnitService {
         observer.next(this.nodes);
         observer.complete();
       } else {
+        console.log("Here it is");
         this.db.createStore(1, (evt) => {
           let objectStore = evt.currentTarget.result.createObjectStore(
             'organisationUnits', {keyPath: "id", autoIncrement: true});
