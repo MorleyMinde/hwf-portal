@@ -38,7 +38,7 @@ export class SubOrganisationUnitsComponent implements OnInit {
 
   constructor(private http:HttpClientService, private route:ActivatedRoute, private router:Router, private changeService:ChangeService,private userService:UserService,private orgUnitService:OrgUnitService) {
     this.route.params.subscribe((params)=> {
-      this.init()
+      this.init();
     })
     //this.init();
   }
@@ -84,15 +84,15 @@ export class SubOrganisationUnitsComponent implements OnInit {
   pageClustering;
   level;
   setLevel;
-  nextLevel
+  nextLevel;
+  currentLevel;
   authorities
   readonly = true;
   fieldMap ={
     "Regions":"Region",
     "LGAs":"Council",
     "Wards":"Ward",
-    "Villages":"Village",
-    "Tanzania":"Tanzania",
+    "Villages":"Village"
   }
   urlAddition
   init() {
@@ -148,10 +148,20 @@ export class SubOrganisationUnitsComponent implements OnInit {
               }
               this.orgUnitService.getOrgunitLevelsInformation().subscribe((organisationUnitLevelsData:any) => {
                 organisationUnitLevelsData.organisationUnitLevels.forEach((organisationUnitLevel)=> {
-                  if (organisationUnitLevel.level == this.organisationUnit.level) {
+                  if (organisationUnitLevel.level == this.organisationUnit.level + 1) {
                     this.nextLevel = organisationUnitLevel;
-                    console.log("Level:",organisationUnitLevel)
-                    this.urlAddition = "?criteria=" + this.fieldMap[organisationUnitLevel.name]+ ":" + this.organisationUnit.name;
+                  }
+                  if (organisationUnitLevel.level == this.organisationUnit.level) {
+                    if(this.fieldMap[organisationUnitLevel.name]){
+                      this.urlAddition = "?criteria=" + this.fieldMap[organisationUnitLevel.name]+ ":" + this.organisationUnit.name;
+                    }else{
+                      this.urlAddition = "";
+                    }
+                  }
+                  if(this.router.url.indexOf("level") > -1){
+                    if(this.router.url.substr(this.router.url.indexOf("level")).indexOf(organisationUnitLevel.level)){
+                      this.currentLevel = organisationUnitLevel;
+                    }
                   }
                 })
               })
