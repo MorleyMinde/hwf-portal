@@ -159,7 +159,8 @@ export class SubOrganisationUnitsComponent implements OnInit {
                     }
                   }
                   if(this.router.url.indexOf("level") > -1){
-                    if(this.router.url.substr(this.router.url.indexOf("level")).indexOf(organisationUnitLevel.level)){
+                    console.log(this.router.url,)
+                    if(this.router.url.substr(this.router.url.indexOf("level")).indexOf(organisationUnitLevel.level) > -1){
                       this.currentLevel = organisationUnitLevel;
                     }
                   }

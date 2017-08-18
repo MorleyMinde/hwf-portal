@@ -58,9 +58,9 @@
                 <ul *dropdownMenu class="dropdown-menu" role="menu">
                   <li *ngIf="level == waterPointParentLevel"><a  target="downloadIframe" class="dropdown-item" href="/api/sqlViews/SM8ExBY51Ph/data.csv{{urlAddition}}">Download Water Points in <b>{{organisationUnit.name}}</b></a>
                   </li>
-                  <li *ngIf="level != waterPointParentLevel && router.url.indexOf('level') == -1"><a class="dropdown-item" (click)="download()">Download n{{nextLevel.name}} in <b>{{organisationUnit.name}}</b></a>
+                  <li *ngIf="level != waterPointParentLevel && router.url.indexOf('level') == -1"><a class="dropdown-item" (click)="download()">Download {{nextLevel.name}} in <b>{{organisationUnit.name}}</b></a>
                   </li>
-                  <li *ngIf="level != waterPointParentLevel && router.url.indexOf('level') > -1"><a class="dropdown-item" (click)="download()">Download c{{nextLevel.name}} in <b>{{organisationUnit.name}}</b></a>
+                  <li *ngIf="level != waterPointParentLevel && router.url.indexOf('level') > -1"><a class="dropdown-item" (click)="download()">Download {{currentLevel.name}} in <b>{{organisationUnit.name}}</b></a>
                   </li>
                   <li><a class="dropdown-item" href="/api/sqlViews/ZUl4w8svGeN/data.xls?var=orgunitid:{{id}}">Download Villages in <b>{{organisationUnit.name}}</b> With No Water Points</a>
                   </li>
