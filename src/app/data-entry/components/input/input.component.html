@@ -19,9 +19,9 @@
     <div *ngIf="attributeValue" class="form-group">
       <div *ngIf="attributeValue.attribute.optionSet">
         <div>
-          <template #optionTemplate let-option="option">
+          <ng-template #optionTemplate let-option="option">
             {{option.name}}({{option.code}})
-          </template>
+          </ng-template>
           <app-select *ngIf="attributeValue.attribute.name == 'Project'" name="attribute" [selected]="attributeValue.value" [options]="attributeValue.attribute.optionSet.options"
                       [settings]="selectionInputSettings" (valueSelected)="valueSelected($event)" [template]="optionTemplate">
           </app-select>
