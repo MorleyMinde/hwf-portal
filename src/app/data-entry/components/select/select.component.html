@@ -1,6 +1,6 @@
-<template #defaultTemplate let-option="option">
+<ng-template #defaultTemplate let-option="option">
   {{option[settings.textField]}}
-</template>
+</ng-template>
 <div class="btn-group input" dropdown [isOpen]="isOpen" (onShown)="isOpen = true" (onHidden)="isOpen = false">
   <input class="form-control dropdown-toggle" [(ngModel)]="selected"/>
   <input dropdownToggle [ngClass]="{'is-open':isOpen}" class="form-control dropdown-toggle editor"
@@ -8,7 +8,7 @@
   <ul *dropdownMenu class="dropdown-menu" role="menu">
     <li role="menuitem" *ngFor="let option of options | fuseSearch:searchOptions:searchText" (click)="select(option)">
       <a class="dropdown-item">
-        <template [ngTemplateOutlet]="template || defaultTemplate" [ngOutletContext]="{option: option}"></template>
+        <ng-template [ngTemplateOutlet]="template || defaultTemplate" [ngOutletContext]="{option: option}"></ng-template>
       </a>
     </li>
   </ul>
