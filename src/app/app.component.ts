@@ -14,8 +14,7 @@ export class AppComponent {
   dashboards =[]
   constructor(private currentUserService: CurrentUserService,private http:Http) {
     currentUserService.load();
-    http.get("/api/dashboards.json?fields=id,name").subscribe((dashboards)=>{
-      console.log();
+    http.get("/hwf/api/dashboards.json?fields=id,name").subscribe((dashboards)=>{
       this.dashboards = dashboards.json().dashboards;
     })
 
