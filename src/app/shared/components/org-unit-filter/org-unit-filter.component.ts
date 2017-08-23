@@ -4,6 +4,7 @@ import {IActionMapping, TREE_ACTIONS} from "angular-tree-component/dist/models/t
 import {TreeComponent} from "angular-tree-component/dist/components/tree.component";
 import {Observable} from "rxjs";
 import {OrgUnitService} from "./org-unit.service";
+import {environment} from "../../../../environments/environment";
 
 @Component({
   selector: 'app-org-unit-filter',
@@ -60,7 +61,8 @@ export class OrgUnitFilterComponent implements OnInit {
     private http: Http,
     private orgunitService: OrgUnitService
   ) {
-     if(!this.orgunit_tree_config.hasOwnProperty("multiple_key")){
+    this.root_url = environment.url;
+    if(!this.orgunit_tree_config.hasOwnProperty("multiple_key")){
        this.orgunit_tree_config.multiple_key = "none";
      }
   }
