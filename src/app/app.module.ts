@@ -1,5 +1,5 @@
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import { NgModule, Injectable } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
@@ -11,6 +11,7 @@ import {HttpClientService} from "./providers/http-client.service";
 import {CurrentUserService} from "./providers/current-user.service";
 import {Constants} from "./providers/constants";
 import {DndModule} from "ng2-dnd";
+
 
 @NgModule({
   declarations: [
