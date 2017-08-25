@@ -151,7 +151,7 @@ export class OrgUnitFilterComponent implements OnInit {
                 let use_level = parseInt(all_levels) - (parseInt(level) - 1);
                 // this.orgunit_model.user_orgunits = orgunits;
 
-                let fields = this.orgunitService.generateUrlBasedOnLevels(use_level);
+                let fields = this.orgunitService.generateUrlBasedOnLevels(4);
                 this.orgunitService.getAllOrgunitsForTree1(fields, orgunits).subscribe(
                   items => {
                     this.organisationunits = items;

@@ -279,31 +279,18 @@ export class OrgUnitService {
 
   }
 
+  orgUnits
   getAllOrgunitsForTree1(fields = null, orgunits = null) {
     return Observable.create(observer => {
-      if (this.nodes != null) {
-        observer.next(this.nodes);
+      if (this.orgUnits != null) {
+        observer.next(this.orgUnits);
         observer.complete();
       } else {
-        console.log("Here it is");
-        this.db.createStore(1, (evt) => {
-          let objectStore = evt.currentTarget.result.createObjectStore(
-            'organisationUnits', {keyPath: "id", autoIncrement: true});
-        }).then((results)=> {
-          this.db.getAll('organisationUnits').then((organisationUnits) => {
-            if (this.areOrganisationUnitsSaveLocally(orgunits,organisationUnits)) {
-              observer.next(organisationUnits);
-              observer.complete();
-            } else {
-              this.getOrganisationUnitsSaveLocally(fields,orgunits).subscribe((organisationUnits)=>{
-                observer.next(organisationUnits);
-                observer.complete();
-              })
-            }
-          }, (error) => {
-            console.log("DB Error:", error);
-          })
-        });
+        this.getOrganisationUnitsSaveLocally(fields,orgunits).subscribe((organisationUnits)=>{
+          this.orgUnits = organisationUnits;
+          observer.next(this.orgUnits);
+          observer.complete();
+        })
       }
     })
 

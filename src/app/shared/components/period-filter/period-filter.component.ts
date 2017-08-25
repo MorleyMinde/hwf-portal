@@ -4,7 +4,7 @@ import {TreeComponent} from "angular-tree-component/dist/components/tree.compone
 
 
 const PERIOD_TYPE: Array<any> = [
-  {value:'Monthly', name: 'Monthly', shown: true},
+  //{value:'Monthly', name: 'Monthly', shown: true},
   {value:'BiMonthly', name: 'BiMonthly', shown: false},
   {value:'Quarterly', name: 'Quarterly', shown: false},
   {value:'SixMonthly', name: 'Six-Monthly', shown: false},
@@ -44,7 +44,7 @@ export class PeriodFilterComponent implements OnInit, AfterViewInit {
   periods = [];
   period: any = {};
   showPerTree:boolean = true;
-  period_type: string = 'Monthly';
+  period_type: string = 'Yearly';
   year: number = 2016;
   default_period: string[] = [];
   customTemplateStringOrgunitOptions: any;
