@@ -9,6 +9,7 @@ import {HttpClientService} from "./shared/providers/http-client.service";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+  todaysDate = new Date();
   title = 'Water Point Data Manager';
 
   dashboards =[]
