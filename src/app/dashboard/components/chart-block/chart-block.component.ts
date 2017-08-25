@@ -24,6 +24,25 @@ export class ChartBlockComponent implements OnInit {
   }
 
   drawChart(chartObject: any) {
+    console.log("This:",chartObject);
+    chartObject.exporting =  {
+      buttons: {
+        contextButton: {
+          align: 'left',
+          //x: 50
+        }
+      },
+      chartOptions: { // specific options for the exported image
+        plotOptions: {
+          series: {
+            dataLabels: {
+              enabled: true
+            }
+          }
+        }
+      },
+      fallbackToExportServer: false
+    }
     this.chart = Highcharts.chart(chartObject);
   }
 
