@@ -11,6 +11,7 @@ import {HttpClientService} from "./providers/http-client.service";
 import {CurrentUserService} from "./providers/current-user.service";
 import {Constants} from "./providers/constants";
 import {DndModule} from "ng2-dnd";
+import { ModalModule } from 'ngx-bootstrap/modal';
 
 
 @NgModule({
@@ -20,6 +21,7 @@ import {DndModule} from "ng2-dnd";
     FilterPipe
   ],
   imports: [
+    ModalModule.forRoot(),
     BrowserModule,
     FormsModule,
     HttpModule,
