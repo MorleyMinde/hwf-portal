@@ -11,7 +11,13 @@
   padding-top: 0px;
   padding-bottom: 0px;
   height: 30px;
-  background-color: transparent !important;
+  background-color: #EBF9F2 !important;
+}
+.dashboard-card-heading{
+  border-bottom-color: #418B64 !important;
+}
+.dashboard-card-footer {
+  border-top-color: #418B64 !important;
 }
 
 .dashboard-item-body {
@@ -21,6 +27,7 @@
   padding: 0px;
   padding-left: 15px;
   padding-right: 15px;
+  background-color: #EBF9F2 !important;
 }
 
 .dashboard-item-header li > a {
@@ -73,7 +80,9 @@
 .full-screen .dashboard-item-body .map-body {
   height: 70vh !important;
 }
-
+.dashboard-block{
+  border-color: #418B64 !important;
+}
 .dashboard-block:hover .delete-btn {
   visibility:visible;
 }
