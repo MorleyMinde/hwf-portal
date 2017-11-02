@@ -1,0 +1,14 @@
+{
+  "/api": {
+    "target": "dhisBaseUrl",
+    "secure": "false",
+    "auth":"webuser:We!1425Bakshsfa",
+    "changeOrigin":true
+  },
+  "/": {
+    "target": "dhisBaseUrl",
+    "secure": "false",
+    "auth":"webuser:We!1425Bakshsfa",
+    "changeOrigin":true
+  }
+}
