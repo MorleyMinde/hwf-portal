@@ -1,7 +1,7 @@
 {
-    "version": "2.0",
-    "name": "Water Point System v3",
-    "description": "Water Point System version 3",
+    "version": "1.0",
+    "name": "Health Worker Portal",
+    "description": "Health Worker Portal",
     "launch_path": "index.html",
     "icons": {
         "16": "assets/logo.png",
