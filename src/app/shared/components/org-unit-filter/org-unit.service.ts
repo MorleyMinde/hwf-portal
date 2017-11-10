@@ -26,7 +26,7 @@ export class OrgUnitService {
         observable.next(this.userInfo);
         observable.complete();
       }else{
-        this.http.get('../../../api/me.json?fields=organisationUnits[id,name,level]')
+        this.http.get('./api/me.json?fields=organisationUnits[id,name,level]')
           .map((response:Response) => response.json())
           .subscribe((data)=>{
             this.userInfo = data;
