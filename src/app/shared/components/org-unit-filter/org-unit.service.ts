@@ -213,7 +213,7 @@ export class OrgUnitService {
         observer.next(this.orgunit_levels);
         observer.complete();
       } else {
-        this.http.get('../../../api/organisationUnitLevels.json?fields=id,name,level&order=level:asc')
+        this.http.get('api/organisationUnitLevels.json?fields=id,name,level&order=level:asc')
           .map((response:Response) => response.json())
           .catch(this.handleError)
           .subscribe((levels) => {

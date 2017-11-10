@@ -27,7 +27,7 @@ export class CurrentUserService {
 
   load() {
     return Observable.create(observer => {
-      this.http.get('../../../api/me.json?fields=*,dataViewOrganisationUnits[id,name,level],organisationUnits[id,name,level]')
+      this.http.get('api/me.json?fields=*,dataViewOrganisationUnits[id,name,level],organisationUnits[id,name,level]')
         .subscribe(currentUser => {
           this._currentUser = currentUser;
           observer.next(currentUser);

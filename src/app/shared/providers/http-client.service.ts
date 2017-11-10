@@ -4,7 +4,7 @@ import 'rxjs/add/operator/map'
 
 @Injectable()
 export class HttpClientService {
-  public APIURL = "/api/";
+  public APIURL = "api/";
   constructor(private http: Http) {
     this.http = http;
   }
