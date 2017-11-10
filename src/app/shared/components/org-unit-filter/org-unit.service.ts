@@ -65,7 +65,7 @@ export class OrgUnitService {
         observable.next(this.waterPointConstant);
         observable.complete();
       }else{
-        this.http.get('../../../api/constants.json?fields=id,name,value&filter=name:eq:Water Point Parent Level')
+        this.http.get('api/constants.json?fields=id,name,value&filter=name:eq:Water Point Parent Level')
           .map((response:Response) => response.json())
           .subscribe((data)=>{
             this.waterPointConstant = data;

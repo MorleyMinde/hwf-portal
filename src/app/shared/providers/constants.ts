@@ -5,7 +5,7 @@ export class Constants {
   public api: string;
   public chartTypes: any;
   constructor() {
-    this.root_url = '../../../';
+    this.root_url = '';
     this.api = this.root_url + 'api/25/';
     this.chartTypes = [
       {

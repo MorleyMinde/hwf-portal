@@ -5,7 +5,7 @@ import {Observable} from "rxjs";
 
 @Injectable()
 export class HttpClientService {
-  public APIURL = "/api/";
+  public APIURL = "api/";
   constructor(private http: Http) {
     this.http = http;
   }
