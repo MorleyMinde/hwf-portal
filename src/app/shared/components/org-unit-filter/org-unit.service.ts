@@ -26,7 +26,7 @@ export class OrgUnitService {
         observable.next(this.userInfo);
         observable.complete();
       }else{
-        this.http.get('./api/me.json?fields=organisationUnits[id,name,level]')
+        this.http.get('api/me.json?fields=organisationUnits[id,name,level]')
           .map((response:Response) => response.json())
           .subscribe((data)=>{
             this.userInfo = data;
@@ -44,7 +44,7 @@ export class OrgUnitService {
         observable.next(this.loadedOrganisationUnits[id]);
         observable.complete();
       }else{
-        this.http.get('../../../api/organisationUnits/' + id + '.json?fields=id,name,level,ancestors[id,name],parent[id],dataSets[id,categoryCombo[*,categoryOptionCombos[*]],name,periodType,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]]],attributeValues[value,attribute[id,name]]],dataSets[id,name,periodType,openFuturePeriods,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]],optionSet[id,name,options[id,name,code]]]]')
+        this.http.get('api/organisationUnits/' + id + '.json?fields=id,name,level,ancestors[id,name],parent[id],dataSets[id,categoryCombo[*,categoryOptionCombos[*]],name,periodType,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]]],attributeValues[value,attribute[id,name]]],dataSets[id,name,periodType,openFuturePeriods,dataElements[id,name,valueType,attributeValues[value,attribute[id,name,optionSet[options[id,name,code]]]],optionSet[id,name,options[id,name,code]]]]')
           .map((response:Response) => response.json())
           .subscribe((data)=>{
             this.loadedOrganisationUnits[id] = data;
@@ -235,7 +235,7 @@ export class OrgUnitService {
         observer.next(this.orgunit_groups);
         observer.complete();
       } else {
-        this.http.get('../../../api/organisationUnitGroups.json?fields=id,name&paging=false')
+        this.http.get('api/organisationUnitGroups.json?fields=id,name&paging=false')
           .map((response:Response) => response.json())
           .catch(this.handleError)
           .subscribe((groups) => {
@@ -252,7 +252,7 @@ export class OrgUnitService {
 
   // Get system wide settings
   getAllOrgunitsForTree(fields) {
-    return this.http.get('../../../api/organisationUnits.json?filter=level:eq:1&paging=false&fields=' + fields)
+    return this.http.get('api/organisationUnits.json?filter=level:eq:1&paging=false&fields=' + fields)
       .map((response:Response) => response.json())
       .catch(this.handleError);
   }
@@ -264,7 +264,7 @@ export class OrgUnitService {
         observer.next(this.nodes);
         observer.complete();
       } else {
-        this.http.get('../../../api/organisationUnits.json?fields=' + fields + '&filter=id:in:[' + orgunits.join(",") + ']&paging=false')
+        this.http.get('api/organisationUnits.json?fields=' + fields + '&filter=id:in:[' + orgunits.join(",") + ']&paging=false')
           .map((response:Response) => response.json())
           .catch(this.handleError)
           .subscribe(nodes => {
@@ -317,7 +317,7 @@ export class OrgUnitService {
   }
   getOrganisationUnitsSaveLocally(fields,orgunits) {
     return Observable.create(observer => {
-      this.http.get('../../../api/organisationUnits.json?fields=' + fields + '&filter=id:in:[' + orgunits.join(",") + ']&paging=false')
+      this.http.get('api/organisationUnits.json?fields=' + fields + '&filter=id:in:[' + orgunits.join(",") + ']&paging=false')
         .map((response:Response) => response.json())
         .catch(this.handleError)
         .subscribe(results => {
@@ -343,7 +343,7 @@ export class OrgUnitService {
         observer.next(this.initial_orgunits);
         observer.complete();
       } else {
-        this.http.get('../../../api/organisationUnits.json?fields=id,level,name,children[id,name,level]&filter=id:in:[' + orgunits.join(",") + ']&paging=false')
+        this.http.get('api/organisationUnits.json?fields=id,level,name,children[id,name,level]&filter=id:in:[' + orgunits.join(",") + ']&paging=false')
           .map((response:Response) => response.json())
           .catch(this.handleError)
           .subscribe(nodes => {

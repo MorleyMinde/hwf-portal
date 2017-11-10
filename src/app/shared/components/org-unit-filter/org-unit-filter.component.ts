@@ -44,7 +44,7 @@ export class OrgUnitFilterComponent implements OnInit {
   @Output() onOrgUnitInit : EventEmitter<any> = new EventEmitter<any>();
 
   orgUnit: any = {};
-  root_url = './';
+  root_url = '';
   nodes: any[] = null;
   orgunit_levels:any[] = [];
   @ViewChild('orgtree')
