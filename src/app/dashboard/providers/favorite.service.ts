@@ -17,6 +17,7 @@ export class FavoriteService {
       return Observable.of({});
     }
     let url = this._getFavoriteUrl(favoriteType, favoriteId);
+    url = url.replace("./api/","");
     if(url == null) {
       return Observable.create(observer => observer.error('Failed to construct call for favorite'))
     }
