@@ -1,8 +1,9 @@
 import { NgModule }     from '@angular/core';
 import {Routes, RouterModule, PreloadAllModules} from '@angular/router';
+import {InitialLoaderComponent} from "./initial-loader/initial-loader.component";
 
 export const routes: Routes = [
-  { path: '', redirectTo: '/dashboard/SbnKplppPd0', pathMatch: 'full' },
+  { path: '', component: InitialLoaderComponent  },
   {path: 'dashboard/:pageId', loadChildren: 'app/dashboard/dashboard.module#DashboardModule'}
 ];
 

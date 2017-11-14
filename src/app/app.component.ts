@@ -3,6 +3,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/modal-options.class';
 import {CurrentUserService} from "./providers/current-user.service";
 import {Http} from "@angular/http"
+import {Router} from '@angular/router';
 import {HttpClientService} from "./shared/providers/http-client.service";
 
 @Component({
@@ -16,11 +17,12 @@ export class AppComponent {
 
   public modalRef: BsModalRef;
   dashboards =[]
-  constructor(private currentUserService: CurrentUserService,private http:Http,private modalService: BsModalService) {
+  constructor(private currentUserService: CurrentUserService,private http:Http,private modalService: BsModalService,private router: Router) {
     currentUserService.load();
     http.get("api/dashboards.json?fields=id,name").subscribe((dashboards)=>{
       console.log();
       this.dashboards = dashboards.json().dashboards;
+      this.router.navigate(['/dashboard', this.dashboards[0].id ]);
     })
 
   }

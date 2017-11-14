@@ -12,13 +12,15 @@ import {CurrentUserService} from "./providers/current-user.service";
 import {Constants} from "./providers/constants";
 import {DndModule} from "ng2-dnd";
 import { ModalModule } from 'ngx-bootstrap/modal';
+import { InitialLoaderComponent } from './initial-loader/initial-loader.component';
 
 
 @NgModule({
   declarations: [
     AppComponent,
     MenuComponent,
-    FilterPipe
+    FilterPipe,
+    InitialLoaderComponent
   ],
   imports: [
     ModalModule.forRoot(),
